@@ -16,7 +16,7 @@ css.innerHTML = "br {display: block; content: \"\"; margin-top: 8px; } #myModal 
 document.getElementsByTagName('head')[0].append(css);
 
 var util = document.createElement("script");
-util.innerHTML = "function get(id){ return document.getElementById(id); }; function Capitalize(str){ var result = ''; let tokens = str.trim().split(' '); for(var token of tokens){ result += token[0].toUpperCase() + token.slice(1) + ' '; } return result.trim(); };";
+util.innerHTML = "function hide(id){ document.getElementById(id).style.display='none' }; function get(id){ return document.getElementById(id); }; function Capitalize(str){ var result = ''; let tokens = str.trim().split(' '); for(var token of tokens){ result += token[0].toUpperCase() + token.slice(1) + ' '; } return result.trim(); };";
 document.getElementsByTagName('body')[0].append(util);
 
 var scripts = {
@@ -45,7 +45,7 @@ var modal = document.createElement("div");
 modal.style = "display: flex; align-items:center; justify-content: center";
 
 var modals = {
-    'add_six_r': '<div id="myModal"><div id="zContent"><><input type="text" id="sname" placeholder="Seller Name" /><br><input type="text" id="quantity" placeholder="Quantity (In Quintals)" /><br><div id="img-captcha"></div><br><input type="text" placeholder="Captcha Code" id="in-captcha"/><br><button onclick="mSubmit()">Submit</button></div></div>',
+    'add_six_r': '<div id="myModal"><div id="zContent"><div><button onclick="hide(\'myModal\')">x</button></div><input type="text" id="sname" placeholder="Seller Name" /><br><input type="text" id="quantity" placeholder="Quantity (In Quintals)" /><br><div id="img-captcha"></div><br><input type="text" placeholder="Captcha Code" id="in-captcha"/><br><button onclick="mSubmit()">Submit</button></div></div>',
     'NineR': '<div id="myModal"><div id="zContent"><input type="text" id="bname" placeholder="Buyer Name" /><br><button onclick="mSubmit()">Submit</button></div></div>',
     'NineRSubmit': '<div id="myModal"><div id="zContent"><div id="img-captcha"></div><br><input type="text" placeholder="Captcha Code" id="in-captcha"/><br><button onclick="mSubmit()">Submit</button></div></div>',
     'add_gatepass': '<style>input[type=text]{width: 100%;}</style><div id="myModal"><div id="zContent"><input type="text" id="destination" placeholder="Destined Market" onchange = "(()=>{  document.getElementById(\'iframe\').src = \'https://www.google.com/search?igu=1&q=sadabad to \'+document.getElementById(\'destination\').value;  })()" /><br><select id="carrier" placeholder="Select Vehicle" style="width: 100%; height:27px;"><option value="1">Truck</option><option value="2">Pick-Up</option><option value="4">DCM</option></select><br><input type="text" id="carrier-no" placeholder="Vehicle Number" /><br><input type="text" id="packets" placeholder="Packets" /><br><input type="text" id="statename" placeholder="State" /><br><div id="img-captcha"></div><br><input type="text" placeholder="Captcha Code" id="in-captcha"/><br><input type="text" placeholder="Distance" id="space" /><br><button onclick="mSubmit()">Submit</button><br><iframe src="https://www.google.com/search?igu=1" id="iframe" /><br></div></div>',
