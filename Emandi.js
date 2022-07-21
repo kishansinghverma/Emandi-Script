@@ -12,7 +12,7 @@ if (!validRoutes.includes(route))
     throw new Error('Injection not valid for this page');
 
 var css = document.createElement("style");
-css.innerHTML = "br {display: block; content: \"\"; margin-top: 8px; } .head { display: flex; justify-content: space-between; margin-bottom: 4px } #myModal > div.head > button { padding: 2px 6px 4px !important; margin-top: -4px; border-radius: 8px; color: red; padding: 2px 4px !important; background-color: white !important; } #myModal { display: block; padding: 10px; border-radius:4px; position: fixed; z-index: 100; margin-top:100px; top: 0; background-color: rgb(0 0 0 / 72%); } #zContent{ background-color: #fefefe; border-radius:4px; padding: 20px; border: 1px solid #888; display: flex; flex-direction: column; align-items: center; justify-content: center; }";
+css.innerHTML = "br {display: block; content: \"\"; margin-top: 8px; } .head { display: flex; justify-content: space-between; margin-bottom: 4px } #myModal > div.head > button { margin-top: -4px; border-radius: 8px; color: red; background-color: white !important; } #myModal { display: block; padding: 10px; border-radius:4px; position: fixed; z-index: 100; margin-top:100px; top: 0; background-color: rgb(0 0 0 / 72%); } #zContent{ background-color: #fefefe; border-radius:4px; padding: 20px; border: 1px solid #888; display: flex; flex-direction: column; align-items: center; justify-content: center; }";
 document.getElementsByTagName('head')[0].append(css);
 
 var util = document.createElement("script");
