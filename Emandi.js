@@ -13,7 +13,7 @@ if (!validRoutes.includes(route))
 
 var css = document.createElement("style");
 css.innerHTML = "br {display: block; content: \"\"; margin-top: 8px; } #myModal { display: block; padding: 10px; border-radius:4px; position: fixed; z-index: 100; margin-top:100px; top: 0; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4); } #zContent{ background-color: #fefefe; border-radius:4px; padding: 20px; border: 1px solid #888; display: flex; flex-direction: column; align-items: center; justify-content: center; }";
-document.getElementsByTagName('body')[0].append(css);
+document.getElementsByTagName('head')[0].append(css);
 
 var util = document.createElement("script");
 util.innerHTML = "function get(id){ return document.getElementById(id); }; function Capitalize(str){ var result = ''; let tokens = str.trim().split(' '); for(var token of tokens){ result += token[0].toUpperCase() + token.slice(1) + ' '; } return result.trim(); };";
