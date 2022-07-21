@@ -12,7 +12,7 @@ if (!validRoutes.includes(route))
     throw new Error('Injection not valid for this page');
 
 var css = document.createElement("style");
-css.innerHTML = "#myModal { display: block; padding: 10px; border-radius:4px; position: fixed; z-index: 100; margin-top:100px; top: 0; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4); } #zContent{ background-color: #fefefe; border-radius:4px; padding: 20px; border: 1px solid #888; display: flex; flex-direction: column; align-items: center; justify-content: center; }";
+css.innerHTML = "br {display: block; content: \"\"; margin-top: 8px; } #myModal { display: block; padding: 10px; border-radius:4px; position: fixed; z-index: 100; margin-top:100px; top: 0; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4); } #zContent{ background-color: #fefefe; border-radius:4px; padding: 20px; border: 1px solid #888; display: flex; flex-direction: column; align-items: center; justify-content: center; }";
 document.getElementsByTagName('body')[0].append(css);
 
 var util = document.createElement("script");
@@ -45,7 +45,7 @@ var modal = document.createElement("div");
 modal.style = "display: flex; align-items:center; justify-content: center";
 
 var modals = {
-    'add_six_r': '<div id="myModal"><div id="zContent"><input type="text" id="sname" placeholder="Seller Name" /><br><input type="text" id="quantity" placeholder="Quantity (In Quintals)" /><br><div id="img-captcha"></div><br><input type="text" placeholder="Captcha Code" id="in-captcha"/><br><button onclick="mSubmit()">Submit</button></div></div>',
+    'add_six_r': '<div id="myModal"><div id="zContent"><><input type="text" id="sname" placeholder="Seller Name" /><br><input type="text" id="quantity" placeholder="Quantity (In Quintals)" /><br><div id="img-captcha"></div><br><input type="text" placeholder="Captcha Code" id="in-captcha"/><br><button onclick="mSubmit()">Submit</button></div></div>',
     'NineR': '<div id="myModal"><div id="zContent"><input type="text" id="bname" placeholder="Buyer Name" /><br><button onclick="mSubmit()">Submit</button></div></div>',
     'NineRSubmit': '<div id="myModal"><div id="zContent"><div id="img-captcha"></div><br><input type="text" placeholder="Captcha Code" id="in-captcha"/><br><button onclick="mSubmit()">Submit</button></div></div>',
     'add_gatepass': '<style>input[type=text]{width: 100%;}</style><div id="myModal"><div id="zContent"><input type="text" id="destination" placeholder="Destined Market" onchange = "(()=>{  document.getElementById(\'iframe\').src = \'https://www.google.com/search?igu=1&q=sadabad to \'+document.getElementById(\'destination\').value;  })()" /><br><select id="carrier" placeholder="Select Vehicle" style="width: 100%; height:27px;"><option value="1">Truck</option><option value="2">Pick-Up</option><option value="4">DCM</option></select><br><input type="text" id="carrier-no" placeholder="Vehicle Number" /><br><input type="text" id="packets" placeholder="Packets" /><br><input type="text" id="statename" placeholder="State" /><br><div id="img-captcha"></div><br><input type="text" placeholder="Captcha Code" id="in-captcha"/><br><input type="text" placeholder="Distance" id="space" /><br><button onclick="mSubmit()">Submit</button><br><iframe src="https://www.google.com/search?igu=1" id="iframe" /><br></div></div>',
