@@ -1,0 +1,160 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Events_Array": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Events",
+                            "type": "array"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Get_calendar_view_of_events_(V3)": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "For_each": {
+                "actions": {
+                    "Append_if_link_found": {
+                        "inputs": {
+                            "name": "Events",
+                            "value": {
+                                "EndsAt": "@convertFromUtc(convertToUtc(items('For_each')?['end'], 'UTC'), 'India Standard Time', 't')",
+                                "Link": "@split(split(split(items('For_each')?['body'], '<a')[1], '\"')[1], '\"')[0]",
+                                "StartsAt": "@convertFromUtc(convertToUtc(items('For_each')?['start'], 'UTC'), 'India Standard Time', 't')",
+                                "Subject": "@items('For_each')?['subject']"
+                            }
+                        },
+                        "runAfter": {
+                            "Set_Link_if_found": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "AppendToArrayVariable"
+                    },
+                    "Append_if_link_not_found": {
+                        "inputs": {
+                            "name": "Events",
+                            "value": {
+                                "EndsAt": "@convertFromUtc(convertToUtc(items('For_each')?['end'], 'UTC'), 'India Standard Time', 't')",
+                                "Link": "https://teams.microsoft.com/",
+                                "StartsAt": "@convertFromUtc(convertToUtc(items('For_each')?['start'], 'UTC'), 'India Standard Time', 't')",
+                                "Subject": "@items('For_each')?['subject']"
+                            }
+                        },
+                        "runAfter": {
+                            "Set_Link_if_found": [
+                                "Failed"
+                            ]
+                        },
+                        "type": "AppendToArrayVariable"
+                    },
+                    "Set_Link_if_found": {
+                        "actions": {
+                            "Set_variable": {
+                                "inputs": {
+                                    "name": "Link",
+                                    "value": "@{split(split(split(items('For_each')?['body'], '<a')[1], '\"')[1], '\"')[0]}"
+                                },
+                                "runAfter": {},
+                                "type": "SetVariable"
+                            }
+                        },
+                        "runAfter": {},
+                        "type": "Scope"
+                    }
+                },
+                "foreach": "@body('Get_calendar_view_of_events_(V3)')?['value']",
+                "runAfter": {
+                    "Link_Variable": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Foreach"
+            },
+            "Get_calendar_view_of_events_(V3)": {
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                    },
+                    "method": "get",
+                    "path": "/datasets/calendars/v3/tables/items/calendarview",
+                    "queries": {
+                        "calendarId": "AQMkAGNhMjk4MDY4LTdkNDItNDVhYy1iNmQxLTQyYTk1NGExYzI3OQBGAAADK0Sootk9ukCRDQQEAH5OphwHAIsc9wtphmlPmztbZMMpU-8AAAIBBgAAAIsc9wtphmlPmztbZMMpU-8AAAKByQAAAA==",
+                        "endDateTimeUtc": "@{addDays(utcNow(), 1)}",
+                        "startDateTimeUtc": "@{utcNow()}"
+                    }
+                },
+                "runAfter": {},
+                "type": "ApiConnection"
+            },
+            "Link_Variable": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Link",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Events_Array": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Response": {
+                "inputs": {
+                    "body": "@variables('Events')",
+                    "statusCode": 200
+                },
+                "kind": "Http",
+                "runAfter": {
+                    "For_each": [
+                        "Succeeded",
+                        "TimedOut",
+                        "Skipped",
+                        "Failed"
+                    ]
+                },
+                "type": "Response"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "schema": {}
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {
+                "office365": {
+                    "connectionId": "/subscriptions/15b8abc0-0bd2-4530-af99-fcff98f9d451/resourceGroups/DefaultResourceGroup-CUS/providers/Microsoft.Web/connections/office365",
+                    "connectionName": "office365",
+                    "id": "/subscriptions/15b8abc0-0bd2-4530-af99-fcff98f9d451/providers/Microsoft.Web/locations/centralindia/managedApis/office365"
+                }
+            }
+        }
+    }
+}

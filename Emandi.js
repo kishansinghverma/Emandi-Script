@@ -32,7 +32,7 @@ var script = document.createElement("script");
 script.innerHTML = scripts[route];
 
 if (route == gatepass) {
-    document.getElementById('PaidType').value = document.getElementById('PaidType').options[1].value; 
+    document.getElementById('PaidType').value = document.getElementById('PaidType').options[1].value;
     document.getElementById('PaidType').dispatchEvent(new Event('change'));
     setTimeout(function () {
         document.getElementsByTagName('body')[0].append(script);
