@@ -6,4 +6,3 @@ fetch('https://raw.githubusercontent.com/kishansinghverma/GlobalResources/main/E
         script.setAttribute('type', 'text/javascript');
         document.getElementsByTagName('body')[0].appendChild(script);
     });
-
