@@ -69,29 +69,26 @@ else {
         document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
 }
 
-const gatepasses = [
-    {
-        Seller: 'Amit Kumar',
-        Weight: '100',
-        VehicleNo: 'UP86AF0798',
-        Type: 4, // {Truck: 1, PickUp: 2, DCM: 4}
-        Party: 'Murari lal trading company',
-        Mandi: 'Safidon',
-        Packets: 200,
-        State: 'Haryana'
-    }
-]
+const url = route === gatepass ? 'https://emandi-service.onrender.com/pop' : 'https://emandi-service.onrender.com/peek';
+fetch(url)
+    .then(response => response.json())
+    .then(gatepasses => {
+        if (!Object.keys(gatepasses).length > 0) {
+            alert('No new gatepass request yet.');
+            return;
+        }
 
-const vars = document.createElement("script");
-vars.innerHTML = `var gatepasses = ${JSON.stringify(gatepasses)}`;
-document.getElementsByTagName('body')[0].append(vars);
+        const vars = document.createElement("script");
+        vars.innerHTML = `var gatepasses = ${JSON.stringify(gatepasses)}`;
+        document.getElementsByTagName('body')[0].append(vars);
 
-let elements = [];
-gatepasses.forEach((entry, index) => {
-    const div = document.createElement("div");
-    div.innerHTML = `<input type='radio' id='${index}' style='display: none;' onchange='selectEntry(this.id)'></td><td><label style="white-space: nowrap; font-weight: 400;" for='${index}'>${entry.Seller}</label>`
-    elements.push(div);
-})
-elements.forEach((element) => {
-    document.getElementById('entries').appendChild(element);
-})
+        let elements = [];
+        gatepasses.forEach((entry, index) => {
+            const div = document.createElement("div");
+            div.innerHTML = `<input type='radio' id='${index}' style='display: none;' onchange='selectEntry(this.id)'></td><td><label style="white-space: nowrap; font-weight: 400;" for='${index}'>${entry.Seller}</label>`
+            elements.push(div);
+        })
+        elements.forEach((element) => {
+            document.getElementById('entries').appendChild(element);
+        })
+    })
