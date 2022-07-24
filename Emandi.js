@@ -73,16 +73,19 @@ else {
         document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
 }
 
+if (![sixr, niner, gatepass].includes(route))
+    throw new Error('Loading content not required...');
+
 const url = route === gatepass ? 'https://emandi-service.onrender.com/pop' : 'https://emandi-service.onrender.com/peek';
 fetch(url)
     .then(response => response.json())
-    .then(gatepass => {
+    .then(data => {
         if (!Object.keys(gatepass).length > 0) {
             alert('No new gatepass request.');
             return;
         }
 
-        let gatepasses = [gatepass];
+        let gatepasses = [data];
         const vars = document.createElement("script");
         vars.innerHTML = `var gatepasses = ${JSON.stringify(gatepasses)}`;
         document.getElementsByTagName('body')[0].append(vars);
