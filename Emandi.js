@@ -71,8 +71,9 @@ else {
 
 const url = route === gatepass ? 'https://emandi-service.onrender.com/pop' : 'https://emandi-service.onrender.com/peek';
 fetch(url)
-    .then(response => response.json())
+    .then(response => response.text())
     .then(gatepasses => {
+        console.log(gatepasses);
         if (!Object.keys(gatepasses).length > 0) {
             alert('No new gatepass request.');
             return;
