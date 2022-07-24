@@ -80,7 +80,7 @@ const url = route === gatepass ? 'https://emandi-service.onrender.com/pop' : 'ht
 fetch(url)
     .then(response => response.json())
     .then(data => {
-        if (!Object.keys(gatepass).length > 0) {
+        if (!Object.keys(data).length > 0) {
             alert('No new gatepass request.');
             return;
         }
