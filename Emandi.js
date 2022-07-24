@@ -12,7 +12,7 @@ if (!validRoutes.includes(route))
     throw new Error('Injection not valid for this page');
 
 var css = document.createElement("style");
-css.innerHTML = "input[type='radio']:checked+label { font-weight: bold !important; } #zContent > hr.hr { width: 100%; margin: 5px 5px 10px 5px;} #entries {display: flex; flex-wrap: wrap;} #zContent > hr { width: 0px; margin: 3px; } .head { display: flex; justify-content: space-between; margin-bottom: 4px } #myModal > div.head > button { margin-top: -4px; border-radius: 8px; color: red; background-color: white !important; } #myModal { display: block; padding: 10px; border-radius:4px; position: fixed; z-index: 100; margin-top:100px; top: 0; background-color: rgb(0 0 0 / 72%); } #zContent{ background-color: #fefefe; border-radius:4px; padding: 20px; border: 1px solid #888; display: flex; flex-direction: column; align-items: center; justify-content: center; }";
+css.innerHTML = "input[type='radio']:checked+label { font-weight: bold !important; } #zContent > hr.hr { width: 100%; margin: 5px 5px 10px 5px; display: none; } #entries {display: flex; flex-wrap: wrap;} #zContent > hr { width: 0px; margin: 3px; } .head { display: flex; justify-content: space-between; margin-bottom: 4px } #myModal > div.head > button { margin-top: -4px; border-radius: 8px; color: red; background-color: white !important; } #myModal { display: block; padding: 10px; border-radius:4px; position: fixed; z-index: 100; margin-top:100px; top: 0; background-color: rgb(0 0 0 / 72%); } #zContent{ background-color: #fefefe; border-radius:4px; padding: 20px; border: 1px solid #888; display: flex; flex-direction: column; align-items: center; justify-content: center; }";
 document.getElementsByTagName('head')[0].append(css);
 
 var util = document.createElement("script");
@@ -51,9 +51,9 @@ modal.style = "display: flex; align-items:center; justify-content: center";
 
 var modals = {
     'add_six_r': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="entries"></div><hr class="hr"><input type="text" id="sname" placeholder="Seller Name" /><hr><input type="text" id="quantity" placeholder="Quantity (In Quintals)" /><hr><div id="img-captcha"></div><hr><input type="text" placeholder="Captcha Code" id="in-captcha"/><hr><button onclick="mSubmit()">Submit</button></div></div>',
-    'NineR': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="entries"></div><input type="text" id="bname" placeholder="Buyer Name" /><hr><button onclick="mSubmit()">Submit</button></div></div>',
+    'NineR': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="entries"></div><hr class="hr"><input type="text" id="bname" placeholder="Buyer Name" /><hr><button onclick="mSubmit()">Submit</button></div></div>',
     'NineRSubmit': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="img-captcha"></div><hr><input type="text" placeholder="Captcha Code" id="in-captcha"/><hr><button onclick="mSubmit()">Submit</button></div></div>',
-    'add_gatepass': '<style>input[type=text]{width: 100%;}</style><div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="entries"></div><input type="text" id="destination" placeholder="Destined Market" onchange = "(()=>{  document.getElementById(\'iframe\').src = \'https://www.google.com/search?igu=1&q=sadabad to \'+document.getElementById(\'destination\').value;  })()" /><hr><select id="carrier" placeholder="Select Vehicle" style="width: 100%; height:27px;"><option value="1">Truck</option><option value="2">Pick-Up</option><option value="4">DCM</option></select><hr><input type="text" id="carrier-no" placeholder="Vehicle Number" /><hr><input type="text" id="packets" placeholder="Packets" /><hr><input type="text" id="statename" placeholder="State" /><hr><div id="img-captcha"></div><hr><input type="text" placeholder="Captcha Code" id="in-captcha"/><hr><input type="text" placeholder="Distance" id="space" /><hr><button onclick="mSubmit()">Submit</button><hr><iframe src="https://www.google.com/search?igu=1" id="iframe" /><hr></div></div>',
+    'add_gatepass': '<style>input[type=text]{width: 100%;}</style><div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="entries"></div><hr class="hr"><input type="text" id="destination" placeholder="Destined Market" onchange = "(()=>{  document.getElementById(\'iframe\').src = \'https://www.google.com/search?igu=1&q=sadabad to \'+document.getElementById(\'destination\').value;  })()" /><hr><select id="carrier" placeholder="Select Vehicle" style="width: 100%; height:27px;"><option value="1">Truck</option><option value="2">Pick-Up</option><option value="4">DCM</option></select><hr><input type="text" id="carrier-no" placeholder="Vehicle Number" /><hr><input type="text" id="packets" placeholder="Packets" /><hr><input type="text" id="statename" placeholder="State" /><hr><div id="img-captcha"></div><hr><input type="text" placeholder="Captcha Code" id="in-captcha"/><hr><input type="text" placeholder="Distance" id="space" /><hr><button onclick="mSubmit()">Submit</button><hr><iframe src="https://www.google.com/search?igu=1" id="iframe" /><hr></div></div>',
     'print_9R': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><hr><div style="display: flex;" id="msgholder"><input type="checkbox" id="download">&nbsp;Only download the document.</div><hr><button onclick="Print(document.getElementById(\'download\').checked)">Print Document</button></div></div>',
     'print_gatepass': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><hr><div id="msgholder" style="display: flex;"><input type="checkbox" id="download">&nbsp;Only download the document.</div><hr><button onclick="Print(document.getElementById(\'download\').checked)">Print Document</button></div></div>'
 }
@@ -71,14 +71,14 @@ else {
 
 const url = route === gatepass ? 'https://emandi-service.onrender.com/pop' : 'https://emandi-service.onrender.com/peek';
 fetch(url)
-    .then(response => response.text())
-    .then(gatepasses => {
-        console.log(gatepasses);
-        if (!Object.keys(gatepasses).length > 0) {
+    .then(response => response.json())
+    .then(gatepass => {
+        if (!Object.keys(gatepass).length > 0) {
             alert('No new gatepass request.');
             return;
         }
 
+        let gatepasses = [gatepass];
         const vars = document.createElement("script");
         vars.innerHTML = `var gatepasses = ${JSON.stringify(gatepasses)}`;
         document.getElementsByTagName('body')[0].append(vars);
@@ -92,4 +92,5 @@ fetch(url)
         elements.forEach((element) => {
             document.getElementById('entries').appendChild(element);
         })
+        document.getElementsByClassName('hr')[0].style.display = 'block';
     })
