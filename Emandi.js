@@ -74,7 +74,7 @@ fetch(url)
     .then(response => response.json())
     .then(gatepasses => {
         if (!Object.keys(gatepasses).length > 0) {
-            alert('No new gatepass request yet.');
+            alert('No new gatepass request.');
             return;
         }
 
