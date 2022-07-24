@@ -16,7 +16,7 @@ css.innerHTML = "input[type='radio']:checked+label { font-weight: bold !importan
 document.getElementsByTagName('head')[0].append(css);
 
 var util = document.createElement("script");
-util.innerHTML = "function hide(id){ document.getElementById(id).style.display='none' }; function get(id){ return document.getElementById(id); }; function Capitalize(str){ var result = ''; let tokens = str.trim().split(' '); for(var token of tokens){ result += token[0].toUpperCase() + token.slice(1) + ' '; } return result.trim(); };";
+util.innerHTML = "function getDistance(dest){ fetch(`https://dev.virtualearth.net/REST/V1/Routes/Driving?o=json&wp.0=sadabad&wp.1=${dest}&key=AhWAWkHKZZ0JtpBDWvq2_vZqrtmAgf3prbe31w7FbepXyGzvHoWzvpetsQIA7DpL`).then(res=>res.json()).then(data=>{ get('space').value = Math.ceil(data.resourceSets[0].resources[0].travelDistance); }) } function hide(id){ document.getElementById(id).style.display='none' }; function get(id){ return document.getElementById(id); }; function Capitalize(str){ var result = ''; let tokens = str.trim().split(' '); for(var token of tokens){ result += token[0].toUpperCase() + token.slice(1) + ' '; } return result.trim(); };";
 document.getElementsByTagName('body')[0].append(util);
 
 var scripts = {
@@ -32,16 +32,20 @@ var script = document.createElement("script");
 script.innerHTML = scripts[route];
 
 if (route == gatepass) {
-    let extraScript = "function selectEntry(id){ get('destination').value = gatepasses[id].Mandi; get('carrier').value = gatepasses[id].Type; get('carrier-no').value = gatepasses[id].VehicleNo; get('packets').value = gatepasses[id].Packets; get('statename').value = gatepasses[id].State; }"
+    let extraScript = "function selectEntry(id){ get('destination').value = gatepasses[id].Mandi; get('destination').dispatchEvent(new Event('change')); get('carrier').value = gatepasses[id].Type; get('carrier-no').value = gatepasses[id].VehicleNo; get('packets').value = gatepasses[id].Packets; get('statename').value = gatepasses[id].State; }"
     let extrascriptTag = document.createElement('script');
     extrascriptTag.innerHTML = extraScript;
     document.getElementsByTagName('body')[0].append(extrascriptTag);
 
     document.getElementById('PaidType').value = document.getElementById('PaidType').options[1].value;
     document.getElementById('PaidType').dispatchEvent(new Event('change'));
-    setTimeout(function () {
-        document.getElementsByTagName('body')[0].append(script);
-    }, 10000);
+    let wait = setInterval(() => {
+        if (document.getElementById('nine_r_id').options.length > 1) {
+            document.getElementsByTagName('body')[0].append(script);
+            document.getElementById('gpsubmit').removeAttribute('disabled');
+            clearInterval(wait);
+        }
+    }, 1000);
 }
 else
     document.getElementsByTagName('body')[0].append(script);
@@ -53,7 +57,7 @@ var modals = {
     'add_six_r': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="entries"></div><hr class="hr"><input type="text" id="sname" placeholder="Seller Name" /><hr><input type="text" id="quantity" placeholder="Quantity (In Quintals)" /><hr><div id="img-captcha"></div><hr><input type="text" placeholder="Captcha Code" id="in-captcha"/><hr><button onclick="mSubmit()">Submit</button></div></div>',
     'NineR': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="entries"></div><hr class="hr"><input type="text" id="bname" placeholder="Buyer Name" /><hr><button onclick="mSubmit()">Submit</button></div></div>',
     'NineRSubmit': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="img-captcha"></div><hr><input type="text" placeholder="Captcha Code" id="in-captcha"/><hr><button onclick="mSubmit()">Submit</button></div></div>',
-    'add_gatepass': '<style>input[type=text]{width: 100%;}</style><div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="entries"></div><hr class="hr"><input type="text" id="destination" placeholder="Destined Market" onchange = "(()=>{  document.getElementById(\'iframe\').src = \'https://www.google.com/search?igu=1&q=sadabad to \'+document.getElementById(\'destination\').value;  })()" /><hr><select id="carrier" placeholder="Select Vehicle" style="width: 100%; height:27px;"><option value="1">Truck</option><option value="2">Pick-Up</option><option value="4">DCM</option></select><hr><input type="text" id="carrier-no" placeholder="Vehicle Number" /><hr><input type="text" id="packets" placeholder="Packets" /><hr><input type="text" id="statename" placeholder="State" /><hr><div id="img-captcha"></div><hr><input type="text" placeholder="Captcha Code" id="in-captcha"/><hr><input type="text" placeholder="Distance" id="space" /><hr><button onclick="mSubmit()">Submit</button><hr><iframe src="https://www.google.com/search?igu=1" id="iframe" /><hr></div></div>',
+    'add_gatepass': '<style>input[type=text]{width: 100%;}</style><div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="entries"></div><hr class="hr"><input type="text" id="destination" placeholder="Destined Market" onchange = "(getDistance(this.value))" /><hr><select id="carrier" placeholder="Select Vehicle" style="width: 100%; height:27px;"><option value="1">Truck</option><option value="2">Pick-Up</option><option value="4">DCM</option></select><hr><input type="text" id="carrier-no" placeholder="Vehicle Number" /><hr><input type="text" id="packets" placeholder="Packets" /><hr><input type="text" id="statename" placeholder="State" /><hr><div id="img-captcha"></div><hr><input type="text" placeholder="Captcha Code" id="in-captcha"/><hr><input type="text" placeholder="Distance" id="space" /><hr><button id="gpsubmit" disabled onclick="mSubmit()">Submit</button><hr></div></div>',
     'print_9R': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><hr><div style="display: flex;" id="msgholder"><input type="checkbox" id="download">&nbsp;Only download the document.</div><hr><button onclick="Print(document.getElementById(\'download\').checked)">Print Document</button></div></div>',
     'print_gatepass': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><hr><div id="msgholder" style="display: flex;"><input type="checkbox" id="download">&nbsp;Only download the document.</div><hr><button onclick="Print(document.getElementById(\'download\').checked)">Print Document</button></div></div>'
 }
@@ -86,7 +90,7 @@ fetch(url)
         let elements = [];
         gatepasses.forEach((entry, index) => {
             const div = document.createElement("div");
-            div.innerHTML = `<input type='radio' id='${index}' style='display: none;' onchange='selectEntry(this.id)'></td><td><label style="white-space: nowrap; font-weight: 400;" for='${index}'>${entry.Seller}</label>`
+            div.innerHTML = `<input type='radio' id='${index}' style='display: none;' onclick='selectEntry(this.id)'></td><td><label style="white-space: nowrap; font-weight: 400;" for='${index}'>${entry.Seller}</label>`
             elements.push(div);
         })
         elements.forEach((element) => {
