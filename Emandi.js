@@ -76,7 +76,7 @@ else {
 if (![sixr, niner, gatepass].includes(route))
     throw new Error('Loading content not required...');
 
-const url = route === gatepass ? 'https://emandi-service.onrender.com/pop' : 'https://emandi-service.onrender.com/peek';
+const url = route === gatepass ? 'https://automationfxapp.azurewebsites.net/emandi/pop' : 'https://automationfxapp.azurewebsites.net/emandi/peek';
 fetch(url)
     .then(response => response.json())
     .then(data => {
