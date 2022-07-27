@@ -11,7 +11,13 @@
     },
     "2": {
         "Key": "Volume Up",
-        "Value": "assistant/increase the volume on thomson tv"
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "increase the volume on thomson tv"
+                }
+            ]
+        }
     },
     "3": {
         "Key": "Switch to Monitor Mode",
