@@ -1,0 +1,130 @@
+{
+    "1": {
+        "Key": "Turn On/Off the TV",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "turn on the thomson tv"
+                }
+            ]
+        }
+    },
+    "2": {
+        "Key": "Volume Up",
+        "Value": "assistant/increase the volume on thomson tv"
+    },
+    "3": {
+        "Key": "Switch to Monitor Mode",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "channel up on thomson tv"
+                }
+            ]
+        }
+    },
+    "4": {
+        "Key": "Turn On/Off the Speaker",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "turn on the boat speaker"
+                }
+            ]
+        }
+    },
+    "5": {
+        "Key": "Turn On the Single Light",
+        "Value": {
+            "actions": [
+                {
+                    "single light": "1"
+                },
+                {
+                    "assistant": "set tbulb to cool white"
+                },
+                {
+                    "wait": "30"
+                },
+                {
+                    "assistant": "set tbulb to cool white"
+                }
+            ]
+        }
+    },
+    "6": {
+        "Key": "Turn On the Desk Lights",
+        "Value": {
+            "actions": [
+                {
+                    "desk lights": "1"
+                }
+            ]
+        }
+    },
+    "7": {
+        "Key": "Turn On the AC",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "turn on the AC"
+                }
+            ]
+        }
+    },
+    "8": {
+        "Key": "Turn On the Fan",
+        "Value": {
+            "actions": [
+                {
+                    "fan": "1"
+                },
+                {
+                    "assistant": "turn on the living room fan"
+                },
+                {
+                    "wait": "2"
+                },
+                {
+                    "assistant": "decrease the volume on living room fan"
+                },
+                {
+                    "wait": "2"
+                },
+                {
+                    "assistant": "decrease the volume on living room fan"
+                }
+            ]
+        }
+    },
+    "9": {
+        "Key": "Turn Off the Fan",
+        "Value": {
+            "actions": [
+                {
+                    "fan": "0"
+                }
+            ]
+        }
+    },
+    "10": {
+        "Key": "Boost Fan Speed",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "turn on the living room fan"
+                }
+            ]
+        }
+    },
+    "11": {
+        "Key": "Decrease Fan Speed",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "decrease the volume on living room fan"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "1": {
+        "Key": "Work Mode",
+        "Value": {
+            "actions": [
+                {
+                    "desk lights": "1"
+                },
+                {
+                    "single light": "1"
+                },
+                {
+                    "assistant": "turn on the thomson tv"
+                },
+                {
+                    "assistant": "turn on the boat speaker"
+                },
+                {
+                    "wait": "30"
+                },
+                {
+                    "assistant": "channel up on thomson tv"
+                }
+            ]
+        }
+    }
+}
