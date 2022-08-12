@@ -23,5 +23,33 @@
                 }
             ]
         }
+    },
+    "2": {
+        "Key": "Camera Mode",
+        "Value": {
+            "actions": [
+                {
+                    "desk lights": "1"
+                },
+                {
+                    "back lights": "1"
+                },
+                {
+                    "main cfl": "1"
+                },
+                {
+                    "single light": "1"
+                },
+                {
+                    "wait": "30"
+                },
+                {
+                    "assistant": "set tbulb to cool white"
+                },
+                {
+                    "assistant": "set main cfl to cool white"
+                }
+            ]
+        }
     }
 }
