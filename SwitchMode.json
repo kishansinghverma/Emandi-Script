@@ -51,5 +51,25 @@
                 }
             ]
         }
+    },
+    "3": {
+        "Key": "Monitor Mode",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "channel up on the living room tv"
+                }
+            ]
+        }
+    },
+    "4": {
+        "Key": "Boost Fan Speed",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "turn on the living room fan"
+                }
+            ]
+        }
     }
 }

@@ -1,6 +1,6 @@
 {
     "1": {
-        "Key": "Turn On/Off the TV",
+        "Key": "Turn On the TV",
         "Value": {
             "actions": [
                 {
@@ -10,7 +10,7 @@
         }
     },
     "2": {
-        "Key": "Volume Up",
+        "Key": "TV Volume Up",
         "Value": {
             "actions": [
                 {
@@ -20,17 +20,7 @@
         }
     },
     "3": {
-        "Key": "Switch to Monitor Mode",
-        "Value": {
-            "actions": [
-                {
-                    "assistant": "channel up on thomson tv"
-                }
-            ]
-        }
-    },
-    "4": {
-        "Key": "Turn On/Off the Speaker",
+        "Key": "Turn On the Speaker",
         "Value": {
             "actions": [
                 {
@@ -39,7 +29,27 @@
             ]
         }
     },
+    "4": {
+        "Key": "Turn On the Desk Lights",
+        "Value": {
+            "actions": [
+                {
+                    "desk lights": "1"
+                }
+            ]
+        }
+    },
     "5": {
+        "Key": "Turn On the Back Lights",
+        "Value": {
+            "actions": [
+                {
+                    "back lights": "1"
+                }
+            ]
+        }
+    },
+    "6": {
         "Key": "Turn On the Single Light",
         "Value": {
             "actions": [
@@ -54,16 +64,6 @@
                 },
                 {
                     "assistant": "set tbulb to cool white"
-                }
-            ]
-        }
-    },
-    "6": {
-        "Key": "Turn On the Desk Lights",
-        "Value": {
-            "actions": [
-                {
-                    "desk lights": "1"
                 }
             ]
         }
@@ -104,31 +104,11 @@
         }
     },
     "9": {
-        "Key": "Turn Off the Fan",
+        "Key": "Increase Fan Speed",
         "Value": {
             "actions": [
                 {
-                    "fan": "0"
-                }
-            ]
-        }
-    },
-    "10": {
-        "Key": "Boost Fan Speed",
-        "Value": {
-            "actions": [
-                {
-                    "assistant": "turn on the living room fan"
-                }
-            ]
-        }
-    },
-    "11": {
-        "Key": "Decrease Fan Speed",
-        "Value": {
-            "actions": [
-                {
-                    "assistant": "decrease the volume on living room fan"
+                    "assistant": "increase the volume on living room fan"
                 }
             ]
         }

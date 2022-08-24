@@ -1,0 +1,105 @@
+{
+    "1": {
+        "Key": "Turn Off the TV",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "turn off the thomson tv"
+                }
+            ]
+        }
+    },
+    "2": {
+        "Key": "TV Volume Down",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "decrease the volume on thomson tv"
+                }
+            ]
+        }
+    },
+    "3": {
+        "Key": "Turn Off the Speaker",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "turn off the boat speaker"
+                }
+            ]
+        }
+    },
+    "4": {
+        "Key": "Turn Off the Desk Lights",
+        "Value": {
+            "actions": [
+                {
+                    "desk lights": "0"
+                }
+            ]
+        }
+    },
+    "5": {
+        "Key": "Turn Off the Back Lights",
+        "Value": {
+            "actions": [
+                {
+                    "back lights": "0"
+                }
+            ]
+        }
+    },
+    "6": {
+        "Key": "Turn Off the Single Light",
+        "Value": {
+            "actions": [
+                {
+                    "single light": "0"
+                }
+            ]
+        }
+    },
+    "7": {
+        "Key": "Turn Off the AC",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "turn off the AC"
+                }
+            ]
+        }
+    },
+    "8": {
+        "Key": "Turn Off the Fan",
+        "Value": {
+            "actions": [
+                {
+                    "fan": "0"
+                },
+                {
+                    "assistant": "turn off the living room fan"
+                }
+            ]
+        }
+    },
+    "9": {
+        "Key": "Decrease Fan Speed",
+        "Value": {
+            "actions": [
+                {
+                    "assistant": "decrease the volume on living room fan"
+                }
+            ]
+        }
+    },
+    "10": {
+        "Key": "Turn Off All Lights",
+        "Value": {
+            "actions": [
+                {
+                    "all lights": "0"
+                }
+            ]
+        }
+    },
+}
