@@ -100,6 +100,37 @@
         }
     },
     "5": {
+        "Key": "Cinema Mode",
+        "Value": {
+            "actions": [
+                {
+                    "single light": "1"
+                },
+                {
+                    "assistant": "set tbulb to warm white"
+                },
+                {
+                    "assistant": "set brightness of tbulb to 0"
+                },
+                {
+                    "assistant": "turn on the thomson tv"
+                },
+                {
+                    "assistant": "turn on the boat speaker"
+                },
+                {
+                    "wait": "30"
+                },
+                {
+                    "assistant": "set tbulb to warm white"
+                },
+                {
+                    "assistant": "set brightness of tbulb to 0"
+                }
+            ]
+        }
+    },
+    "6": {
         "Key": "Boost Fan Speed",
         "Value": {
             "actions": [
