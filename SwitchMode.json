@@ -19,6 +19,9 @@
                     "wait": "30"
                 },
                 {
+                    "assistant": "set tbulb to cool white"
+                },
+                {
                     "assistant": "channel up on thomson tv"
                 }
             ]
@@ -57,12 +60,37 @@
         "Value": {
             "actions": [
                 {
-                    "assistant": "channel up on the living room tv"
+                    "assistant": "channel up on thomson tv"
                 }
             ]
         }
     },
     "4": {
+        "Key": "Night Mode",
+        "Value": {
+            "actions": [
+                {
+                    "single light": "1"
+                },
+                {
+                    "assistant": "set tbulb to warm white"
+                },
+                {
+                    "assistant": "set brightness of tbulb to 0"
+                },
+                {
+                    "wait": "30"
+                },
+                {
+                    "assistant": "set tbulb to warm white"
+                },
+                {
+                    "assistant": "set brightness of tbulb to 0"
+                }
+            ]
+        }
+    },
+    "5": {
         "Key": "Boost Fan Speed",
         "Value": {
             "actions": [
