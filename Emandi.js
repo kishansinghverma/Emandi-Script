@@ -4,8 +4,10 @@ var ninerSubmit = 'NineRSubmit';
 var gatepass = 'add_gatepass';
 var print9R = 'print_9R';
 var printGatepass = 'print_gatepass';
+var selectPayment = 'DigitalPayment';
+var doPayment = 'GeneratedDigitalPayment';
 
-var validRoutes = [sixr, niner, ninerSubmit, gatepass, print9R, printGatepass];
+var validRoutes = [sixr, niner, ninerSubmit, gatepass, print9R, printGatepass, selectPayment, doPayment];
 var route = window.location.href.split('/').pop();
 
 if (!validRoutes.includes(route))
@@ -25,7 +27,9 @@ var scripts = {
     'NineRSubmit': "get('cost').addEventListener('change', (event) => {  get('crop_type').value = 'Mota'; get('mandi_rate5').value = '0'; get('mandi_rate5').dispatchEvent(new Event('change')); get('mandi_rate6').value = '0'; get('mandi_rate6').dispatchEvent(new Event('change')); get('mandi_rate7').value = '0'; get('mandi_rate7').dispatchEvent(new Event('change')); get('mandi_rate8').value = '0'; get('mandi_rate8').dispatchEvent(new Event('change'));});  Object.defineProperty(get('cost'), \"value\", { get: function() { return this.getAttribute('value'); }, set: function(val) { if(val && val != this.getAttribute('value')) {this.dispatchEvent(new Event('change'));} this.setAttribute(\"value\", val); }});  document.querySelector('input[type=\"checkbox\"]').checked = true; document.querySelector('input[type=\"checkbox\"]').dispatchEvent(new Event('click')); function mSubmit(){ document.getElementsByClassName('weights')[0].value = document.getElementsByClassName('Currentweights')[0].value; document.getElementsByClassName('weights')[0].dispatchEvent(new Event('change')); get('rate').value = '1000'; get('rate').dispatchEvent(new Event('change')); get('DNTCaptchaInputText').value = get('in-captcha').value; get('myModal').style.display = 'none';};",
     'add_gatepass': "get('nine_r_id').value = get('nine_r_id').options[1].value; get('nine_r_id').dispatchEvent(new Event('change')); function mSubmit() { popRecord(); get('dist_ofdestination').value = get('space').value; get('home_center').value = Capitalize(get('destination').value); get('vehicle').value = get('carrier').value; get('vehicle').dispatchEvent(new Event('change')); get('vehicle_no').value = get('carrier-no').value.toUpperCase(); get('bundle_no').value = get('packets').value; get('state').value = 'other'; get('state').dispatchEvent(new Event('change')); get('other_state_mandi').value = Capitalize(get('statename').value); get('DNTCaptchaInputText').value = get('in-captcha').value; get('myModal').style.display = 'none'; }",
     'print_9R': "function Print(download){ var tables = []; var content = document.querySelector('body > div.row > #content'); tables.push(content.querySelector('.table').outerHTML); tables.push(content.querySelector('.row .col-md-12 table').outerHTML); var data = { 'name': 'niner', 'tables': tables, 'qr': content.querySelector('#qrcode img').src, 'download': download }; var xhttp = new XMLHttpRequest(); xhttp.onload = function () { if (xhttp.status != 201) { alert(`Error ${xhttp.status}: ${xhttp.response}`); } else { if(download){ window.open('https://automationfxapp.azurewebsites.net/files/'+xhttp.response); } else { alert('Print Job Created!'); }}}; xhttp.open('POST', 'https://automationfxapp.azurewebsites.net/html', true); xhttp.setRequestHeader('Content-Type', 'application/json;'); xhttp.send(JSON.stringify(data)); get('myModal').style.display = 'none';}",
-    'print_gatepass': "function Print(download){ var tables = []; var content = document.querySelector('body > div.row > #content'); tables.push(content.querySelector('.table').outerHTML); tables.push(content.querySelector('.row .col-md-12 table').outerHTML); tables.push(content.querySelectorAll('.row .col-md-12 table')[1].outerHTML); tables.push(content.querySelectorAll('.row .col-md-12 .row')[0].outerHTML); var data = { 'name': 'gatepass', 'tables': tables, 'qr': content.querySelector('#qrcode img').src, 'download': download }; var xhttp = new XMLHttpRequest(); xhttp.onload = function () { if (xhttp.status != 201) { alert(`Error ${xhttp.status}: ${xhttp.response}`); } else { if(download){ window.open('https://automationfxapp.azurewebsites.net/files/'+xhttp.response); } else { alert('Print Job Created!'); }}}; xhttp.open('POST', 'https://automationfxapp.azurewebsites.net/html', true); xhttp.setRequestHeader('Content-Type', 'application/json'); xhttp.send(JSON.stringify(data)); get('myModal').style.display = 'none';}"
+    'print_gatepass': "function Print(download){ var tables = []; var content = document.querySelector('body > div.row > #content'); tables.push(content.querySelector('.table').outerHTML); tables.push(content.querySelector('.row .col-md-12 table').outerHTML); tables.push(content.querySelectorAll('.row .col-md-12 table')[1].outerHTML); tables.push(content.querySelectorAll('.row .col-md-12 .row')[0].outerHTML); var data = { 'name': 'gatepass', 'tables': tables, 'qr': content.querySelector('#qrcode img').src, 'download': download }; var xhttp = new XMLHttpRequest(); xhttp.onload = function () { if (xhttp.status != 201) { alert(`Error ${xhttp.status}: ${xhttp.response}`); } else { if(download){ window.open('https://automationfxapp.azurewebsites.net/files/'+xhttp.response); } else { alert('Print Job Created!'); }}}; xhttp.open('POST', 'https://automationfxapp.azurewebsites.net/html', true); xhttp.setRequestHeader('Content-Type', 'application/json'); xhttp.send(JSON.stringify(data)); get('myModal').style.display = 'none';}",
+    'DigitalPayment': "document.getElementsByClassName('chk')[0].click(); document.getElementById('proceddnow').click();",
+    'GeneratedDigitalPayment': "document.getElementById('Pay').click();"
 }
 
 var script = document.createElement("script");
@@ -49,6 +53,9 @@ if (route == gatepass) {
 }
 else
     document.getElementsByTagName('body')[0].append(script);
+
+if ([selectPayment, doPayment].includes(route))
+    throw new Error('Script Loaded headless...');
 
 var modal = document.createElement("div");
 modal.style = "display: flex; align-items:center; justify-content: center";
