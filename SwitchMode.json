@@ -22,7 +22,7 @@
                     "assistant": "set tbulb to cool white"
                 },
                 {
-                    "assistant": "set brightness of main cfl to 100"
+                    "assistant": "set brightness of tbulb to 100"
                 },
                 {
                     "assistant": "channel up on thomson tv"
