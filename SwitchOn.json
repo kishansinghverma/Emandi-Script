@@ -60,11 +60,17 @@
                     "assistant": "set tbulb to cool white"
                 },
                 {
+                    "assistant": "set brightness of tbulb to 100"
+                },
+                {
                     "wait": "30"
                 },
                 {
                     "assistant": "set tbulb to cool white"
-                }
+                },
+                {
+                    "assistant": "set brightness of tbulb to 100"
+                },
             ]
         }
     },
