@@ -79,7 +79,13 @@
         "Value": {
             "actions": [
                 {
+                    "all lights": "0"
+                },
+                {
                     "single light": "1"
+                },
+                {
+                    "assistant": "turn off main cfl"
                 },
                 {
                     "assistant": "set tbulb to warm white"
