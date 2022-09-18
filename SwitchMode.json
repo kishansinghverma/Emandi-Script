@@ -35,16 +35,19 @@
         "Value": {
             "actions": [
                 {
-                    "desk lights": "1"
+                    "all lights": "1"
                 },
                 {
-                    "back lights": "1"
+                    "assistant": "set tbulb to cool white"
                 },
                 {
-                    "main cfl": "1"
+                    "assistant": "set brightness of tbulb to 100"
                 },
                 {
-                    "single light": "1"
+                    "assistant": "set wiz smart cfl to cool white"
+                },
+                {
+                    "assistant": "set brightness of wiz smart cfl to 100"
                 },
                 {
                     "wait": "30"
@@ -56,10 +59,10 @@
                     "assistant": "set brightness of tbulb to 100"
                 },
                 {
-                    "assistant": "set main cfl to cool white"
+                    "assistant": "set wiz smart cfl to cool white"
                 },
                 {
-                    "assistant": "set brightness of main cfl to 100"
+                    "assistant": "set brightness of wiz smart cfl to 100"
                 }
             ]
         }

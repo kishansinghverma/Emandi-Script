@@ -79,7 +79,7 @@
         "Value": {
             "actions": [
                 {
-                    "assistant": "turn on the AC"
+                    "assistant": "turn on the PANASONIC - MODEL 2"
                 }
             ]
         }
@@ -88,9 +88,6 @@
         "Key": "Turn On the Fan",
         "Value": {
             "actions": [
-                {
-                    "fan": "1"
-                },
                 {
                     "assistant": "turn on the living room fan"
                 },
