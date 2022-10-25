@@ -1,4 +1,4 @@
 export const RunScript = ()=>{
   alert( document.getElementById("test").value);
-    document.getElementById("test").value = "Test";
+    document.getElementById("test").value = "Testing";
 }
