@@ -2,6 +2,8 @@ import { Modals } from "./modules/modals.js";
 import { CSS } from "./modules/style.js";
 import { Add_Six_R } from "./modules/scripts/add_six_r.js";
 import { NineR } from "./modules/scripts/niner.js";
+import { NineRSubmit } from "./modules/scripts/ninersubmit.js";
+import { Add_Gatepass } from "./modules/scripts/add_gatepass.js";
 
 const sixr = 'add_six_r';
 const niner = 'NineR';
@@ -17,7 +19,9 @@ const route = window.location.href.split('/').pop();
 
 const scripts = {
     [sixr]: Add_Six_R,
-    [niner]: NineR
+    [niner]: NineR,
+    [ninerSubmit]: NineRSubmit,
+    [gatepass]: Add_Gatepass
 };
 
 export const RunScript = () => {

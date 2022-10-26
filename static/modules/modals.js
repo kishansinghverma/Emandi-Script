@@ -35,7 +35,63 @@ const NineR = `
 		<hr>
         <div class="buttons">
             <button onclick="window.formContext.UpdateForm()">Update</button>
-		    <button onclick="window.formContext.PreviewForm()" disabled id="nextBtn">Next</button>
+		    <button onclick="window.formContext.Next()" disabled id="nextBtn">Next</button>
+        </div>
+	</div>
+</div>
+`
+
+const NineRSubmit = `
+<div id="customModal" class="custom-modal">
+	<div class="head">
+		<div style="color: #e7e9eb">Provide The Information</div>
+		<button onclick="window.formContext.HideModal()">x</button>
+	</div>
+	<div id="modalContent" class="modal-content">
+        <div id="img-captcha"></div>
+        <hr>
+        <input type="text" placeholder="Captcha Code" id="in-captcha" oninput="window.formContext.AllowUpdate(this.value)"/>
+        <hr>
+        <div class="buttons">
+            <button onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
+		    <button onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
+        </div>
+	</div>
+</div>
+`
+
+const add_gatepass = `
+<div id="customModal" class="custom-modal">
+	<div class="head">
+		<div style="color: #e7e9eb">Provide The Information</div>
+		<button onclick="window.formContext.HideModal()">x</button>
+	</div>
+	<div id="modalContent" class="modal-content">
+		<div id="record"></div>
+		<hr class="hr">
+		<input type="text" id="destination" placeholder="Destined Market" />
+		<hr>
+		<select id="carrier" placeholder="Select Vehicle" style="width: 100%; height:27px;">
+			<option value="1">Truck</option>
+			<option value="2">Pick-Up</option>
+			<option value="4">DCM</option>
+		</select>
+		<hr>
+		<input type="text" id="carrier-no" placeholder="Vehicle Number" />
+		<hr>
+		<input type="text" id="packets" placeholder="Packets" />
+		<hr>
+		<input type="text" id="statename" placeholder="State" />
+		<hr>
+        <input type="text" placeholder="Distance" id="space" />
+		<hr>
+		<div id="img-captcha"></div>
+		<hr>
+		<input type="text" placeholder="Captcha Code" id="in-captcha"/>
+		<hr>
+        <div class="buttons">
+            <button onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
+		    <button onclick="window.formContext.Preview()" disabled id="previewBtn">Preview</button>
         </div>
 	</div>
 </div>
@@ -43,5 +99,7 @@ const NineR = `
 
 export const Modals = { 
     add_six_r,
-    NineR
+    NineR,
+    NineRSubmit,
+    add_gatepass
 };

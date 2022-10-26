@@ -25,7 +25,7 @@ class Niner extends Form {
         document.getElementById('nextBtn').removeAttribute('disabled');
     }
 
-    PreviewForm() {
+    Next() {
         submitDetailsForm();
     }
 }
