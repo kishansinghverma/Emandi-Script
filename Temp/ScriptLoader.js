@@ -1,4 +1,4 @@
-fetch('https://raw.githubusercontent.com/kishansinghverma/GlobalResources/main/Emandi.js')
+fetch('https://globalcdn.onrender.com/static/EmandiScriptLoader.js')
     .then(response => response.text())
     .then(data => {
         var script = document.createElement('script');
