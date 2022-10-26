@@ -1,3 +1,5 @@
+import { LoadingIcon } from "./assets.js";
+
 const add_six_r = `
 <div id="customModal" class="custom-modal">
 	<div class="head">
@@ -5,7 +7,9 @@ const add_six_r = `
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
 	<div id="modalContent" class="modal-content">
-		<div id="record"></div>
+		<div id="record">
+        ${LoadingIcon}
+        </div>
 		<hr class="hr">
 		<input type="text" id="sname" placeholder="Seller Name" />
 		<hr>
@@ -29,7 +33,9 @@ const NineR = `
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
 	<div id="modalContent" class="modal-content">
-		<div id="record"></div>
+		<div id="record">
+        ${LoadingIcon}
+        </div>
 		<hr class="hr">
 		<input type="text" id="bname" placeholder="Buyer Name" />
 		<hr>
@@ -67,7 +73,9 @@ const add_gatepass = `
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
 	<div id="modalContent" class="modal-content">
-		<div id="record"></div>
+		<div id="record">
+        ${LoadingIcon}
+        </div>
 		<hr class="hr">
 		<input type="text" id="destination" placeholder="Destined Market" />
 		<hr>

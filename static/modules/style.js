@@ -68,4 +68,30 @@ h4{
 h4:hover {
     text-shadow: 0 0 10px black;
 }
+
+#loader {
+    position: relative;
+    width: 100px;
+    height: 12px;
+  }
+  #loader div {
+    width: 12px;
+    height: 12px;
+    background: #c75119f2;
+    border-radius: 50%;
+    position: absolute; 
+  }
+  #d1 { animation: animate 2s linear infinite;}
+  #d2 { animation: animate 2s linear infinite -.4s; }
+  #d3 {animation: animate 2s linear infinite -.8s; }
+  #d4 { animation: animate 2s linear infinite -1.2s; } 
+  #d5 { animation: animate 2s linear infinite -1.6s; }
+  @-webkit-keyframes animate {
+    0% { left: 100px; top:0}
+    80% { left: 0; top:0;}
+    85% { left: 0; top: -20px; width: 12px; height: 12px;}
+    90% { width: 12px; height: 12px; }
+    95% { left: 100px; top: -20px; width: 12px; height: 12px;}
+    100% { left: 100px; top:0; }
+  }
 `
