@@ -1,0 +1,1 @@
+export const RunScript = ()=> {alert("Running")};
