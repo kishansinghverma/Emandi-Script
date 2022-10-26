@@ -1,1 +1,1 @@
-export const RunScript = ()=> {alert("Running")};
+export const RunScript = ()=> {alert("Running the sys")};
