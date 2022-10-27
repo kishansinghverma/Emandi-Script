@@ -102,12 +102,16 @@ const add_gatepass = `
 		    <button onclick="window.formContext.Preview()" disabled id="previewBtn">Preview</button>
         </div>
 	</div>
-</div>
-`
+</div>`;
+
+const DigitalPayment = `<div />`;
+const GeneratedDigitalPayment = `<div />`;
 
 export const Modals = { 
     add_six_r,
     NineR,
     NineRSubmit,
-    add_gatepass
+    add_gatepass,
+    DigitalPayment,
+    GeneratedDigitalPayment
 };

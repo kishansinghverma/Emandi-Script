@@ -4,6 +4,8 @@ import { Add_Six_R } from "./modules/scripts/add_six_r.js";
 import { NineR } from "./modules/scripts/niner.js";
 import { NineRSubmit } from "./modules/scripts/ninersubmit.js";
 import { Add_Gatepass } from "./modules/scripts/add_gatepass.js";
+import { Digital_Payment } from "./modules/scripts/digitalpayment.js";
+import { Generated_Digital_Payment } from "./modules/scripts/makepayment.js";
 
 const sixr = 'add_six_r';
 const niner = 'NineR';
@@ -21,7 +23,9 @@ const scripts = {
     [sixr]: Add_Six_R,
     [niner]: NineR,
     [ninerSubmit]: NineRSubmit,
-    [gatepass]: Add_Gatepass
+    [gatepass]: Add_Gatepass,
+    [selectPayment]: Digital_Payment,
+    [doPayment]: Generated_Digital_Payment
 };
 
 export const RunScript = () => {
