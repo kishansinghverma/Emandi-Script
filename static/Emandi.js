@@ -7,9 +7,9 @@ const validRoutes = Object.keys(RouteMap);
 const route = window.location.href.split('/').pop();
 
 export const RunScript = () => {
-    if(window.location.href.includes('Traders'))
+    if(window.location.href.includes('emandi.up.gov.in/Traders/'))
         RunBasicCustomizations();
-        
+
     if (!validRoutes.includes(route))
         throw new Error('Injection not valid for this page');
 
