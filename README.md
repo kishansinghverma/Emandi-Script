@@ -1,15 +1,15 @@
-# README
+# ABOUT
+This project prvides the assets (JS, JSON and Static Assets) via the RawGithub or [JsDelivr](https://www.jsdelivr.com/github).
 
-This is the [Express](https://expressjs.com) [Hello world](https://expressjs.com/en/starter/hello-world.html) example on [Render](https://render.com).
-
-The app in this repo is deployed at [https://express.onrender.com](https://express.onrender.com).
+## Development
+- Start the local server with `npm start`.
+- Update the scripts location in Scripty to `http://localhost:3001/static/Emandi.js`.
+- Save and start development.
 
 ## Deployment
-
-See https://render.com/docs/deploy-node-express-app or follow the steps below:
-
-Create a new web service with the following values:
-  * Build Command: `yarn`
-  * Start Command: `node app.js`
-
-That's it! Your web service will be live on your Render URL as soon as the build finishes.
+- Make all the required changes -> commit -> push.
+- Navigate to Github and get the latest commit number.
+- Open `EmandiScriptAsModule.js` and update the old commit number with the latest one in script's location Url.
+- Again save -> commit -> push.
+- For Mobile: Use the `https://cdn.jsdelivr.net/gh/kishansinghverma/GlobalResources@<lastest commit #>/static/EmandiScriptAsModule.js`.
+- For PC: Copy and paste the content of `EmandiScriptAsModule.js` in Scripty.
