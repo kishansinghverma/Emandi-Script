@@ -1,4 +1,4 @@
-import { Form } from "./common.js";
+import { Form } from "./form.js";
 
 class NinerSubmit extends Form {
     InitializeForm() {

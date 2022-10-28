@@ -1,4 +1,4 @@
-import { Form } from "./common.js";
+import { Form } from "./form.js";
 
 class AddGatepass extends Form {
     InitializeForm() {
@@ -34,7 +34,7 @@ class AddGatepass extends Form {
     UpdateForm() {
         document.getElementById('dist_ofdestination').value = document.getElementById('space').value;
         document.getElementById('home_center').value = this.Capitalize(document.getElementById('destination').value);
-        document.getElementById('vehicle').value = get('carrier').value;
+        document.getElementById('vehicle').value = document.getElementById('carrier').value;
         document.getElementById('vehicle').dispatchEvent(new Event('change'));
         document.getElementById('vehicle_no').value = document.getElementById('carrier-no').value.toUpperCase();
         document.getElementById('bundle_no').value = document.getElementById('packets').value;

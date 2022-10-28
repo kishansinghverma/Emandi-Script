@@ -1,5 +1,7 @@
 import { LoadingIcon } from "./assets.js";
 
+const BlankModal = `<div />`;
+
 const add_six_r = `
 <div id="customModal" class="custom-modal">
 	<div class="head">
@@ -104,14 +106,32 @@ const add_gatepass = `
 	</div>
 </div>`;
 
-const DigitalPayment = `<div />`;
-const GeneratedDigitalPayment = `<div />`;
+const Print = `
+<div id="customModal" class="custom-modal">
+	<div class="head">
+		<div style="color: #e7e9eb">Provide The Information</div>
+		<button onclick="window.formContext.HideModal()">x</button>
+	</div>
+	<div id="modalContent" class="modal-content">
+        <hr>
+        <div style="display: flex;" id="msgholder">
+            <input type="checkbox" id="download">&nbsp;Only download the document.
+        </div>
+        <hr>
+        <button onclick="window.formContext.Print(document.getElementById(\'download\').checked)">Print Document</button>
+	</div>
+</div>
+`
 
 export const Modals = { 
     add_six_r,
     NineR,
     NineRSubmit,
     add_gatepass,
-    DigitalPayment,
-    GeneratedDigitalPayment
+    DigitalPayment: BlankModal,
+    GeneratedDigitalPayment: BlankModal,
+    print_9R: Print,
+    print_gatepass: Print,
+	generated_9R: BlankModal,
+	generated_gatepass: BlankModal
 };

@@ -1,4 +1,4 @@
-import { Form } from "./common.js";
+import { Form } from "./form.js";
 
 class DigitalPayment extends Form {
     InitializeForm() {
@@ -14,7 +14,7 @@ class DigitalPayment extends Form {
                     document.getElementById('proceddnow').click();
                 }
                 else 
-                    alert('No Payment Pending')
+                    alert('No Payment Pending');
             }
         }, 1000);
     }
