@@ -9,7 +9,7 @@ var scripts = {
     'NineRSubmit': "",
     'add_gatepass': "",
     'print_9R': "function Print(download){ var tables = []; var content = document.querySelector('body > div.row > #content'); tables.push(content.querySelector('.table').outerHTML); tables.push(content.querySelector('.row .col-md-12 table').outerHTML); var data = { 'name': 'niner', 'tables': tables, 'qr': content.querySelector('#qrcode img').src, 'download': download }; var xhttp = new XMLHttpRequest(); xhttp.onload = function () { if (xhttp.status != 201) { alert(`Error ${xhttp.status}: ${xhttp.response}`); } else { if(download){ window.open('https://automationfxapp.azurewebsites.net/files/'+xhttp.response); } else { alert('Print Job Created!'); }}}; xhttp.open('POST', 'https://automationfxapp.azurewebsites.net/html', true); xhttp.setRequestHeader('Content-Type', 'application/json;'); xhttp.send(JSON.stringify(data)); get('myModal').style.display = 'none';}",
-    'print_gatepass': "function Print(download){ var tables = []; var content = document.querySelector('body > div.row > #content'); tables.push(content.querySelector('.table').outerHTML); tables.push(content.querySelector('.row .col-md-12 table').outerHTML); tables.push(content.querySelectorAll('.row .col-md-12 table')[1].outerHTML); tables.push(content.querySelectorAll('.row .col-md-12 .row')[0].outerHTML); var data = { 'name': 'gatepass', 'tables': tables, 'qr': content.querySelector('#qrcode img').src, 'download': download }; var xhttp = new XMLHttpRequest(); xhttp.onload = function () { if (xhttp.status != 201) { alert(`Error ${xhttp.status}: ${xhttp.response}`); } else { if(download){ window.open('https://automationfxapp.azurewebsites.net/files/'+xhttp.response); } else { alert('Print Job Created!'); }}}; xhttp.open('POST', 'https://automationfxapp.azurewebsites.net/html', true); xhttp.setRequestHeader('Content-Type', 'application/json'); xhttp.send(JSON.stringify(data)); get('myModal').style.display = 'none';}",
+    'print_gatepass': "",
     'DigitalPayment': "",
     'GeneratedDigitalPayment': ""
 }
@@ -23,7 +23,7 @@ if ([selectPayment, doPayment].includes(route))
 var modals = {
     'NineRSubmit': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><div id="img-captcha"></div><hr><input type="text" placeholder="Captcha Code" id="in-captcha"/><hr><button onclick="mSubmit()">Submit</button></div></div>',
     'add_gatepass': '',
-    'print_9R': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><hr><div style="display: flex;" id="msgholder"><input type="checkbox" id="download">&nbsp;Only download the document.</div><hr><button onclick="Print(document.getElementById(\'download\').checked)">Print Document</button></div></div>',
+    'print_9R': '',
     'print_gatepass': '<div id="myModal"><div class="head"><div style="color: #e7e9eb">Provide The Information</div><button onclick="hide(\'myModal\')">x</button></div><div id="zContent"><hr><div id="msgholder" style="display: flex;"><input type="checkbox" id="download">&nbsp;Only download the document.</div><hr><button onclick="Print(document.getElementById(\'download\').checked)">Print Document</button></div></div>'
 }
 
