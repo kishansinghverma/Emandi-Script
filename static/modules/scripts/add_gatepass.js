@@ -47,6 +47,8 @@ class AddGatepass extends Form {
     }
 
     PreviewForm() {
+        preview_data();
+        
         fetch('https://automationfxapp.azurewebsites.net/emandi/update', {
             method: 'post',
             headers: {
@@ -59,8 +61,6 @@ class AddGatepass extends Form {
         .finally(()=>{
             fetch('https://automationfxapp.azurewebsites.net/emandi/pop');
         })
-        
-        preview_data();
     }
 }
 

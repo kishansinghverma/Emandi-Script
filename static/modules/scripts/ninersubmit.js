@@ -25,6 +25,8 @@ class NinerSubmit extends Form {
     }
 
     PreviewForm() {
+        preview_data();
+        
         fetch('https://automationfxapp.azurewebsites.net/emandi/update', {
             method: 'post',
             headers: {
@@ -34,8 +36,6 @@ class NinerSubmit extends Form {
                 SixrId: document.querySelector('.instrumentNumber').value
             })
         });
-
-        preview_data();
     }
 }
 

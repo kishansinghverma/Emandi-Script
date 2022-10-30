@@ -36,6 +36,8 @@ class AddSixR extends Form {
     }
 
     PreviewForm() {
+        preview_data();
+        
         if (this.record.Rate != document.getElementById('crop_rate').value)
             fetch('https://automationfxapp.azurewebsites.net/emandi/update', {
                 method: 'post',
@@ -45,9 +47,7 @@ class AddSixR extends Form {
                 body: JSON.stringify({
                     Rate: document.getElementById('crop_rate').value
                 })
-            });
-
-        preview_data();
+            }).catch(()=>{});
     }
 }
 
