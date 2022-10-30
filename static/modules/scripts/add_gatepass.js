@@ -19,6 +19,7 @@ class AddGatepass extends Form {
     };
 
     AttachListener() {
+        document.getElementById('submit').setAttribute("onclick", "window.formContext.PreviewForm()");
         document.getElementById('PaidType').value = document.getElementById('PaidType').options[1].value;
         document.getElementById('PaidType').dispatchEvent(new Event('change'));
         let wait = setInterval(() => {
@@ -46,6 +47,19 @@ class AddGatepass extends Form {
     }
 
     PreviewForm() {
+        fetch('https://automationfxapp.azurewebsites.net/emandi/update', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                GatepassId: document.getElementById('transaction_number').value
+            })
+        })
+        .finally(()=>{
+            fetch('https://automationfxapp.azurewebsites.net/emandi/pop');
+        })
+        
         preview_data();
     }
 }

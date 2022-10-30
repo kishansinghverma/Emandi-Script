@@ -2,35 +2,15 @@ import { Form } from "./form.js";
 
 class NinerSubmit extends Form {
     InitializeForm() {
+        this.RegisterListener();
+        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
         this.FetchRecord();
         this.record = window.formContext.record;
     }
 
     RegisterListener() {
-        document.getElementById('cost').addEventListener('change', (event) => {
-            document.getElementById('crop_type').value = 'Mota';
-            document.getElementById('mandi_rate5').value = '0';
-            document.getElementById('mandi_rate5').dispatchEvent(new Event('change'));
-            document.getElementById('mandi_rate6').value = '0';
-            document.getElementById('mandi_rate6').dispatchEvent(new Event('change'));
-            document.getElementById('mandi_rate7').value = '0';
-            document.getElementById('mandi_rate7').dispatchEvent(new Event('change'));
-            document.getElementById('mandi_rate8').value = '0';
-            document.getElementById('mandi_rate8').dispatchEvent(new Event('change'));
-        });
-
-        Object.defineProperty(document.getElementById('cost'), "value", {
-            get: function () {
-                return this.getAttribute('value');
-            },
-            set: function (val) {
-                if (val && val != this.getAttribute('value')) {
-                    this.dispatchEvent(new Event('change'));
-                }
-                this.setAttribute("value", val);
-            }
-        });
-
+        document.getElementById('submitbtn').setAttribute("onclick", "window.formContext.PreviewForm()");
+        document.getElementById('crop_type').value = 'Mota';
         document.querySelector('input[type="checkbox"]').checked = true;
         document.querySelector('input[type="checkbox"]').dispatchEvent(new Event('click'));
     }
@@ -45,7 +25,17 @@ class NinerSubmit extends Form {
     }
 
     PreviewForm() {
-        //submitDetailsForm();
+        fetch('https://automationfxapp.azurewebsites.net/emandi/update', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                SixrId: document.querySelector('.instrumentNumber').value
+            })
+        });
+
+        preview_data();
     }
 }
 

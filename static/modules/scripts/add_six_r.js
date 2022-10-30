@@ -15,6 +15,7 @@ class AddSixR extends Form {
     };
 
     AttachListener() {
+        document.getElementById('submit').setAttribute("onclick", "window.formContext.PreviewForm()");
         document.getElementById('rateofcrop').addEventListener('DOMSubtreeModified', (event) => {
             document.getElementById('crop_rate').value = this.record.Rate;
             document.getElementById('crop_rate').dispatchEvent(this.ChangeEvent);
@@ -35,6 +36,17 @@ class AddSixR extends Form {
     }
 
     PreviewForm() {
+        if (this.record.Rate != document.getElementById('crop_rate').value)
+            fetch('https://automationfxapp.azurewebsites.net/emandi/update', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Rate: document.getElementById('crop_rate').value
+                })
+            });
+
         preview_data();
     }
 }

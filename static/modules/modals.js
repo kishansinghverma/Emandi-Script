@@ -56,6 +56,7 @@ const NineRSubmit = `
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
 	<div id="modalContent" class="modal-content">
+		<div id="record" style="display: none"></div>
         <div id="img-captcha"></div>
         <hr>
         <input type="text" placeholder="Captcha Code" id="in-captcha" oninput="window.formContext.AllowUpdate(this.value)"/>
@@ -101,7 +102,7 @@ const add_gatepass = `
 		<hr>
         <div class="buttons">
             <button onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
-		    <button onclick="window.formContext.Preview()" disabled id="previewBtn">Preview</button>
+		    <button onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
         </div>
 	</div>
 </div>`;
