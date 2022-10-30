@@ -3,8 +3,19 @@ import { Form } from "./form.js";
 
 class PrintNiner extends Form {
     InitializeForm() {
-        // this.FetchRecord();
-        // this.record = window.formContext.record;
+        fetch(`https://automationfxapp.azurewebsites.net/emandi/searchbysixr?Id=${document.querySelector('#tab_logic > tbody > tr > td:nth-child(8) > label').innerHTML.trim()}`)
+            .then(response => {
+                if (!response.ok)
+                    throw new Error(response.status);
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('download').checked = data.Mode == "PDF" ? true : false;
+            })
+            .catch(() => {})
+            .finally(() => {
+                document.getElementById('record').innerHTML = '';
+            });
     }
 
     Print(download) {

@@ -114,6 +114,9 @@ const Print = `
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
 	<div id="modalContent" class="modal-content">
+		<div id="record">
+        	${LoadingIcon}
+        </div>
         <hr>
         <div style="display: flex;" id="msgholder">
             <input type="checkbox" id="download">&nbsp;Only download the document.

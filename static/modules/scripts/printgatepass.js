@@ -3,8 +3,20 @@ import { Form } from "./form.js";
 
 class PrintGatepass extends Form {
     InitializeForm() {
-        // this.FetchRecord();
-        // this.record = window.formContext.record;
+        fetch(`https://automationfxapp.azurewebsites.net/emandi/searchbygatepass?Id=${document.querySelector('#content > table.table.table-bordered > tbody > tr:nth-child(1) > td:nth-child(4) > label').innerHTML.trim()}`)
+            .then(response => {
+                if (!response.ok)
+                    throw new Error(response.status);
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('download').checked = data.Mode == "PDF" ? true : false;
+                document.getElementById('download').dispatchEvent(new Event('change'));
+            })
+            .catch(() => {})
+            .finally(() => {
+                document.getElementById('record').innerHTML = '';
+            });
     }
 
     Print(download) {
