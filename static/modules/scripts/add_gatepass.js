@@ -3,7 +3,6 @@ import { Form } from "./form.js";
 class AddGatepass extends Form {
     InitializeForm() {
         this.AttachListener();
-        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
         this.FetchRecord();
         this.record = window.formContext.record;
     }
@@ -19,6 +18,7 @@ class AddGatepass extends Form {
     };
 
     AttachListener() {
+        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
         document.getElementById('submit').setAttribute("onclick", "window.formContext.PreviewForm()");
         document.getElementById('PaidType').value = document.getElementById('PaidType').options[1].value;
         document.getElementById('PaidType').dispatchEvent(new Event('change'));

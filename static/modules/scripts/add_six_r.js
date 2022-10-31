@@ -2,11 +2,9 @@ import { Form } from "./form.js";
 
 class AddSixR extends Form {
     InitializeForm() {
-        this.AttachListener();
-        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
         this.FetchRecord();
+        this.AttachListener();
         this.record = window.formContext.record;
-        this.ChangeEvent = new Event('change');
     }
 
     SelectEntry() {
@@ -15,10 +13,11 @@ class AddSixR extends Form {
     };
 
     AttachListener() {
+        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
         document.getElementById('submit').setAttribute("onclick", "window.formContext.PreviewForm()");
         document.getElementById('rateofcrop').addEventListener('DOMSubtreeModified', (event) => {
             document.getElementById('crop_rate').value = this.record.Rate;
-            document.getElementById('crop_rate').dispatchEvent(this.ChangeEvent);
+            document.getElementById('crop_rate').dispatchEvent(new Event('change'));
         });
     }
 
@@ -26,9 +25,9 @@ class AddSixR extends Form {
         document.getElementById('vikreta_details').value = this.Capitalize(document.getElementById('sname').value);
         document.getElementById('vikreta_mobile').value = '7037433280';
         document.getElementById('ForSelf').checked = true;
-        document.getElementById('ForSelf').dispatchEvent(this.ChangeEvent);
+        document.getElementById('ForSelf').dispatchEvent(new Event('change'));
         document.getElementById('crop_code').value = '58';
-        document.getElementById('crop_code').dispatchEvent(this.ChangeEvent);
+        document.getElementById('crop_code').dispatchEvent(new Event('change'));
         document.getElementById('crop_type').value = 'Mota';
         document.getElementById('crop_weight').value = parseFloat(document.getElementById('quantity').value).toFixed(3);
         document.getElementById('DNTCaptchaInputText').value = document.getElementById('in-captcha').value;

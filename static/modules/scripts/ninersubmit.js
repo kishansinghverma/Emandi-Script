@@ -3,12 +3,12 @@ import { Form } from "./form.js";
 class NinerSubmit extends Form {
     InitializeForm() {
         this.RegisterListener();
-        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
         this.FetchRecord();
         this.record = window.formContext.record;
     }
 
     RegisterListener() {
+        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
         document.getElementById('submitbtn').setAttribute("onclick", "window.formContext.PreviewForm()");
         document.getElementById('crop_type').value = 'Mota';
         document.querySelector('input[type="checkbox"]').checked = true;
