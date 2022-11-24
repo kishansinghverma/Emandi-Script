@@ -10,7 +10,8 @@ class PrintNiner extends Form {
                 return response.json();
             })
             .then(data => {
-                document.getElementById('download').checked = data.Mode == "PDF" ? true : false;
+                document.getElementById('download').checked = data.Mode == "PDF";
+                document.getElementById('download').dispatchEvent(new Event('change'));
             })
             .catch(() => {})
             .finally(() => {
