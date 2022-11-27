@@ -9,15 +9,12 @@ export class Form {
                 return response.json()
             })
             .then(data => {
-                if (!Object.keys(data).length > 0) {
-                    document.getElementById('record').innerHTML = '';
-                    setTimeout(() => { alert('No new gatepass request.') }, 200);
-                    return;
-                }
-
                 window.formContext.record = data;
-                document.getElementById('record').innerHTML = `
+                if (Object.keys(data).length > 1)
+                    document.getElementById('record').innerHTML = `
                      <h4 onclick="window.formContext.SelectEntry()">${data.Seller}</h4>`;
+                else
+                    document.getElementById('record').innerHTML = '';
             })
             .catch(err => {
                 document.getElementById('record').innerHTML = '';
@@ -69,7 +66,7 @@ export class Form {
                 })
                 .catch(err => { alert(err.message) });
         };
-        
+
         document.getElementsByTagName('body')[0].appendChild(visionScript);
     }
 }

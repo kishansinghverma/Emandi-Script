@@ -20,7 +20,7 @@ class AddSixR extends Form {
             document.getElementById('crop_rate').dispatchEvent(new Event('change'));
         });
 
-        document.getElementById('in-captcha').addEventListener('change', ({target}) => this.AllowUpdate(target.value));
+        document.getElementById('in-captcha').addEventListener('change', ({ target }) => this.AllowUpdate(target.value));
         this.ParseCaptcha('dntCaptchaImg', 'in-captcha');
     }
 
@@ -41,16 +41,18 @@ class AddSixR extends Form {
         preview_data();
 
         if (this.record.Rate != document.getElementById('crop_rate').value) {
+            
             //Update the rate on the current record.
-            fetch('https://automationfxapp.azurewebsites.net/emandi/update', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    Rate: document.getElementById('crop_rate').value
-                })
-            }).catch(() => { });
+            if (this.record.Id)
+                fetch('https://automationfxapp.azurewebsites.net/emandi/update', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        Rate: document.getElementById('crop_rate').value
+                    })
+                }).catch(() => { });
 
             //Set the rate for upcoming records.
             fetch('https://automationfxapp.azurewebsites.net/emandi/rate', {
