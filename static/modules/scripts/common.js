@@ -2,6 +2,7 @@ import { Add_Gatepass } from "./add_gatepass.js";
 import { Add_Six_R } from "./add_six_r.js";
 import { Digital_Payment } from "./digitalpayment.js";
 import { List_Entries } from "./listentries.js";
+import { Login } from "./login.js";
 import { Generated_Digital_Payment } from "./makepayment.js";
 import { NineR } from "./niner.js";
 import { NineRSubmit } from "./ninersubmit.js";
@@ -10,6 +11,7 @@ import { PrintGatePass } from "./printgatepass.js";
 
 const CommonDiv = '#content > div > div';
 const PrintDiv = '#content';
+const LoginDiv = '.box-login';
 
 export const RouteMap = {
     add_six_r: { Script: Add_Six_R, Div: CommonDiv },
@@ -20,6 +22,9 @@ export const RouteMap = {
     print_gatepass: { Script: PrintGatePass, Div: PrintDiv },
     DigitalPayment: { Script: Digital_Payment, Div: CommonDiv },
     GeneratedDigitalPayment: { Script: Generated_Digital_Payment, Div: CommonDiv },
-    generated_9R: {Script: List_Entries, Div: CommonDiv},
-    generated_gatepass: {Script: List_Entries, Div: CommonDiv}
+    generated_9R: { Script: List_Entries, Div: CommonDiv },
+    generated_gatepass: { Script: List_Entries, Div: CommonDiv },
+    index: { Script: Login, Div: LoginDiv },
+    Account: { Script: Login, Div: LoginDiv },
+    'index?ReturnUrl=%2FAccount%2FLogOut': { Script: Login, Div: LoginDiv }
 }

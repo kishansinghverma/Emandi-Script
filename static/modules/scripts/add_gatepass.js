@@ -26,7 +26,7 @@ class AddGatepass extends Form {
             if (document.getElementById('nine_r_id').options.length > 1) {
                 document.getElementById('nine_r_id').value = document.getElementById('nine_r_id').options[1].value;
                 document.getElementById('nine_r_id').dispatchEvent(new Event('change'));
-                document.getElementById('updateBtn').removeAttribute('disabled');
+                this.ParseCaptcha('dntCaptchaImg', 'in-captcha')
                 clearInterval(wait);
             }
         }, 1000);

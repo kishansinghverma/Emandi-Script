@@ -22,8 +22,8 @@ const add_six_r = `
 		<input type="text" placeholder="Captcha Code" id="in-captcha" oninput="window.formContext.AllowUpdate(this.value)"/>
 		<hr>
         <div class="buttons">
-            <button onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
-		    <button onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
+            <button class="btn btn-info" onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
+		    <button class="btn btn-success" onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
         </div>
 	</div>
 </div>
