@@ -13,6 +13,7 @@ class NinerSubmit extends Form {
         document.getElementById('crop_type').value = 'Mota';
         document.querySelector('input[type="checkbox"]').checked = true;
         document.querySelector('input[type="checkbox"]').dispatchEvent(new Event('click'));
+        document.getElementById('in-captcha').addEventListener('change', ({target}) => this.AllowUpdate(target.value));
         this.ParseCaptcha('dntCaptchaImg', 'in-captcha');
     }
 

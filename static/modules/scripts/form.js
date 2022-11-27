@@ -1,3 +1,4 @@
+
 export class Form {
     FetchRecord() {
         const url = 'https://automationfxapp.azurewebsites.net/emandi/peek';
@@ -45,50 +46,30 @@ export class Form {
     }
 
     ParseCaptcha(source, target) {
-        var canvas = document.createElement("canvas");
-        canvas.width = 70;
-        canvas.height = 40;
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(document.getElementById(source), 0, 0);
-        const base64String = canvas.toDataURL();
+        var visionScript = document.createElement('script');
+        visionScript.src = 'https://unpkg.com/tesseract.js@4.0.0/dist/tesseract.min.js';
 
-        var requestHeaders = new Headers();
-        requestHeaders.append("apikey", "K84477874688957");
+        visionScript.onload = () => {
+            var canvas = document.createElement("canvas");
+            canvas.width = 70;
+            canvas.height = 40;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(document.getElementById(source), 0, 0);
+            const base64String = canvas.toDataURL();
+            const image = document.createElement('img');
+            image.src = base64String;
 
-        var formdata = new FormData();
-        formdata.append("language", "eng");
-        formdata.append("isOverlayRequired", "false");
-        formdata.append("Base64Image", base64String);
-        formdata.append("iscreatesearchablepdf", "false");
-        formdata.append("issearchablepdfhidetextlayer", "false");
+            Tesseract.recognize(image, 'eng', {})
+                .then(({ data: { text } }) => {
+                    if (isNaN(text))
+                        throw new Error('Captcha Not Parsed!');
 
-        var requestOptions = {
-            method: 'POST',
-            headers: requestHeaders,
-            body: formdata,
-            redirect: 'follow'
+                    document.getElementById(target).value = text;
+                    document.getElementById(target).dispatchEvent(new Event('change'));
+                })
+                .catch(err => { alert(err.message) });
         };
-
-        fetch("https://api.ocr.space/parse/image", requestOptions)
-            .then(response => {
-                if (!response.ok)
-                    throw new Error("Something went wrong while parsing image.");
-                return response.json();
-            })
-            .then(data => {
-                if (data['IsErroredOnProcessing'])
-                    throw new Error("Invalid image provided.")
-
-                const parsedText = data.ParsedResults[0].ParsedText;
-                const identifiedNumber = parsedText.match(/\d/g).join("");
-                if (isNaN(identifiedNumber))
-                    throw new Error("Parsed image is not a number");
-
-                document.getElementById(target).value = identifiedNumber;
-                document.getElementById(target).dispatchEvent(new Event('change'));
-            })
-            .catch(err => {
-                alert(`Captcha parse failed: ${err.message}`);
-            })
+        
+        document.getElementsByTagName('body')[0].appendChild(visionScript);
     }
 }

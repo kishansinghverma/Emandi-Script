@@ -1,5 +1,5 @@
 export const LoadingIcon = `
-<div id="loader">
+<div id="spinner">
 	<div id="d1"></div>
 	<div id="d2"></div>
 	<div id="d3"></div>

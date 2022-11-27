@@ -8,7 +8,7 @@ const add_six_r = `
 		<div style="color: #e7e9eb">Provide The Information</div>
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
-	<div id="modalContent" class="modal-content">
+	<div id="modalContent" class="custom-modal-content">
 		<div id="record">
         ${LoadingIcon}
         </div>
@@ -34,7 +34,7 @@ const NineR = `
 		<div style="color: #e7e9eb">Provide The Information</div>
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
-	<div id="modalContent" class="modal-content">
+	<div id="modalContent" class="custom-modal-content">
 		<div id="record">
         ${LoadingIcon}
         </div>
@@ -42,8 +42,8 @@ const NineR = `
 		<input type="text" id="bname" placeholder="Buyer Name" />
 		<hr>
         <div class="buttons">
-            <button onclick="window.formContext.UpdateForm()">Update</button>
-		    <button onclick="window.formContext.Next()" disabled id="nextBtn">Next</button>
+            <button class="btn btn-info" onclick="window.formContext.UpdateForm()">Update</button>
+		    <button class="btn btn-success" onclick="window.formContext.Next()" disabled id="nextBtn">Next</button>
         </div>
 	</div>
 </div>
@@ -55,15 +55,15 @@ const NineRSubmit = `
 		<div style="color: #e7e9eb">Provide The Information</div>
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
-	<div id="modalContent" class="modal-content">
+	<div id="modalContent" class="custom-modal-content">
 		<div id="record" style="display: none"></div>
         <div id="img-captcha"></div>
         <hr>
         <input type="text" placeholder="Captcha Code" id="in-captcha" oninput="window.formContext.AllowUpdate(this.value)"/>
         <hr>
         <div class="buttons">
-            <button onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
-		    <button onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
+            <button class="btn btn-info" onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
+		    <button class="btn btn-success" onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
         </div>
 	</div>
 </div>
@@ -75,7 +75,7 @@ const add_gatepass = `
 		<div style="color: #e7e9eb">Provide The Information</div>
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
-	<div id="modalContent" class="modal-content">
+	<div id="modalContent" class="custom-modal-content">
 		<div id="record">
         ${LoadingIcon}
         </div>
@@ -101,8 +101,8 @@ const add_gatepass = `
 		<input type="text" placeholder="Captcha Code" id="in-captcha"/>
 		<hr>
         <div class="buttons">
-            <button onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
-		    <button onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
+            <button class="btn btn-info" onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
+		    <button class="btn btn-success" onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
         </div>
 	</div>
 </div>`;
@@ -113,7 +113,7 @@ const Print = `
 		<div style="color: #e7e9eb">Provide The Information</div>
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
-	<div id="modalContent" class="modal-content">
+	<div id="modalContent" class="custom-modal-content">
 		<div id="record">
         	${LoadingIcon}
         </div>
@@ -122,7 +122,7 @@ const Print = `
             <input type="checkbox" id="download">&nbsp;Only download the document.
         </div>
         <hr>
-        <button onclick="window.formContext.Print(document.getElementById(\'download\').checked)">Print Document</button>
+        <button class="btn btn-success" onclick="window.formContext.Print(document.getElementById(\'download\').checked)">Print Document</button>
 	</div>
 </div>
 `

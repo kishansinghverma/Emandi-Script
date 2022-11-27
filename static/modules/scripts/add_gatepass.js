@@ -22,6 +22,7 @@ class AddGatepass extends Form {
         document.getElementById('submit').setAttribute("onclick", "window.formContext.PreviewForm()");
         document.getElementById('PaidType').value = document.getElementById('PaidType').options[1].value;
         document.getElementById('PaidType').dispatchEvent(new Event('change'));
+        document.getElementById('in-captcha').addEventListener('change', ({target}) => this.AllowUpdate(target.value));
         let wait = setInterval(() => {
             if (document.getElementById('nine_r_id').options.length > 1) {
                 document.getElementById('nine_r_id').value = document.getElementById('nine_r_id').options[1].value;

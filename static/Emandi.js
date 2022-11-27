@@ -18,7 +18,7 @@ export const RunScript = () => {
     document.getElementsByTagName('head')[0].append(css);
 
     const modalDiv = document.createElement('div');
-    modalDiv.className = "modal-container";
+    modalDiv.className = "custom-modal-container";
     modalDiv.innerHTML = Modals[route];
     document.querySelector(RouteMap[route].Div).append(modalDiv);
 

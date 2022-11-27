@@ -19,6 +19,8 @@ class AddSixR extends Form {
             document.getElementById('crop_rate').value = this.record.Rate;
             document.getElementById('crop_rate').dispatchEvent(new Event('change'));
         });
+
+        document.getElementById('in-captcha').addEventListener('change', ({target}) => this.AllowUpdate(target.value));
         this.ParseCaptcha('dntCaptchaImg', 'in-captcha');
     }
 

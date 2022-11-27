@@ -8,7 +8,7 @@ input[type='radio']:checked+label {
     flex-wrap: wrap;
 }
 
-.modal-content > hr { 
+.custom-modal-content > hr { 
     width: 0px; 
     margin: 3px; 
 }
@@ -26,7 +26,7 @@ input[type='radio']:checked+label {
     background-color: white !important; 
 }
 
-.modal-container{
+.custom-modal-container{
     width: 100%;
     display: flex;
     justify-content: center;
@@ -40,17 +40,19 @@ input[type='radio']:checked+label {
     top: 0;
     margin-top: 200px;
     z-index: 100;
-    background-color: rgb(0 0 0 / 70%); 
+    background-color: rgb(0 0 0 / 70%);
+    box-shadow: 4px 4px 20px 0px rgb(0 0 0 / 50%);
 }
 
-.modal-content{ 
+.custom-modal-content{ 
     border-radius:4px; 
     padding: 20px; 
     border: 1px solid #888; 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    justify-content: center; 
+    justify-content: center;
+    background-color: #fff;
 }
 
 .buttons{
@@ -60,12 +62,48 @@ input[type='radio']:checked+label {
     width: 100%;
 }
 
-#modalContent > div.buttons > button.btn-info {
+.buttons .btn-info {
     margin-right: 5px;
+    border-color: #3189c6;
 }
 
-#modalContent > div.buttons > button.btn-success {
+.buttons .btn-info:active {
+    margin-right: 5px;
+    -webkit-box-shadow: inset 0 3px 5px rgb(0 0 0 / 13%) !important;
+    box-shadow: inset 0 3px 5px rgb(0 0 0 / 13%);
+}
+
+.buttons .btn-success {
     margin-left: 5px;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+
+.buttons .btn-success:focus {
+    background-color: #449d44 !important;;
+    border-color: #398439 !important;;
+}
+
+.buttons .btn-success[disabled]:active {
+    background-color: #449d44 !important;
+    border-color: #398439 !important;
+}
+
+.buttons .btn-success:active {
+    background-color: #449d44 !important;
+    border-color: #398439 !important;
+    -webkit-box-shadow: inset 0 3px 5px rgb(0 0 0 / 13%) !important;
+    box-shadow: inset 0 3px 5px rgb(0 0 0 / 13%);
+}
+
+.buttons .btn-success[disabled]:hover {
+    background-color: #5cb85cc9;
+    border-color: #4cae4cc2;
+}
+
+.buttons .btn-success:hover {
+    background-color: #449d44;
+    border-color: #398439;
 }
 
 h4{
@@ -77,12 +115,12 @@ h4:hover {
     text-shadow: 0 0 10px black;
 }
 
-#loader {
+#spinner {
     position: relative;
     width: 100px;
     height: 12px;
   }
-  #loader div {
+  #spinner div {
     width: 12px;
     height: 12px;
     background: #c75119f2;
