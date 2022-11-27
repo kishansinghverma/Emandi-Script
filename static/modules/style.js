@@ -60,8 +60,12 @@ input[type='radio']:checked+label {
     width: 100%;
 }
 
-#modalContent > div.buttons > button.btn {
-    margin: 0px 12px;
+#modalContent > div.buttons > button.btn-info {
+    margin-right: 5px;
+}
+
+#modalContent > div.buttons > button.btn-success {
+    margin-left: 5px;
 }
 
 h4{
