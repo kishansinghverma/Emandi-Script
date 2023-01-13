@@ -3,10 +3,12 @@ import { CSS } from "./modules/style.js";
 import { RouteMap } from "./modules/scripts/common.js";
 import { RunBasicCustomizations } from "./modules/scripts/basiccustomization.js";
 
-const validRoutes = Object.keys(RouteMap);
-const route = window.location.href.split('/').pop();
-
 export const RunScript = () => {
+    const validRoutes = Object.keys(RouteMap);
+    const route = window.location.href.split('/').pop();
+
+    alert(route);
+
     if(window.location.href.includes('emandi.up.gov.in/Traders/'))
         RunBasicCustomizations();
 

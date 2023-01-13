@@ -1,5 +1,5 @@
 # ABOUT
-This project prvides the assets (JS, JSON and Static Assets) via the RawGithub or [JsDelivr](https://www.jsdelivr.com/github).
+This project provides the assets (JS, JSON and Static Assets) via the RawGithub or [JsDelivr](https://www.jsdelivr.com/github).
 
 ## Development
 - Start the local server with `npm start`.

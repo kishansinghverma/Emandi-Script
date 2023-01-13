@@ -127,7 +127,10 @@ const Print = `
 </div>
 `
 
-export const Modals = { 
+export const Modals = {
+	Account: BlankModal,
+	index: BlankModal,
+    'index?ReturnUrl=%2FAccount%2FLogOut': BlankModal,
     add_six_r,
     NineR,
     NineRSubmit,
