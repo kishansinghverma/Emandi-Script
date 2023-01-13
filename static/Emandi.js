@@ -4,9 +4,7 @@ import { RouteMap } from "./modules/scripts/common.js";
 import { RunBasicCustomizations } from "./modules/scripts/basiccustomization.js";
 
 export const RunScript = () => {
-    window.onload = ()=> {
-        alert("Page Load");
-    }
+    window.onload = ()=> { alert("Page Load"); }
     const validRoutes = Object.keys(RouteMap);
     const route = window.location.href.split('/').pop();
 
