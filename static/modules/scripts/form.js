@@ -47,6 +47,7 @@ export class Form {
         visionScript.src = 'https://unpkg.com/tesseract.js@4.0.0/dist/tesseract.min.js';
 
         visionScript.onload = () => {
+            alert("Script Load");
             var canvas = document.createElement("canvas");
             canvas.width = 70;
             canvas.height = 40;
