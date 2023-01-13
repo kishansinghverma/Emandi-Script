@@ -11,5 +11,5 @@ This project prvides the assets (JS, JSON and Static Assets) via the RawGithub o
 - Navigate to Github and get the latest commit number.
 - Open `EmandiScriptAsModule.js` and update the old commit number with the latest one in script's location Url.
 - Again save -> commit -> push.
-- For Mobile: Use the `https://cdn.jsdelivr.net/gh/kishansinghverma/GlobalResources@<lastest commit #>/static/EmandiScriptAsModule.js`.
+- For Mobile: Use the `https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@<lastest commit #>/static/EmandiScriptAsModule.js`.
 - For PC: Copy and paste the content of `EmandiScriptAsModule.js` in Scripty.
