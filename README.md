@@ -3,7 +3,7 @@ This project provides the assets (JS, JSON and Static Assets) via the RawGithub 
 
 ## Development
 - Start the local server with `npm start`.
-- Copy the content from `RunDevelopment.js` to JS Injector in Browser.
+- Copy the content from `RunDevelopment.js` TamperMonkey / Stay.
 - Save and start development.
 
 ## Deployment
