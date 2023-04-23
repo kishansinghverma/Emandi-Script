@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "build": "webpack --config webpack.config.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
