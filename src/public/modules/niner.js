@@ -24,10 +24,8 @@ class Niner extends Form {
         document.getElementsByName('PayType')[1].dispatchEvent(new Event('change'));
         document.getElementById('nextBtn').removeAttribute('disabled');
     }
-
-    Next() {
-        submitDetailsForm();
-    }
+    
+    Next = () => submitDetailsForm();
 }
 
 export const NineR = new Niner();

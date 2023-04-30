@@ -38,7 +38,7 @@ input[type='radio']:checked+label {
     border-radius:4px; 
     position: fixed;
     top: 0;
-    margin-top: 200px;
+    margin-top: 150px;
     z-index: 100;
     background-color: rgb(0 0 0 / 70%);
     box-shadow: 4px 4px 20px 0px rgb(0 0 0 / 50%);

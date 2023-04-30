@@ -9,12 +9,10 @@ class DigitalPayment extends Form {
         let wait = setInterval(() => {
             if (document.querySelector('#datatable1 > tbody').childElementCount > 0) {
                 clearInterval(wait);
-                if (document.getElementsByClassName('chk').length > 0) {
-                    document.getElementsByClassName('chk')[0].click();
-                    document.getElementById('proceddnow').click();
-                }
-                else 
-                    alert('No Payment Pending');
+                const requests = document.getElementsByClassName('chk');
+                if (requests.length < 1) { alert('No Payments Pending!'); return };
+                requests[0].click();
+                document.getElementById('proceddnow').click();
             }
         }, 1000);
     }

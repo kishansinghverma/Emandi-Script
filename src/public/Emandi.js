@@ -1,17 +1,18 @@
-import { Modals } from "./modules/modals.js";
-import { CSS } from "./modules/style.js";
-import { RouteMap } from "./modules/scripts/common.js";
-import { RunBasicCustomizations } from "./modules/scripts/basiccustomization.js";
+import { Modals } from "./assets/modals.js";
+import { CSS } from "./assets/style.js";
+import { RouteMap } from "./modules/common.js";
+import { RunBasicCustomizations } from "./modules/basiccustomization.js";
 
-export const RunScript = () => {
+const RunScript = () => {
     const validRoutes = Object.keys(RouteMap);
     const route = window.location.href.split('/').pop();
 
-    if(window.location.href.includes('emandi.up.gov.in/Traders/'))
+    if (window.location.href.includes('emandi.up.gov.in/Traders/'))
         RunBasicCustomizations();
 
     if (!validRoutes.includes(route))
         throw new Error('Injection not valid for this page');
+
 
     var css = document.createElement("style");
     css.innerHTML = CSS;
@@ -26,6 +27,7 @@ export const RunScript = () => {
     window.formContext.InitializeForm();
 }
 
+RunScript();
 
 
 

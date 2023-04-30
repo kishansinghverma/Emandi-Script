@@ -12,6 +12,6 @@ window.addEventListener('load', (event) => {
     console.log("Injecting Emandi Script...");
     var script = document.createElement('script');
     script.setAttribute('type', 'module');
-    script.innerHTML = "import { RunScript } from 'http://localhost:3001/static/Emandi.js'; RunScript();";
+    script.src = "http://localhost:3001/public/Emandi.js";
     document.getElementsByTagName('body')[0].appendChild(script);
 });

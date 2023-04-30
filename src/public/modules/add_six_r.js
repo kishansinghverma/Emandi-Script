@@ -1,4 +1,6 @@
 import { Form } from "./form.js";
+import { AlertError, HandleResponse } from "./common.js";
+import { FetchParams, Url } from "./constants.js";
 
 class AddSixR extends Form {
     InitializeForm() {
@@ -13,13 +15,13 @@ class AddSixR extends Form {
     };
 
     AttachListener() {
+        document.querySelector('#model1 > div > div > div.modal-footer > button')?.click();
         document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
-        document.getElementById('submit').setAttribute("onclick", "window.formContext.PreviewForm()");
+        document.getElementById('submitbtn').setAttribute("onclick", "window.formContext.SubmitForm()");
         document.getElementById('rateofcrop').addEventListener('DOMSubtreeModified', (event) => {
-            document.getElementById('crop_rate').value = this.record.Rate;
+            document.getElementById('crop_rate').value = $('#crop_rate').data('min');
             document.getElementById('crop_rate').dispatchEvent(new Event('change'));
         });
-
         document.getElementById('in-captcha').addEventListener('change', ({ target }) => this.AllowUpdate(target.value));
         this.ParseCaptcha('dntCaptchaImg', 'in-captcha');
     }
@@ -37,37 +39,15 @@ class AddSixR extends Form {
         document.getElementById('previewBtn').removeAttribute('disabled');
     }
 
-    PreviewForm() {
-        preview_data();
+    PreviewForm = () => preview_data();
 
-        if (this.record.Rate != document.getElementById('crop_rate').value) {
-            
-            //Update the rate on the current record.
-            if (this.record.Id)
-                fetch('https://automationfxapp.azurewebsites.net/emandi/update', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        Rate: document.getElementById('crop_rate').value
-                    })
-                }).catch(() => { });
-
-            //Set the rate for upcoming records.
-            fetch('https://automationfxapp.azurewebsites.net/emandi/rate', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    Rate: document.getElementById('crop_rate').value
-                })
-            }).then(response => {
-                if (!response.ok)
-                    throw new Error(response.statusText);
-            }).catch(err => { alert(err.message) });
-        }
+    SubmitForm() {
+        submitDetailsForm();
+        if (this.record)
+            fetch(Url.UpdateRecord, {
+                ...FetchParams.Post,
+                body: JSON.stringify({ Rate: document.getElementById('crop_rate').value })
+            }).then(HandleResponse).catch(AlertError);
     }
 }
 

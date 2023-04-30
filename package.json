@@ -5,8 +5,9 @@
   "author": "Kishan Singh",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "node app.js",
+    "start": "node ./src/app.js",
     "build": "webpack --config webpack.config.js"
   },
   "dependencies": {

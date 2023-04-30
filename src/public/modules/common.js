@@ -1,5 +1,6 @@
 import { Add_Gatepass } from "./add_gatepass.js";
 import { Add_Six_R } from "./add_six_r.js";
+import { HttpMessages } from "./constants.js";
 import { Digital_Payment } from "./digitalpayment.js";
 import { List_Entries } from "./listentries.js";
 import { Login } from "./login.js";
@@ -28,3 +29,32 @@ export const RouteMap = {
     Account: { Script: Login, Div: LoginDiv },
     'index?ReturnUrl=%2FAccount%2FLogOut': { Script: Login, Div: LoginDiv }
 }
+
+export const AlertError = (err) => alert(err.message);
+export const LogError = (err) => console.log(err.message);
+export const HandleResponse = (response) => {
+    if (!response.ok || response.status === 204)
+        throw { message: HttpMessages[response.status], code: response.status }
+}
+export const HandleJsonResponse = (response) => {
+    HandleResponse(response);
+    return response.json();
+}
+
+export const HandleByStatusCode = (response) => {
+    HandleResponse(response);
+    return response;
+}
+
+export const Download = (response) => {
+    const fileName = response.url.split('/').pop();
+    response.blob().then(blob => {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    });
+}
+
