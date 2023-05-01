@@ -1,4 +1,4 @@
-import { AlertError, HandleJsonResponse } from "./common.js";
+import { AlertError, HandleResponse } from "./common.js";
 import { FetchParams, Url } from "./constants.js";
 import { Form } from "./form.js";
 
@@ -15,7 +15,7 @@ class AddGatepass extends Form {
         document.getElementById('carrier').value = this.record.Type;
         document.getElementById('carrier-no').value = this.record.VehicleNo;
         document.getElementById('packets').value = this.record.Packets;
-        document.getElementById('statename').value = this.record.State?.Code;
+        document.getElementById('statename').value = this.record.StateCode;
         document.getElementById('space').value = this.record.Distance;
         document.getElementById('mandiname').value = this.record.Mandi;
     };
@@ -57,16 +57,16 @@ class AddGatepass extends Form {
     SubmitForm() {
         submitDetailsForm();
 
-
-        fetch(Url.UpdateRecord, {
-            ...FetchParams.Post,
-            body: JSON.stringify({ GatepassId: document.getElementById('transaction_number').value })
-        })
-            .then(HandleJsonResponse)
-            .catch(err => { if (err.code !== 204) AlertError(err) })
-            .finally(() => fetch(Url.PopRecord)
-                .then(HandleJsonResponse)
-                .catch(err => { if (err.code !== 204) AlertError(err) }));
+        if (this.record)
+            fetch(Url.UpdateRecord, {
+                ...FetchParams.Post,
+                body: JSON.stringify({ GatepassId: document.getElementById('transaction_number').value })
+            })
+                .then(HandleResponse)
+                .catch(err => { if (err.code !== 204) AlertError(err) })
+                .finally(() => fetch(Url.PopRecord)
+                    .then(HandleResponse)
+                    .catch(err => { if (err.code !== 204) AlertError(err) }));
     }
 }
 
