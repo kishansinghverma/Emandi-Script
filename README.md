@@ -10,5 +10,5 @@ This project provides the assets (JS, JSON and Static Assets) via the RawGithub 
 - Make all the required changes.
 - Create a Production build with `npm run build`.
 - Do latest commit -> Push.
-- Navigate to JSDelivr and Purge the old cache using the Url : `https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@latest/dist/emandi.js`.
+- Navigate to JSDelivr and Purge the old cache using the Url : `https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/emandi.js`.
 - Copy and paste the content of `RunProduction.js` in TamperMonkey / Stay.
