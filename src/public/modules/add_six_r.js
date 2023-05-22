@@ -12,6 +12,8 @@ class AddSixR extends Form {
     SelectEntry() {
         document.getElementById('sname').value = this.record.Seller;
         document.getElementById('quantity').value = this.record.Weight;
+        if (this.record.PartyLicence)
+            document.getElementById('licence').value = this.record.PartyLicence;
     };
 
     AttachListener() {
@@ -27,10 +29,20 @@ class AddSixR extends Form {
     }
 
     UpdateForm() {
+        const licenceNumber = document.getElementById('licence').value.trim();
+
         document.getElementById('vikreta_details').value = this.Capitalize(document.getElementById('sname').value);
         document.getElementById('vikreta_mobile').value = '7037433280';
-        document.getElementById('ForSelf').checked = true;
-        document.getElementById('ForSelf').dispatchEvent(new Event('change'));
+        if (licenceNumber) {
+            document.getElementById('trader_type').checked = true;
+            document.getElementById('trader_type').dispatchEvent(new Event('change'));
+            document.getElementById('kreta_license_number').value = licenceNumber;
+            document.getElementById('kreta_license_number').dispatchEvent(new Event('change'));
+        }
+        else {
+            document.getElementById('ForSelf').checked = true;
+            document.getElementById('ForSelf').dispatchEvent(new Event('change'));
+        }
         document.getElementById('crop_code').value = '58';
         document.getElementById('crop_code').dispatchEvent(new Event('change'));
         document.getElementById('crop_type').value = 'Mota';

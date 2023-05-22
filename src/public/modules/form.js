@@ -30,36 +30,27 @@ export class Form {
         else document.getElementById('updateBtn').setAttribute('disabled', 'disabled');
     }
 
-    ResolveCaptcha(source) {
-        var canvas = document.createElement("canvas");
+    async ResolveCaptcha(source) {
+        const canvas = document.createElement("canvas");
         canvas.width = 70;
         canvas.height = 40;
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(document.getElementById(source), 0, 0);
-        const base64String = canvas.toDataURL();
+        canvas.getContext("2d").drawImage(document.getElementById(source), 0, 0);
         const image = document.createElement('img');
-        image.src = base64String;
-
-        return new Promise((resolve, reject) => {
-            Tesseract.recognize(image, 'eng', {})
-                .then(({ data: { text } }) => {
-                    if (isNaN(text)) throw new Error('Captcha Not Parsed!');
-                    resolve(text);
-                }).catch(reject);
-        })
+        image.src = canvas.toDataURL();
+        const resolvedData = await Tesseract.recognize(image, 'eng', {});
+        const parsedText = parseInt(resolvedData.data.text);
+        if (isNaN(parsedText)) throw new Error('Captcha Not Parsed!');
+        return parsedText;
     }
 
     SetResolvedCaptcha(value, target) {
-        value.then(text => {
-            document.getElementById(target).value = text;
-            document.getElementById(target).dispatchEvent(new Event('change'));
-        }).catch(AlertError);
+        document.getElementById(target).value = value;
+        document.getElementById(target).dispatchEvent(new Event('change'));
     }
 
     ParseCaptcha(source, target) {
-        this.ResolveCaptcha(source).then(text => {
-            document.getElementById(target).value = text;
-            document.getElementById(target).dispatchEvent(new Event('change'));
+        this.ResolveCaptcha(source).then(value => {
+            this.SetResolvedCaptcha(value, target);
         }).catch(AlertError);
     }
 }

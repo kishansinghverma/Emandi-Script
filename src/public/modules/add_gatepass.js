@@ -31,8 +31,7 @@ class AddGatepass extends Form {
             if (document.getElementById('nine_r_id').options.length > 1) {
                 document.getElementById('nine_r_id').value = document.getElementById('nine_r_id').options[1].value;
                 document.getElementById('nine_r_id').dispatchEvent(new Event('change'));
-                this.SetResolvedCaptcha(resolvedCaptcha, 'in-captcha');
-                clearInterval(wait);
+                resolvedCaptcha.then(text => this.SetResolvedCaptcha(text, 'in-captcha')).catch(AlertError).finally(() => clearInterval(wait));
             }
         }, 1000);
     }

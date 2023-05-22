@@ -17,6 +17,8 @@ const add_six_r = `
 		<hr>
 		<input type="text" id="quantity" placeholder="Quantity (In Quintals)" />
 		<hr>
+		<input type="text" id="licence" placeholder="Party Licence" />
+		<hr>
 		<div id="img-captcha"></div>
 		<hr>
 		<input type="text" placeholder="Captcha Code" id="in-captcha" oninput="window.formContext.AllowUpdate(this.value)"/>
