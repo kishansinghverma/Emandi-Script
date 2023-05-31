@@ -27,6 +27,7 @@ const add_six_r = `
             <button class="btn btn-info" onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
 		    <button class="btn btn-success" onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
         </div>
+		<button class="btn btn-warning" onclick="window.formContext.RunHeadless()" id="expressBtn">Express</button>
 	</div>
 </div>
 `

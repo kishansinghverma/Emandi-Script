@@ -3,19 +3,18 @@ import { FetchParams, Url } from "./constants.js";
 import { Form } from "./form.js";
 
 class NinerSubmit extends Form {
-    InitializeForm() {
-        this.RegisterListener();
-        this.FetchRecord();
+    async InitializeForm() {
+        await this.FetchRecord();
         this.record = window.formContext.record;
+        this.AttachListener();
     }
 
-    RegisterListener() {
+    AttachListener() {
         const captcha = document.getElementById('dntCaptchaImg');
         if (!captcha) { alert("No Paid 6R found!"); this.HideModal(); return; }
         document.getElementById('img-captcha').append(captcha);
-        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
         document.querySelector('.finalSubmit').setAttribute("onclick", "window.formContext.SubmitForm()");
-        document.getElementById('crop_type').value = 'Mota';
+        document.getElementById('crop_type').value = 'Regular';
         document.querySelector('input[type="checkbox"]').checked = true;
         document.querySelector('input[type="checkbox"]').dispatchEvent(new Event('click'));
         document.getElementById('in-captcha').addEventListener('change', ({ target }) => this.AllowUpdate(target.value));

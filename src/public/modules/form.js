@@ -3,8 +3,8 @@ import { Url } from "./constants.js";
 import Tesseract from "../assets/tesseract.js";
 
 export class Form {
-    FetchRecord() {
-        fetch(Url.PeekRecord)
+    async FetchRecord() {
+        await fetch(Url.PeekRecord)
             .then(HandleJsonResponse)
             .then(data => {
                 window.formContext.record = data;

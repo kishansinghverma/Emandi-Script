@@ -1,65 +1,88 @@
 import { Form } from "./form.js";
 import { AlertError, HandleResponse } from "./common.js";
 import { FetchParams, Url } from "./constants.js";
-
 class AddSixR extends Form {
-    InitializeForm() {
-        this.FetchRecord();
-        this.AttachListener();
+    CaptchaResolvePromise;
+    ExpressPromise;
+    ResolveExpressPromise;
+
+    constructor() {
+        super();
+        this.ExpressPromise = new Promise(resolve => { this.ResolveExpressPromise = resolve });
+    }
+
+    async InitializeForm() {
+        await this.FetchRecord();
         this.record = window.formContext.record;
+        this.AttachListener();
+        this.ExecuteInitialActions();
+    }
+
+    ExecuteInitialActions() {
+        if(this.record) $('#expressBtn').css('display', 'block');
+        $('#img-captcha').append($('#dntCaptchaImg'));
+        $('#form1').attr('data-ajax-success', 'window.formContext.OnSubmitSuccess');
+        this.CaptchaResolvePromise = this.ResolveCaptcha('dntCaptchaImg');
+        this.CaptchaResolvePromise.then(value => this.SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
     }
 
     SelectEntry() {
-        document.getElementById('sname').value = this.record.Seller;
-        document.getElementById('quantity').value = this.record.Weight;
-        if (this.record.PartyLicence)
-            document.getElementById('licence').value = this.record.PartyLicence;
+        $('#sname').val(this.record.Seller);
+        $('#quantity').val(this.record.Weight);
+        $('#licence').val(this.record.PartyLicence ?? '');
     };
 
     AttachListener() {
-        document.querySelector('#model1 > div > div > div.modal-footer > button')?.click();
-        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
-        document.getElementById('submitbtn').setAttribute("onclick", "window.formContext.SubmitForm()");
-        document.getElementById('rateofcrop').addEventListener('DOMSubtreeModified', (event) => {
-            document.getElementById('crop_rate').value = $('#crop_rate').data('min');
-            document.getElementById('crop_rate').dispatchEvent(new Event('change'));
-        });
-        document.getElementById('in-captcha').addEventListener('change', ({ target }) => this.AllowUpdate(target.value));
-        this.ParseCaptcha('dntCaptchaImg', 'in-captcha');
+        $('#in-captcha').on('change', ({ target }) => this.AllowUpdate(target.value));
+        $('#rateofcrop').on('DOMSubtreeModified', () => $('#crop_rate').val($('#crop_rate').data('min')).trigger('change'));
     }
 
     UpdateForm() {
-        const licenceNumber = document.getElementById('licence').value.trim();
-
-        document.getElementById('vikreta_details').value = this.Capitalize(document.getElementById('sname').value);
-        document.getElementById('vikreta_mobile').value = '7037433280';
-        if (licenceNumber) {
-            document.getElementById('trader_type').checked = true;
-            document.getElementById('trader_type').dispatchEvent(new Event('change'));
-            document.getElementById('kreta_license_number').value = licenceNumber;
-            document.getElementById('kreta_license_number').dispatchEvent(new Event('change'));
+        $('#vikreta_details').val(this.Capitalize($('#sname').val()));
+        $('#vikreta_mobile').val('7037433280');
+        if ($('#licence').val()) {
+            $('#trader_type').prop('checked', true).trigger('change');
+            $('#kreta_license_number').val($('#licence').val()).trigger('change');
         }
-        else {
-            document.getElementById('ForSelf').checked = true;
-            document.getElementById('ForSelf').dispatchEvent(new Event('change'));
-        }
-        document.getElementById('crop_code').value = '58';
-        document.getElementById('crop_code').dispatchEvent(new Event('change'));
-        document.getElementById('crop_type').value = 'Mota';
-        document.getElementById('crop_weight').value = parseFloat(document.getElementById('quantity').value).toFixed(3);
-        document.getElementById('DNTCaptchaInputText').value = document.getElementById('in-captcha').value;
-        document.getElementById('previewBtn').removeAttribute('disabled');
+        else
+            $('#ForSelf').prop('checked', true).trigger('change');
+        $('#crop_code').val('58').trigger('change');
+        $('#crop_type').val('Regular');
+        $('#crop_weight').val(parseFloat($('#quantity').val()).toFixed(3));
+        $('#DNTCaptchaInputText').val($('#in-captcha').val());
+        $('#previewBtn').removeAttr('disabled');
     }
 
     PreviewForm = () => preview_data();
 
-    SubmitForm() {
-        submitDetailsForm();
+    OnSubmitSuccess() {
         if (this.record)
             fetch(Url.UpdateRecord, {
                 ...FetchParams.Post,
-                body: JSON.stringify({ Rate: document.getElementById('crop_rate').value })
+                body: JSON.stringify({ Rate: $('#crop_rate').val() })
             }).then(HandleResponse).catch(AlertError);
+
+        alert("6R Created Successfully.\nRedirecting To Payment...");
+        window.location.href = '/Traders/DigitalPayment';
+    }
+
+    RunHeadless() {
+        localStorage.setItem('ExpressConfig', JSON.stringify({ IsExpress: true, Id: this.record.Id }));
+        this.SelectEntry();
+
+        const timerId = setInterval(() => {
+            if ($('#kreta_details').val()) {
+                this.ResolveExpressPromise();
+                clearInterval(timerId);
+            }
+        }, 500);
+
+        this.CaptchaResolvePromise.then(() => {
+            this.UpdateForm();
+            this.ExpressPromise.then(() => {
+                $("#form1").submit();
+            });
+        })
     }
 }
 
