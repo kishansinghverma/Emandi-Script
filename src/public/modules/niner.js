@@ -35,7 +35,10 @@ class Niner extends Form {
         $('#nextBtn').removeAttr('disabled');
     }
 
-    Next = () => submitDetailsForm();
+    Next() {
+        this.RemoveExpressConfig();
+        submitDetailsForm();
+    }
 
     RunHeadless() {
         this.SelectEntry();

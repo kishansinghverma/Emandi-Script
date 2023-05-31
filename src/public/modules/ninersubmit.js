@@ -3,22 +3,42 @@ import { FetchParams, Url } from "./constants.js";
 import { Form } from "./form.js";
 
 class NinerSubmit extends Form {
+    CaptchaResolvePromise;
+
     async InitializeForm() {
         await this.FetchRecord();
         this.record = window.formContext.record;
+        if (this.IsNotReady()) return;
         this.AttachListener();
+        this.ExecuteInitialActions();
     }
 
     AttachListener() {
-        const captcha = document.getElementById('dntCaptchaImg');
-        if (!captcha) { alert("No Paid 6R found!"); this.HideModal(); return; }
-        document.getElementById('img-captcha').append(captcha);
-        document.querySelector('.finalSubmit').setAttribute("onclick", "window.formContext.SubmitForm()");
-        document.getElementById('crop_type').value = 'Regular';
-        document.querySelector('input[type="checkbox"]').checked = true;
-        document.querySelector('input[type="checkbox"]').dispatchEvent(new Event('click'));
-        document.getElementById('in-captcha').addEventListener('change', ({ target }) => this.AllowUpdate(target.value));
-        this.ParseCaptcha('dntCaptchaImg', 'in-captcha');
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.PostSubmit(ajaxOptions.url, jqXHR));
+        $('#in-captcha').on('change', ({ target }) => this.AllowUpdate(target.value));
+        this.CaptchaResolvePromise = this.ResolveCaptcha('dntCaptchaImg');
+        this.CaptchaResolvePromise.then(value => this.SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
+    }
+
+    ExecuteInitialActions() {
+        $('#img-captcha').append($('#dntCaptchaImg'));
+        $('#crop_type').val('Regular');
+        $('input[type="checkbox"]').click();
+
+        const expressConfig = JSON.parse(localStorage.getItem('ExpressConfig'));
+        if (this.record && expressConfig?.IsExpress) {
+            if (expressConfig?.Id === this.record.Id) this.RunHeadless();
+            else alert('Unable To Start In Express Mode!');
+        }
+    }
+
+    IsNotReady() {
+        if (!$('#dntCaptchaImg')[0]) {
+            alert("No Paid 6R found!");
+            this.HideModal();
+            return true;
+        }
+        return false;
     }
 
     UpdateForm() {
@@ -30,16 +50,42 @@ class NinerSubmit extends Form {
         document.getElementById('previewBtn').removeAttribute('disabled');
     }
 
-    PreviewForm = () => preview_data();
+    PreviewForm() {
+        this.RemoveExpressConfig();
+        preview_data();
+    }
 
-    SubmitForm() {
-        submitDetailsForm();
-        
-        if (this.record)
-            fetch(Url.UpdateRecord, {
-                ...FetchParams.Post,
-                body: JSON.stringify({ SixrId: document.querySelector('.instrumentNumber').value })
-            }).then(HandleResponse).catch(AlertError);
+    RedirectPage() {
+        window.location.href = '/Traders/add_gatepass';
+    }
+
+    PostSubmit(url, jqXHR) {
+        if (url === '/Traders/NineRSubmit') {
+            if (jqXHR?.responseJSON[0]?.status > 0) {
+
+                //Update the NinerR number in source record.
+                if (this.record)
+                    fetch(Url.UpdateRecord, {
+                        ...FetchParams.Post,
+                        body: JSON.stringify({ SixrId: $('.instrumentNumber').val() })
+                    }).then(HandleResponse).catch(AlertError).finally(() => this.RedirectPage());
+
+                else this.RedirectPage();
+            }
+        }
+
+    }
+
+    RunHeadless() {
+        this.CaptchaResolvePromise.then(() => {
+            this.UpdateForm();
+
+            $.ajax({
+                url: $("#form1").attr("action"),
+                method: "post",
+                data: $('#form1').serialize()
+            });
+        })
     }
 }
 

@@ -53,4 +53,8 @@ export class Form {
             this.SetResolvedCaptcha(value, target);
         }).catch(AlertError);
     }
+
+    SetExpressConfig = () => localStorage.setItem('ExpressConfig', JSON.stringify({ IsExpress: true, Id: window.formContext.record.Id }));
+
+    RemoveExpressConfig = () => localStorage.removeItem('ExpressConfig');
 }

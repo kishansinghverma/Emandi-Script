@@ -18,10 +18,15 @@ class AddSixR extends Form {
         this.ExecuteInitialActions();
     }
 
+    AttachListener() {
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.PostSubmit(ajaxOptions.url, jqXHR));
+        $('#in-captcha').on('change', ({ target }) => this.AllowUpdate(target.value));
+        $('#rateofcrop').on('DOMSubtreeModified', () => $('#crop_rate').val($('#crop_rate').data('min')).trigger('change'));
+    }
+
     ExecuteInitialActions() {
-        if(this.record) $('#expressBtn').css('display', 'block');
+        if (this.record) $('#expressBtn').css('display', 'block');
         $('#img-captcha').append($('#dntCaptchaImg'));
-        $('#form1').attr('data-ajax-success', 'window.formContext.OnSubmitSuccess');
         this.CaptchaResolvePromise = this.ResolveCaptcha('dntCaptchaImg');
         this.CaptchaResolvePromise.then(value => this.SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
     }
@@ -31,11 +36,6 @@ class AddSixR extends Form {
         $('#quantity').val(this.record.Weight);
         $('#licence').val(this.record.PartyLicence ?? '');
     };
-
-    AttachListener() {
-        $('#in-captcha').on('change', ({ target }) => this.AllowUpdate(target.value));
-        $('#rateofcrop').on('DOMSubtreeModified', () => $('#crop_rate').val($('#crop_rate').data('min')).trigger('change'));
-    }
 
     UpdateForm() {
         $('#vikreta_details').val(this.Capitalize($('#sname').val()));
@@ -53,21 +53,32 @@ class AddSixR extends Form {
         $('#previewBtn').removeAttr('disabled');
     }
 
-    PreviewForm = () => preview_data();
+    PreviewForm() {
+        this.RemoveExpressConfig();
+        preview_data();
+    }
 
-    OnSubmitSuccess() {
-        if (this.record)
-            fetch(Url.UpdateRecord, {
-                ...FetchParams.Post,
-                body: JSON.stringify({ Rate: $('#crop_rate').val() })
-            }).then(HandleResponse).catch(AlertError);
-
-        alert("6R Created Successfully.\nRedirecting To Payment...");
+    RedirectPage() {
         window.location.href = '/Traders/DigitalPayment';
     }
 
+    PostSubmit(url, jqXHR) {
+        if (url === 'https://emandi.up.gov.in/Traders/add_six_r') {
+            if (jqXHR?.responseJSON[0]?.status > 0) {
+
+                //Update the Rate in source record & redirect the page.
+                if (this.record) {
+                    fetch(Url.UpdateRecord, {
+                        ...FetchParams.Post,
+                        body: JSON.stringify({ Rate: $('#crop_rate').val() })
+                    }).then(HandleResponse).catch(AlertError).finally(() => this.RedirectPage());
+                }
+                else this.RedirectPage();
+            }
+        }
+    }
+
     RunHeadless() {
-        localStorage.setItem('ExpressConfig', JSON.stringify({ IsExpress: true, Id: this.record.Id }));
         this.SelectEntry();
 
         const timerId = setInterval(() => {
@@ -80,6 +91,7 @@ class AddSixR extends Form {
         this.CaptchaResolvePromise.then(() => {
             this.UpdateForm();
             this.ExpressPromise.then(() => {
+                this.SetExpressConfig();
                 $("#form1").submit();
             });
         })

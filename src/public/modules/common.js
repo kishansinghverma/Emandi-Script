@@ -27,7 +27,8 @@ export const RouteMap = {
     generated_gatepass: { Script: List_Entries, Div: CommonDiv },
     index: { Script: Login, Div: LoginDiv },
     Account: { Script: Login, Div: LoginDiv },
-    'index?ReturnUrl=%2FAccount%2FLogOut': { Script: Login, Div: LoginDiv }
+    'index?ReturnUrl=%2FAccount%2FLogOut': { Script: Login, Div: LoginDiv },
+    'https://emandi.up.gov.in/PaymentResponse/Success': ''
 }
 
 export const AlertError = (err) => alert(err.message);
