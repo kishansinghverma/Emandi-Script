@@ -3,7 +3,8 @@ This project provides the assets (JS, JSON and Static Assets) via the RawGithub 
 
 ## Development
 - Start the local server with `npm start`.
-- Copy the content of `RunDevelopment.js` in TamperMonkey / Stay.
+- Copy the content of `ScriptInjection.js` in TamperMonkey / Stay.
+- Make sure localhost server is uncommented.
 - Save and start development.
 
 ## Deployment
@@ -11,4 +12,5 @@ This project provides the assets (JS, JSON and Static Assets) via the RawGithub 
 - Create a Production build with `npm run build`.
 - Do latest commit -> Push.
 - Navigate to JSDelivr and Purge the old cache using the Url : `https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/emandi.js`.
-- Copy and paste the content of `RunProduction.js` in TamperMonkey / Stay.
+- Copy and paste the content of `ScriptInjection.js` in TamperMonkey / Stay.
+- Make sure JsDelivr server is uncommented.
