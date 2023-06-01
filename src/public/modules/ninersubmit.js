@@ -21,7 +21,7 @@ class NinerSubmit extends Form {
     ExecuteInitialActions() {
         $('#img-captcha').append($('#dntCaptchaImg'));
         $('#crop_type').val('Regular');
-        $('input[type="checkbox"]').click();
+        $('input[type="checkbox"]').first().click();
 
         this.CaptchaResolvePromise = this.ResolveCaptcha('dntCaptchaImg');
         this.CaptchaResolvePromise.then(value => this.SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
