@@ -1,6 +1,4 @@
-import { Form } from "./form.js";
-
-class DigitalPayment extends Form {
+class DigitalPayment {
     InitializeForm() {
         this.AttachListener();
     }
@@ -18,4 +16,14 @@ class DigitalPayment extends Form {
     }
 }
 
+class GeneratedDigitalPayment {
+    InitializeForm = () => document.getElementById('Pay').click();
+}
+
+class PostSuccess {
+    InitializeForm = () => $('a.btn.btn-success')[0].click();
+}
+
 export const Digital_Payment = new DigitalPayment();
+export const Generated_Digital_Payment = new GeneratedDigitalPayment();
+export const Success = new PostSuccess();

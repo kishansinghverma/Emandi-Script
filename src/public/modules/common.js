@@ -1,10 +1,9 @@
 import { Add_Gatepass } from "./add_gatepass.js";
 import { Add_Six_R } from "./add_six_r.js";
 import { HttpMessages } from "./constants.js";
-import { Digital_Payment } from "./digitalpayment.js";
+import { Digital_Payment, Success, Generated_Digital_Payment } from "./payment.js";
 import { List_Entries } from "./listentries.js";
 import { Login } from "./login.js";
-import { Generated_Digital_Payment } from "./makepayment.js";
 import { NineR } from "./niner.js";
 import { NineRSubmit } from "./ninersubmit.js";
 import { PrintNinerR } from "./print9r.js";
@@ -27,8 +26,7 @@ export const RouteMap = {
     generated_gatepass: { Script: List_Entries, Div: CommonDiv },
     index: { Script: Login, Div: LoginDiv },
     Account: { Script: Login, Div: LoginDiv },
-    'index?ReturnUrl=%2FAccount%2FLogOut': { Script: Login, Div: LoginDiv },
-    'https://emandi.up.gov.in/PaymentResponse/Success': ''
+    Success: {Script: Success, Div: CommonDiv}
 }
 
 export const AlertError = (err) => alert(err.message);

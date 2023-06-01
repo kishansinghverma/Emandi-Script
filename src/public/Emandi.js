@@ -5,7 +5,7 @@ import { RunBasicCustomizations } from "./modules/basiccustomization.js";
 
 const RunScript = () => {
     const validRoutes = Object.keys(RouteMap);
-    const route = window.location.href.split('/').pop();
+    const route = window.location.href.split('/').pop().split('?')[0];
 
     if (window.location.href.includes('emandi.up.gov.in/Traders/'))
         RunBasicCustomizations();
