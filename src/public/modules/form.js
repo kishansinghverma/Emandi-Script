@@ -57,4 +57,12 @@ export class Form {
     SetExpressConfig = () => localStorage.setItem('ExpressConfig', JSON.stringify({ IsExpress: true, Id: window.formContext.record.Id }));
 
     RemoveExpressConfig = () => localStorage.removeItem('ExpressConfig');
+
+    TryExpressMode(executeExpress) {
+        const expressConfig = JSON.parse(localStorage.getItem('ExpressConfig'));
+        if (window.formContext?.record && expressConfig?.IsExpress) {
+            if (expressConfig?.Id === window.formContext?.record?.Id) executeExpress();
+            else console.log('Unable To Start In Express Mode!');
+        }
+    }
 }

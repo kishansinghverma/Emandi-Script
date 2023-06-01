@@ -27,6 +27,7 @@ class AddSixR extends Form {
     ExecuteInitialActions() {
         if (this.record) $('#expressBtn').css('display', 'block');
         $('#img-captcha').append($('#dntCaptchaImg'));
+        
         this.CaptchaResolvePromise = this.ResolveCaptcha('dntCaptchaImg');
         this.CaptchaResolvePromise.then(value => this.SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
     }

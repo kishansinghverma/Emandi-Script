@@ -8,11 +8,7 @@ class Niner extends Form {
     }
 
     ExecuteInitialActions() {
-        const expressConfig = JSON.parse(localStorage.getItem('ExpressConfig'));
-        if (this.record && expressConfig?.IsExpress) {
-            if (expressConfig?.Id === this.record.Id) this.RunHeadless();
-            else alert('Unable To Start In Express Mode!');
-        }
+        this.TryExpressMode(() => this.RunHeadless());
     }
 
     SelectEntry() {
@@ -43,7 +39,7 @@ class Niner extends Form {
     RunHeadless() {
         this.SelectEntry();
         this.UpdateForm();
-        this.Next();
+        submitDetailsForm();
     }
 }
 

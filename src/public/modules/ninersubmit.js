@@ -16,8 +16,6 @@ class NinerSubmit extends Form {
     AttachListener() {
         $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.PostSubmit(ajaxOptions.url, jqXHR));
         $('#in-captcha').on('change', ({ target }) => this.AllowUpdate(target.value));
-        this.CaptchaResolvePromise = this.ResolveCaptcha('dntCaptchaImg');
-        this.CaptchaResolvePromise.then(value => this.SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
     }
 
     ExecuteInitialActions() {
@@ -25,11 +23,10 @@ class NinerSubmit extends Form {
         $('#crop_type').val('Regular');
         $('input[type="checkbox"]').click();
 
-        const expressConfig = JSON.parse(localStorage.getItem('ExpressConfig'));
-        if (this.record && expressConfig?.IsExpress) {
-            if (expressConfig?.Id === this.record.Id) this.RunHeadless();
-            else alert('Unable To Start In Express Mode!');
-        }
+        this.CaptchaResolvePromise = this.ResolveCaptcha('dntCaptchaImg');
+        this.CaptchaResolvePromise.then(value => this.SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
+
+        this.TryExpressMode(() => this.RunHeadless());
     }
 
     IsNotReady() {
@@ -42,12 +39,10 @@ class NinerSubmit extends Form {
     }
 
     UpdateForm() {
-        document.getElementsByClassName('weights')[0].value = document.getElementsByClassName('Currentweights')[0].value;
-        document.getElementsByClassName('weights')[0].dispatchEvent(new Event('change'));
-        document.getElementById('rate').value = document.getElementById('cropminrate').value;
-        document.getElementById('rate').dispatchEvent(new Event('change'));
-        document.getElementById('DNTCaptchaInputText').value = document.getElementById('in-captcha').value;
-        document.getElementById('previewBtn').removeAttribute('disabled');
+        $('.weights').first().val($('.Currentweights').first().val()).trigger('change');
+        $('#rate').val($('#cropminrate').val()).trigger('change');
+        $('#DNTCaptchaInputText').val($('#in-captcha').val());
+        $('#previewBtn').removeAttr('disabled');
     }
 
     PreviewForm() {
