@@ -9,7 +9,7 @@ This project provides the assets (JS, JSON and Static Assets) via the RawGithub 
 
 ## Deployment
 - Make all the required changes.
-- Create a Production build with `npm run build`.
+- You can create a production build with `npm run build` manually or github actions do it on every push.
 - Do latest commit -> Push.
 - Navigate to JSDelivr and Purge the old cache using the Url : `https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/emandi.js`.
 - Copy and paste the content of `ScriptInjection.js` in TamperMonkey / Stay.
