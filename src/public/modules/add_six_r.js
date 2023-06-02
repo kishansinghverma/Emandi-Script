@@ -1,14 +1,11 @@
 import { Form } from "./form.js";
 import { AlertError, HandleResponse } from "./common.js";
 import { FetchParams, Url } from "./constants.js";
+import { ComplexPromise } from "./utils.js";
 class AddSixR extends Form {
-    CaptchaResolvePromise;
-    ExpressPromise;
-    ResolveExpressPromise;
-
     constructor() {
         super();
-        this.ExpressPromise = new Promise(resolve => { this.ResolveExpressPromise = resolve });
+        this.ExpressPromise = new ComplexPromise();
     }
 
     async InitializeForm() {
@@ -80,18 +77,18 @@ class AddSixR extends Form {
     }
 
     RunHeadless() {
-        this.SelectEntry();
-
         const timerId = setInterval(() => {
             if ($('#kreta_details').val()) {
-                this.ResolveExpressPromise();
+                this.ExpressPromise.Resolve();
                 clearInterval(timerId);
             }
         }, 500);
 
         this.CaptchaResolvePromise.then(() => {
+            this.SelectEntry();
             this.UpdateForm();
-            this.ExpressPromise.then(() => {
+            
+            this.ExpressPromise.Operator.then(() => {
                 this.SetExpressConfig();
                 $("#form1").submit();
             });

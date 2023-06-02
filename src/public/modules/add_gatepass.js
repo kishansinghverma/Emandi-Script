@@ -1,15 +1,7 @@
 import { AlertError, HandleResponse } from "./common.js";
 import { FetchParams, Url } from "./constants.js";
 import { Form } from "./form.js";
-
-class ComplexPromise {
-    constructor(){
-        this.Operator = new Promise((resolve, reject)=>{
-            this.Resolve = resolve;
-            this.Reject = reject;
-        })
-    }
-};
+import { ComplexPromise } from "./utils.js";
 
 class AddGatepass extends Form {
     constructor() {
@@ -42,10 +34,8 @@ class AddGatepass extends Form {
     }
 
     ExecuteInitialActions() {
-        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
-        // document.querySelector('div.modal-footer.text-center > a').setAttribute("onclick", "window.formContext.SubmitForm()");
-        // document.getElementById('PaidType').value = document.getElementById('PaidType').options[1].value;
-        // document.getElementById('PaidType').dispatchEvent(new Event('change'));
+        $('#img-captcha').append($('#dntCaptchaImg'));
+        $('#PaidType').val($('#PaidType option:eq(1)').val()).trigger('change');
 
         this.ResolveCaptcha('dntCaptchaImg').then(text => {
             this.SetResolvedCaptcha(text, 'in-captcha');
@@ -55,51 +45,37 @@ class AddGatepass extends Form {
         this.ParentPromise.Operator.then(() => {
             this.AllowUpdate($('#in-captcha').val());
             $('#nine_r_id').val($('#nine_r_id option:eq(1)').val()).trigger('change');
-
         });
+
+        this.TryExpressMode(() => this.RunHeadless());
     }
 
     SelectEntry() {
-        document.getElementById('destination').value = this.record.Mandi;
-        document.getElementById('destination').dispatchEvent(new Event('change'));
-        document.getElementById('carrier').value = this.record.Type;
-        document.getElementById('carrier-no').value = this.record.VehicleNo;
-        document.getElementById('packets').value = this.record.Packets;
-        document.getElementById('statename').value = this.record.StateCode;
-        document.getElementById('space').value = this.record.Distance;
-        document.getElementById('mandiname').value = this.record.Mandi;
+        $('#destination').val(this.record.Mandi).trigger('change');
+        $('#carrier').val(this.record.Type);
+        $('#carrier-no').val(this.record.VehicleNo);
+        $('#packets').val(this.record.Packets);
+        $('#statename').val(this.record.StateCode);
+        $('#space').val(this.record.Distance);
+        $('#mandiname').val(this.record.Mandi);
     };
 
     UpdateForm() {
-        document.getElementById('dist_ofdestination').value = document.getElementById('space').value;
-        document.getElementById('home_center').value = this.Capitalize(document.getElementById('destination').value);
-        document.getElementById('vehicle').value = document.getElementById('carrier').value;
-        document.getElementById('vehicle').dispatchEvent(new Event('change'));
-        document.getElementById('vehicle_no').value = document.getElementById('carrier-no').value.toUpperCase();
-        document.getElementById('bundle_no').value = document.getElementById('packets').value;
-        document.getElementById('state').value = document.getElementById('statename').value;
-        document.getElementById('state').dispatchEvent(new Event('change'));
-        document.getElementById('other_state_mandi').value = document.getElementById('mandiname').value;
-        document.getElementById('other_state_mandi').dispatchEvent(new Event('change'));
-        document.getElementById('DNTCaptchaInputText').value = document.getElementById('in-captcha').value;
-        document.getElementById('previewBtn').removeAttribute('disabled');
+        $('#dist_ofdestination').val($('#space').val());
+        $('#home_center').val(this.Capitalize($('#destination').val()));
+        $('#vehicle').val($('#carrier').val()).trigger('change');
+        $('#vehicle_no').val($('#carrier-no').val().toUpperCase());
+        $('#bundle_no').val($('#packets').val());
+        $('#state').val($('#statename').val()).trigger('change');
+        $('#other_state_mandi').val($('#mandiname').val()).trigger('change');
+        $('#DNTCaptchaInputText').val($('#in-captcha').val());
+        $('#previewBtn').removeAttr('disabled');
     }
 
     PreviewForm = () => preview_data();
 
-    SubmitForm() {
-        submitDetailsForm();
-
-        if (this.record)
-            fetch(Url.UpdateRecord, {
-                ...FetchParams.Post,
-                body: JSON.stringify({ GatepassId: document.getElementById('transaction_number').value })
-            })
-                .then(HandleResponse)
-                .catch(err => { if (err.code !== 204) AlertError(err) })
-                .finally(() => fetch(Url.PopRecord)
-                    .then(HandleResponse)
-                    .catch(err => { if (err.code !== 204) AlertError(err) }));
+    RedirectPage() {
+        window.location.href = '/Traders/generated_gatepass';
     }
 
     HandleAjaxResponse(ajaxOptions, response) {
@@ -109,7 +85,35 @@ class AddGatepass extends Form {
                 this.ResolveParentPromise({ Type: 'Niner', Response: response });
         }
 
+        //Handle form submission.
+        if (ajaxOptions.url === 'https://emandi.up.gov.in/Traders/add_gatepass') {
+            if (jqXHR[0]?.status > 0) {
+                if (this.record) {
+                    const requestData = { ...FetchParams.Post, body: JSON.stringify({ GatepassId: $('#transaction_number').val() }) };
 
+                    fetch(Url.UpdateRecord, requestData)
+                        .then(HandleResponse)
+                        .catch(err => { if (err.code !== 204) AlertError(err) })
+                        .finally(() => {
+                            fetch(Url.PopRecord)
+                                .then(HandleResponse)
+                                .catch(err => { if (err.code !== 204) AlertError(err) })
+                                .finally(() => this.RedirectPage())
+                        });
+                }
+                else this.RedirectPage();
+            }
+        }
+    }
+
+    RunHeadless() {
+        this.ParentPromise.Operator.then(() => {
+            this.SelectEntry();
+            this.UpdateForm();
+            
+            $("#form1").submit();
+            this.RemoveExpressConfig();
+        })
     }
 }
 

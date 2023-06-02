@@ -3,8 +3,6 @@ import { FetchParams, Url } from "./constants.js";
 import { Form } from "./form.js";
 
 class NinerSubmit extends Form {
-    CaptchaResolvePromise;
-
     async InitializeForm() {
         await this.FetchRecord();
         this.record = window.formContext.record;
