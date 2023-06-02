@@ -29,5 +29,5 @@ jobs:
           git config --global user.name "Gitflow Agent"
           git config --global user.email "kishansinghverma@gmail.com"
           git add .
-          git commit -m "Build and commit changes"
+          git commit -m "Build @ $(date +'%Y-%m-%d %H:%M:%S')"
           git push
