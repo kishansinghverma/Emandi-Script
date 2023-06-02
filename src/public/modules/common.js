@@ -29,7 +29,7 @@ export const RouteMap = {
     Success: {Script: Success, Div: CommonDiv}
 }
 
-export const AlertError = (err) => alert(err.message);
+export const AlertError = (err) => err.message ? alert(err.message) : alert(err);
 export const LogError = (err) => console.log(err.message);
 export const HandleResponse = (response) => {
     if (!response.ok || response.status === 204)
@@ -56,4 +56,13 @@ export const Download = (response) => {
         link.remove();
     });
 }
+
+export class ComplexPromise {
+    constructor(){
+        this.Operator = new Promise((resolve, reject)=>{
+            this.Resolve = resolve;
+            this.Reject = reject;
+        })
+    }
+};
 

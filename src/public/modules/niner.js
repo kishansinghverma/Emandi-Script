@@ -16,7 +16,7 @@ class Niner extends Form {
     };
 
     UpdateForm() {
-        if (this.record.PartyLicence) {
+        if (this.record?.PartyLicence) {
             $('#uttar_pradesh').prop('checked', true).trigger('change');
             $('#br').prop('checked', true).trigger('change');
         }

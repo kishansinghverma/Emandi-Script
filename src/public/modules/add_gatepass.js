@@ -2,11 +2,62 @@ import { AlertError, HandleResponse } from "./common.js";
 import { FetchParams, Url } from "./constants.js";
 import { Form } from "./form.js";
 
+class ComplexPromise {
+    constructor(){
+        this.Operator = new Promise((resolve, reject)=>{
+            this.Resolve = resolve;
+            this.Reject = reject;
+        })
+    }
+};
+
 class AddGatepass extends Form {
-    InitializeForm() {
-        this.AttachListener();
-        this.FetchRecord();
+    constructor() {
+        super();
+        this.RemainingRequirements = ['Niner', 'Captcha'];
+        this.ParentPromise = new ComplexPromise();
+    }
+
+    async InitializeForm() {
+        await this.FetchRecord();
         this.record = window.formContext.record;
+        this.AttachListener();
+        this.ExecuteInitialActions();
+    }
+
+    AttachListener() {
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.HandleAjaxResponse(ajaxOptions, jqXHR.responseJSON));
+    }
+
+    ResolveParentPromise(target) {
+        if (target.Type === 'Niner') {
+            if (Array.isArray(target.Response) && target.Response.length > 0)
+                this.RemainingRequirements = this.RemainingRequirements.filter(item => (item != 'Niner'));
+            else alert('No Paid 9R Found!');
+        }
+        if (target.Type === 'Captcha')
+            this.RemainingRequirements = this.RemainingRequirements.filter(item => (item != 'Captcha'));
+
+        if (this.RemainingRequirements.length === 0) this.ParentPromise.Resolve();
+    }
+
+    ExecuteInitialActions() {
+        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
+        // document.querySelector('div.modal-footer.text-center > a').setAttribute("onclick", "window.formContext.SubmitForm()");
+        // document.getElementById('PaidType').value = document.getElementById('PaidType').options[1].value;
+        // document.getElementById('PaidType').dispatchEvent(new Event('change'));
+
+        this.ResolveCaptcha('dntCaptchaImg').then(text => {
+            this.SetResolvedCaptcha(text, 'in-captcha');
+            this.ResolveParentPromise({ Type: 'Captcha' });
+        });
+
+        this.ParentPromise.Operator.then(() => {
+            alert("resolved");
+            this.AllowUpdate($('#in-captcha'));
+            $('#nine_r_id').val($('#nine_r_id option:eq(1)').val()).trigger('change');
+
+        });
     }
 
     SelectEntry() {
@@ -19,22 +70,6 @@ class AddGatepass extends Form {
         document.getElementById('space').value = this.record.Distance;
         document.getElementById('mandiname').value = this.record.Mandi;
     };
-
-    AttachListener() {
-        const resolvedCaptcha = this.ResolveCaptcha('dntCaptchaImg');
-        document.getElementById('img-captcha').append(document.getElementById('dntCaptchaImg'));
-        document.querySelector('div.modal-footer.text-center > a').setAttribute("onclick", "window.formContext.SubmitForm()");
-        document.getElementById('PaidType').value = document.getElementById('PaidType').options[1].value;
-        document.getElementById('PaidType').dispatchEvent(new Event('change'));
-        document.getElementById('in-captcha').addEventListener('change', ({ target }) => this.AllowUpdate(target.value));
-        const wait = setInterval(() => {
-            if (document.getElementById('nine_r_id').options.length > 1) {
-                document.getElementById('nine_r_id').value = document.getElementById('nine_r_id').options[1].value;
-                document.getElementById('nine_r_id').dispatchEvent(new Event('change'));
-                resolvedCaptcha.then(text => this.SetResolvedCaptcha(text, 'in-captcha')).catch(AlertError).finally(() => clearInterval(wait));
-            }
-        }, 1000);
-    }
 
     UpdateForm() {
         document.getElementById('dist_ofdestination').value = document.getElementById('space').value;
@@ -66,6 +101,16 @@ class AddGatepass extends Form {
                 .finally(() => fetch(Url.PopRecord)
                     .then(HandleResponse)
                     .catch(err => { if (err.code !== 204) AlertError(err) }));
+    }
+
+    HandleAjaxResponse(ajaxOptions, response) {
+        //Handle fetching of Paid NineR(s).
+        if (ajaxOptions.url === '/Traders/Bind9RDropDown') {
+            if (ajaxOptions.data === 'ExportType=0&PaidType=1')
+                this.ResolveParentPromise({ Type: 'Niner', Response: response });
+        }
+
+
     }
 }
 
