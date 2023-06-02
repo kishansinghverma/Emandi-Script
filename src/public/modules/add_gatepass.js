@@ -53,7 +53,6 @@ class AddGatepass extends Form {
         });
 
         this.ParentPromise.Operator.then(() => {
-            alert("resolved");
             this.AllowUpdate($('#in-captcha'));
             $('#nine_r_id').val($('#nine_r_id option:eq(1)').val()).trigger('change');
 
