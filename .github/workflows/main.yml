@@ -1,2 +1,0 @@
-- name: Dhruv Custom Github Action
-  uses: dhruvdakoria/custom-github-action@v1.0.0
