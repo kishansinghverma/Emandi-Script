@@ -5,10 +5,10 @@ class LoginForm extends Form {
     InitializeForm = () => {
         this.ResolveCaptcha('dntCaptchaImg')
             .then(text => {
-                document.getElementById('userid').value = "Kishanverma.guest@gmail.com";
-                document.getElementById('pwd').value = "Kishan@123";
+                $('#userid').val("Kishanverma.guest@gmail.com");
+                $('#pwd').val("Kishan@123");
                 this.SetResolvedCaptcha(text, 'DNTCaptchaInputText');
-                document.getElementById('btnsubmit').click();
+                $('#btnsubmit').click();
             })
             .catch(AlertError);
     }
