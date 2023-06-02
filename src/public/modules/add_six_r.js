@@ -24,7 +24,7 @@ class AddSixR extends Form {
     ExecuteInitialActions() {
         if (this.record) $('#expressBtn').css('display', 'block');
         $('#img-captcha').append($('#dntCaptchaImg'));
-        
+
         this.CaptchaResolvePromise = this.ResolveCaptcha('dntCaptchaImg');
         this.CaptchaResolvePromise.then(value => this.SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
     }
@@ -87,7 +87,7 @@ class AddSixR extends Form {
         this.CaptchaResolvePromise.then(() => {
             this.SelectEntry();
             this.UpdateForm();
-            
+
             this.ExpressPromise.Operator.then(() => {
                 this.SetExpressConfig();
                 $("#form1").submit();
