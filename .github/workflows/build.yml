@@ -26,8 +26,8 @@ jobs:
       
       - name: Commit changes
         run: |
-          git config --global user.name "Your Name"
-          git config --global user.email "your-email@example.com"
+          git config --global user.name "Gitflow Agent"
+          git config --global user.email "kishansinghverma@gmail.com"
           git add .
           git commit -m "Build and commit changes"
           git push
