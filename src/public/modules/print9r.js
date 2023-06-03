@@ -5,19 +5,20 @@ import { AlertError, Download, HandleByStatusCode, HandleJsonResponse } from "./
 
 class PrintNiner extends Form {
     InitializeForm() {
-        const sixrId = document.querySelector('#tab_logic > tbody > tr > td:nth-child(8) > label').innerHTML.trim();
-        fetch(`${Url.GetBySixR}=${sixrId}`)
-            .then(HandleJsonResponse)
-            .then(data => {
-                document.getElementById('download').checked = data.Mode == "PDF";
-                document.getElementById('download').dispatchEvent(new Event('change'));
-            })
-            .catch(err => { if (err.code !== 204) AlertError(err) })
-            .finally(() => { document.getElementById('record').innerHTML = '' });
+        if (localStorage.getItem('ExpressPrint') === "true")
+            this.Print(true, true);
+        else {
+            const sixrId = $('#tab_logic > tbody > tr > td:nth-child(8) > label').html().trim();
+            fetch(`${Url.GetBySixR}=${sixrId}`)
+                .then(HandleJsonResponse)
+                .then(data => $('#download').prop('checked', data?.Mode === "PDF").trigger('change'))
+                .catch(err => { if (err.code !== 204) AlertError(err) })
+                .finally(() => { $('#record').html('') });
+        }
     }
 
-    Print(download) {
-        document.getElementById('modalContent').innerHTML = `${LoadingIcon}<hr><div>Please Wait<div>`;
+    Print(download, isExpress = false) {
+        $('#modalContent').html(`${LoadingIcon}<hr><div>Please Wait<div>`);
         const contents = document.querySelector('body > div.row > #content');
 
         const tables = [
@@ -25,7 +26,7 @@ class PrintNiner extends Form {
             contents.querySelector('.row .col-md-12 table').outerHTML
         ];
 
-        fetch(Url.PrintPdf, {
+        const requestParams = {
             ...FetchParams.Post,
             body: JSON.stringify({
                 Name: 'Niner',
@@ -33,15 +34,39 @@ class PrintNiner extends Form {
                 QR: contents.querySelector('#qrcode img').src,
                 RequiresPrinting: !download
             })
-        })
+        }
+
+        fetch(Url.PrintPdf, requestParams)
             .then(HandleByStatusCode)
-            .then(response => {
+            .then(async response => {
                 if (response.status === 201) alert('Print Job Created!');
-                if (response.status === 200) Download(response);
+                if (response.status === 200) {
+                    if (isExpress) {
+                        const res = await this.SendFileViaApi(response.url);
+                        console.log(res);
+                    }
+                    else {}
+                        //await Download(response);
+                }
             })
             .catch(AlertError)
-            .finally(() => { document.getElementById('customModal').style.display = 'none' })
+            .finally(() => {
+                $('#customModal').hide();
+                // if (isExpress)
+                //     window.location.href = '/Traders/generated_gatepass';
+            });
+    }
 
+    async SendFileViaApi(url) {
+        return await fetch('https://api.green-api.com/waInstance1101827541/sendFileByUrl/8612aade88ce4b11a6783dc152f44822a8d22f9a07c7486c99', {
+            method: 'POST',
+            body: JSON.stringify({
+                chatId: '120363153442141119@g.us',
+                urlFile: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                fileName: 'dummy.pdf',
+                caption: 'Niner'
+            })
+        })
     }
 }
 

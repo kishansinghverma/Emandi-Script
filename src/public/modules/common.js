@@ -26,7 +26,7 @@ export const RouteMap = {
     generated_gatepass: { Script: List_Entries, Div: CommonDiv },
     index: { Script: Login, Div: LoginDiv },
     Account: { Script: Login, Div: LoginDiv },
-    Success: {Script: Success, Div: CommonDiv}
+    Success: { Script: Success, Div: CommonDiv }
 }
 
 export const AlertError = (err) => err.message ? alert(err.message) : alert(err);
@@ -45,14 +45,13 @@ export const HandleByStatusCode = (response) => {
     return response;
 }
 
-export const Download = (response) => {
+export const Download = async (response) => {
     const fileName = response.url.split('/').pop();
-    response.blob().then(blob => {
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-    });
+    const blob = await response.blob();
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
 }
