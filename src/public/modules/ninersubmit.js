@@ -1,6 +1,7 @@
 import { AlertError, HandleResponse } from "./common.js";
 import { FetchParams, Url } from "./constants.js";
 import { Form } from "./form.js";
+import { MessageType, ShowAlert } from "./utils.js";
 
 class NinerSubmit extends Form {
     async InitializeForm() {
@@ -55,7 +56,7 @@ class NinerSubmit extends Form {
     PostSubmit(url, jqXHR) {
         if (url === '/Traders/NineRSubmit') {
             if (jqXHR?.responseJSON[0]?.status > 0) {
-
+                ShowAlert(MessageType.Success, "Niner Created Successfully.");
                 //Update the NinerR number in source record.
                 if (this.record)
                     fetch(Url.UpdateRecord, {
@@ -70,6 +71,7 @@ class NinerSubmit extends Form {
     }
 
     RunHeadless() {
+        ShowAlert(MessageType.Info, 'Running In Express Mode...');
         this.CaptchaResolvePromise.then(() => {
             this.UpdateForm();
 

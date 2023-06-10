@@ -1,7 +1,7 @@
 import { Form } from "./form.js";
 import { AlertError, HandleResponse } from "./common.js";
 import { FetchParams, Url } from "./constants.js";
-import { ComplexPromise } from "./utils.js";
+import { ComplexPromise, MessageType, ShowAlert } from "./utils.js";
 
 class AddSixR extends Form {
     constructor() {
@@ -78,6 +78,7 @@ class AddSixR extends Form {
     }
 
     RunHeadless() {
+        ShowAlert(MessageType.Info, 'Running In Express Mode...');
         const timerId = setInterval(() => {
             if ($('#kreta_details').val()) {
                 this.ExpressPromise.Resolve();

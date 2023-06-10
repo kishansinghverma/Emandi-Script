@@ -2,71 +2,54 @@ import { LoadingIcon } from "../assets/loader.js";
 import { Form } from "./form.js";
 import { FetchParams, Url } from "./constants.js";
 import { AlertError, Download, HandleByStatusCode, HandleJsonResponse } from "./common.js";
+import { MessageType, ShowAlert } from "./utils.js";
 
 class PrintNiner extends Form {
     InitializeForm() {
         if (localStorage.getItem('ExpressPrint') === "true")
-            this.Print(true, true);
+            this.Print(true);
         else {
             const sixrId = $('#tab_logic > tbody > tr > td:nth-child(8) > label').html().trim();
             fetch(`${Url.GetBySixR}=${sixrId}`)
                 .then(HandleJsonResponse)
-                .then(data => $('#download').prop('checked', data?.Mode === "PDF").trigger('change'))
+                .then(data => $('#print').prop('checked', data?.Mode === "Print").trigger('change'))
                 .catch(err => { if (err.code !== 204) AlertError(err) })
-                .finally(() => { $('#record').html('') });
+                .finally(() => $('#record').html(''));
         }
     }
 
-    Print(download, isExpress = false) {
-        $('#modalContent').html(`${LoadingIcon}<hr><div>Please Wait<div>`);
+    Print(isExpress = false) {
         const contents = document.querySelector('body > div.row > #content');
-
-        const tables = [
-            contents.querySelector('.table').outerHTML,
-            contents.querySelector('.row .col-md-12 table').outerHTML
-        ];
 
         const requestParams = {
             ...FetchParams.Post,
             body: JSON.stringify({
                 Name: 'Niner',
-                Tables: tables,
+                Party: $('tbody > tr:nth-child(4) > td:nth-child(6) > label').html().trim(),
+                Tables: [
+                    contents.querySelector('.table').outerHTML,
+                    contents.querySelector('.row .col-md-12 table').outerHTML
+                ],
                 QR: contents.querySelector('#qrcode img').src,
-                RequiresPrinting: !download
+                Print: $('#print').is(':checked'),
+                ForceDownload: $('#forcedownload').is(':checked')
             })
-        }
+        };
+
+        $('#modalContent').html(`${LoadingIcon}<hr><div>Please Wait<div>`);
 
         fetch(Url.PrintPdf, requestParams)
             .then(HandleByStatusCode)
             .then(async response => {
-                if (response.status === 201) alert('Print Job Created!');
-                if (response.status === 200) {
-                    if (isExpress) {
-                        const res = await this.SendFileViaApi(response.url);
-                        console.log(res);
-                    }
-                    else {}
-                        //await Download(response);
-                }
+                if (response.status === 201) ShowAlert(MessageType.Success, 'PDF Sent Via WhatsApp.', 3)
+                if (response.status === 202) ShowAlert(MessageType.Success, 'Print Job Sent.', 3);
+                if (response.status === 200) await Download(response);
             })
             .catch(AlertError)
             .finally(() => {
                 $('#customModal').hide();
-                // if (isExpress)
-                //     window.location.href = '/Traders/generated_gatepass';
+                if (isExpress) localStorage.removeItem('ExpressPrint');
             });
-    }
-
-    async SendFileViaApi(url) {
-        return await fetch('https://api.green-api.com/waInstance1101827541/sendFileByUrl/8612aade88ce4b11a6783dc152f44822a8d22f9a07c7486c99', {
-            method: 'POST',
-            body: JSON.stringify({
-                chatId: '120363153442141119@g.us',
-                urlFile: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-                fileName: 'dummy.pdf',
-                caption: 'Niner'
-            })
-        })
     }
 }
 

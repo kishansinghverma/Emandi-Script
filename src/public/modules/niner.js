@@ -37,6 +37,7 @@ class Niner extends Form {
     }
 
     RunHeadless() {
+        ShowAlert(MessageType.Info, 'Running In Express Mode...');
         this.SelectEntry();
         this.UpdateForm();
         submitDetailsForm();

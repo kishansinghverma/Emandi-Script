@@ -2,7 +2,7 @@ const baseUrl = "https://nextcloud.azure-api.net/emandi/api";
 //const baseUrl = "http://localhost:8585/api";
 const homeUrl = "https://nextcloud.azure-api.net/api"
 
-const getUrl = (path)=> (`${baseUrl}/${path}`);
+const getUrl = (path) => (`${baseUrl}/${path}`);
 
 export const FetchParams = {
     Post: {
@@ -12,7 +12,7 @@ export const FetchParams = {
 }
 
 export const Url = {
-    UpdateRecord : getUrl('update'),
+    UpdateRecord: getUrl('update'),
     SetRate: getUrl('rate'),
     PeekRecord: getUrl('peek'),
     PopRecord: getUrl('pop'),

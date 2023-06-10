@@ -8,6 +8,7 @@ import { NineR } from "./niner.js";
 import { NineRSubmit } from "./ninersubmit.js";
 import { PrintNinerR } from "./print9r.js";
 import { PrintGatePass } from "./printgatepass.js";
+import { MessageType, ShowAlert } from "./utils.js";
 
 const CommonDiv = '#content > div > div';
 const PrintDiv = '#content';
@@ -29,7 +30,7 @@ export const RouteMap = {
     Success: { Script: Success, Div: CommonDiv }
 }
 
-export const AlertError = (err) => err.message ? alert(err.message) : alert(err);
+export const AlertError = (err) => err.message ? ShowAlert(MessageType.Error, err.message) : ShowAlert(MessageType.Error, err);
 export const LogError = (err) => console.log(err.message);
 export const HandleResponse = (response) => {
     if (!response.ok || response.status === 204)

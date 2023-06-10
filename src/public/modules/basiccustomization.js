@@ -9,7 +9,7 @@ const AddLinks = () => {
     const link = document.createElement('li');
     link.innerHTML = `  <a href="#" onclick="{
                             localStorage.setItem('ExpressPrint', 'true');
-                            window.location.href = '/Traders/generated_9R';
+                            window.location.href = '/Traders/generated_gatepass';
                         }">
                             <i class="fa fa-file-text-o"></i>
                             <span> Print Last Reciepts </span> 

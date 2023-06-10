@@ -163,11 +163,18 @@ const Print = `
         	${LoadingIcon}
         </div>
         <hr>
-        <div style="display: flex;" id="msgholder">
-            <input type="checkbox" id="download">&nbsp;Only download the document.
+        <div style="display: flex; flex-direction: column" id="msgholder">
+			<label for="print">
+            	<input type="radio" id="print" name="printtype" /> 
+				Print Document On Paper.
+			</label>
+			<label for="forcedownload">
+				<input type="radio" id="forcedownload" name="printtype" /> 
+				Force Download.
+			</label>
         </div>
         <hr>
-        <button class="btn btn-success" onclick="window.formContext.Print(document.getElementById(\'download\').checked)">Print Document</button>
+        <button class="btn btn-success" onclick="window.formContext.Print()">Print Document</button>
 	</div>
 </div>
 `
@@ -175,7 +182,6 @@ const Print = `
 export const Modals = {
 	Account: BlankModal,
 	index: BlankModal,
-    'index?ReturnUrl=%2FAccount%2FLogOut': BlankModal,
     add_six_r,
     NineR,
     NineRSubmit,

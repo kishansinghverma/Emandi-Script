@@ -89,16 +89,20 @@ class AddGatepass extends Form {
         if (ajaxOptions.url === 'https://emandi.up.gov.in/Traders/add_gatepass') {
             if (jqXHR[0]?.status > 0) {
                 if (this.record) {
-                    const requestData = { ...FetchParams.Post, body: JSON.stringify({ GatepassId: $('#transaction_number').val() }) };
+                    const requestData = {
+                        ...FetchParams.Post,
+                        body: JSON.stringify({
+                            GatepassId: $('#transaction_number').val(),
+                            Finalize: true
+                        })
+                    };
 
                     fetch(Url.UpdateRecord, requestData)
                         .then(HandleResponse)
                         .catch(err => { if (err.code !== 204) AlertError(err) })
                         .finally(() => {
-                            fetch(Url.PopRecord)
-                                .then(HandleResponse)
-                                .catch(err => { if (err.code !== 204) AlertError(err) })
-                                .finally(() => this.RedirectPage())
+                            this.RemoveExpressConfig();
+                            this.RedirectPage();
                         });
                 }
                 else this.RedirectPage();
@@ -107,12 +111,12 @@ class AddGatepass extends Form {
     }
 
     RunHeadless() {
+        ShowAlert(MessageType.Info, 'Running In Express Mode...');
         this.ParentPromise.Operator.then(() => {
             this.SelectEntry();
             this.UpdateForm();
-            
             $("#form1").submit();
-            this.RemoveExpressConfig();
+            localStorage.setItem('ExpressPrint', 'true');
         })
     }
 }

@@ -2,10 +2,13 @@ import { Modals } from "./assets/modals.js";
 import { CSS } from "./assets/style.js";
 import { RouteMap } from "./modules/common.js";
 import { RunBasicCustomizations } from "./modules/basiccustomization.js";
+import { InjectAlertModal } from "./modules/utils.js";
 
 const RunScript = () => {
     const validRoutes = Object.keys(RouteMap);
     const route = window.location.href.split('/').pop().split('?')[0];
+
+    InjectAlertModal();
 
     if (window.location.href.includes('emandi.up.gov.in/Traders/'))
         RunBasicCustomizations();
