@@ -1,8 +1,8 @@
 import { LoadingIcon } from "../assets/loader.js";
 import { Form } from "./form.js";
-import { FetchParams, Url } from "./constants.js";
+import { FetchParams, Url, MessageType } from "./constants.js";
 import { AlertError, Download, HandleByStatusCode, HandleJsonResponse } from "./common.js";
-import { MessageType, ShowAlert } from "./utils.js";
+import { ShowAlert } from "./utils.js";
 
 class PrintNiner extends Form {
     InitializeForm() {

@@ -1,6 +1,7 @@
 import { AlertError } from "./common.js";
+import { MessageType } from "./constants.js";
 import { Form } from "./form.js";
-import { MessageType, ShowAlert } from "./utils.js";
+import { ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
 
 class LoginForm extends Form {
     InitializeForm = () => {
@@ -8,9 +9,9 @@ class LoginForm extends Form {
         $('#userid').val("Kishanverma.guest@gmail.com");
         $('#pwd').val("Kishan@123");
         
-        this.ResolveCaptcha('dntCaptchaImg')
+        ResolveCaptcha('dntCaptchaImg')
             .then(text => {
-                this.SetResolvedCaptcha(text, 'DNTCaptchaInputText');
+                SetResolvedCaptcha(text, 'DNTCaptchaInputText');
                 $('#btnsubmit').click();
             })
             .catch(AlertError);

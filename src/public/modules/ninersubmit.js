@@ -1,7 +1,7 @@
 import { AlertError, HandleResponse } from "./common.js";
-import { FetchParams, Url } from "./constants.js";
+import { FetchParams, Url, MessageType } from "./constants.js";
 import { Form } from "./form.js";
-import { MessageType, ShowAlert } from "./utils.js";
+import { ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
 
 class NinerSubmit extends Form {
     async InitializeForm() {
@@ -22,8 +22,8 @@ class NinerSubmit extends Form {
         $('#crop_type').val('Regular');
         $('input[type="checkbox"]').first().click();
 
-        this.CaptchaResolvePromise = this.ResolveCaptcha('dntCaptchaImg');
-        this.CaptchaResolvePromise.then(value => this.SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
+        this.CaptchaResolvePromise = ResolveCaptcha('dntCaptchaImg');
+        this.CaptchaResolvePromise.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
 
         this.TryExpressMode(() => this.RunHeadless());
     }

@@ -1,4 +1,5 @@
-import { MessageType, ShowAlert } from "./utils.js";
+import { MessageType } from "./constants.js";
+import { ShowAlert } from "./utils.js";
 
 class ListEntries {
     InitializeForm = () => {

@@ -1,7 +1,7 @@
 import { AlertError, HandleResponse } from "./common.js";
 import { FetchParams, Url } from "./constants.js";
 import { Form } from "./form.js";
-import { ComplexPromise } from "./utils.js";
+import { Capitalize, ComplexPromise, ResolveCaptcha, SetResolvedCaptcha } from "./utils.js";
 
 class AddGatepass extends Form {
     constructor() {
@@ -37,8 +37,8 @@ class AddGatepass extends Form {
         $('#img-captcha').append($('#dntCaptchaImg'));
         $('#PaidType').val($('#PaidType option:eq(1)').val()).trigger('change');
 
-        this.ResolveCaptcha('dntCaptchaImg').then(text => {
-            this.SetResolvedCaptcha(text, 'in-captcha');
+        ResolveCaptcha('dntCaptchaImg').then(text => {
+            SetResolvedCaptcha(text, 'in-captcha');
             this.ResolveParentPromise({ Type: 'Captcha' });
         });
 
@@ -62,7 +62,7 @@ class AddGatepass extends Form {
 
     UpdateForm() {
         $('#dist_ofdestination').val($('#space').val());
-        $('#home_center').val(this.Capitalize($('#destination').val()));
+        $('#home_center').val(Capitalize($('#destination').val()));
         $('#vehicle').val($('#carrier').val()).trigger('change');
         $('#vehicle_no').val($('#carrier-no').val().toUpperCase());
         $('#bundle_no').val($('#packets').val());

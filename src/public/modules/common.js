@@ -1,6 +1,6 @@
 import { Add_Gatepass } from "./add_gatepass.js";
 import { Add_Six_R } from "./add_six_r.js";
-import { HttpMessages } from "./constants.js";
+import { HttpMessages, MessageType } from "./constants.js";
 import { Digital_Payment, Success, Generated_Digital_Payment } from "./payment.js";
 import { List_Entries } from "./listentries.js";
 import { Login } from "./login.js";
@@ -8,7 +8,7 @@ import { NineR } from "./niner.js";
 import { NineRSubmit } from "./ninersubmit.js";
 import { PrintNinerR } from "./print9r.js";
 import { PrintGatePass } from "./printgatepass.js";
-import { MessageType, ShowAlert } from "./utils.js";
+import { ShowAlert } from "./utils.js";
 
 const CommonDiv = '#content > div > div';
 const PrintDiv = '#content';

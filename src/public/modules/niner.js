@@ -1,4 +1,5 @@
 import { Form } from "./form.js";
+import { Capitalize } from "./utils.js";
 
 class Niner extends Form {
     async InitializeForm() {
@@ -23,7 +24,7 @@ class Niner extends Form {
         else {
             $('#buyer_state').prop('checked', true).trigger('change');
             $('#ForSelf').prop('checked', true).trigger('change');
-            $('#kreta_details').val(this.Capitalize($('#bname').val()));
+            $('#kreta_details').val(Capitalize($('#bname').val()));
         }
         $('#crop_code').val('58').trigger('change');
         $('#StockTypeCategory').val('1').trigger('change');

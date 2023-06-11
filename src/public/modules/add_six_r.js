@@ -1,7 +1,7 @@
 import { Form } from "./form.js";
 import { AlertError, HandleResponse } from "./common.js";
-import { FetchParams, Url } from "./constants.js";
-import { ComplexPromise, MessageType, ShowAlert } from "./utils.js";
+import { FetchParams, Url, MessageType } from "./constants.js";
+import { ComplexPromise, ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
 
 class AddSixR extends Form {
     constructor() {
@@ -26,8 +26,8 @@ class AddSixR extends Form {
         if (this.record) $('#expressBtn').css('display', 'block');
         $('#img-captcha').append($('#dntCaptchaImg'));
 
-        this.CaptchaResolvePromise = this.ResolveCaptcha('dntCaptchaImg');
-        this.CaptchaResolvePromise.then(value => this.SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
+        this.CaptchaResolvePromise = ResolveCaptcha('dntCaptchaImg');
+        this.CaptchaResolvePromise.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
     }
 
     SelectEntry() {

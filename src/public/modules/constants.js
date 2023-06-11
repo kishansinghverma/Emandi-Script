@@ -1,3 +1,5 @@
+import { Success, Error, Info } from "../assets/loader.js";
+
 const baseUrl = "https://nextcloud.azure-api.net/emandi/api";
 //const baseUrl = "http://localhost:8585/api";
 const homeUrl = "https://nextcloud.azure-api.net/api"
@@ -27,4 +29,16 @@ export const HttpMessages = {
     204: "No content is available!",
     500: "Something went wrong on server!",
     413: "Content too large to send to server!"
+}
+
+export const Icon = {
+    success: Success,
+    error: Error,
+    info: Info
+}
+
+export const MessageType = {
+    Success: 'success',
+    Error: 'error',
+    Info: 'info'
 }

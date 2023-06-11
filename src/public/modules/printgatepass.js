@@ -1,8 +1,8 @@
 import { LoadingIcon } from "../assets/loader.js";
 import { Download, HandleJsonResponse, HandleByStatusCode, AlertError } from "./common.js";
-import { FetchParams, Url } from "./constants.js";
+import { FetchParams, Url, MessageType } from "./constants.js";
 import { Form } from "./form.js";
-import { MessageType, ShowAlert } from "./utils.js";
+import { ShowAlert } from "./utils.js";
 
 class PrintGatepass extends Form {
     InitializeForm() {
@@ -46,6 +46,7 @@ class PrintGatepass extends Form {
         $('#modalContent').html(`${LoadingIcon}<hr><div>Please Wait<div>`);
 
         fetch(Url.PrintPdf, requestParams)
+            .then(HandleByStatusCode)
             .then(async response => {
                 if (response.status === 201) ShowAlert(MessageType.Success, 'PDF Sent Via WhatsApp.', 3)
                 if (response.status === 202) ShowAlert(MessageType.Success, 'Print Job Sent.', 3);
