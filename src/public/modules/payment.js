@@ -1,3 +1,6 @@
+import { MessageType } from "./constants";
+import { ShowAlert } from "./utils";
+
 class DigitalPayment {
     InitializeForm() {
         this.AttachListener();
@@ -8,7 +11,7 @@ class DigitalPayment {
             if (document.querySelector('#datatable1 > tbody').childElementCount > 0) {
                 clearInterval(wait);
                 const requests = document.getElementsByClassName('chk');
-                if (requests.length < 1) { alert('No Payments Pending!'); return };
+                if (requests.length < 1) { ShowAlert(MessageType.Info, 'No Payments Pending!', 3); return };
                 requests[0].click();
                 document.getElementById('proceddnow').click();
             }

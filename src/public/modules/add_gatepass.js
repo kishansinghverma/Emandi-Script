@@ -1,7 +1,7 @@
 import { AlertError, HandleResponse } from "./common.js";
-import { FetchParams, Url } from "./constants.js";
+import { FetchParams, MessageType, Url } from "./constants.js";
 import { Form } from "./form.js";
-import { Capitalize, ComplexPromise, ResolveCaptcha, SetResolvedCaptcha } from "./utils.js";
+import { Capitalize, ComplexPromise, ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
 
 class AddGatepass extends Form {
     constructor() {
@@ -25,7 +25,7 @@ class AddGatepass extends Form {
         if (target.Type === 'Niner') {
             if (Array.isArray(target.Response) && target.Response.length > 0)
                 this.RemainingRequirements = this.RemainingRequirements.filter(item => (item != 'Niner'));
-            else alert('No Paid 9R Found!');
+            else ShowAlert(MessageType.Error, 'No Paid 9R Found!', 3);
         }
         if (target.Type === 'Captcha')
             this.RemainingRequirements = this.RemainingRequirements.filter(item => (item != 'Captcha'));

@@ -30,7 +30,7 @@ class NinerSubmit extends Form {
 
     IsNotReady() {
         if (!$('#dntCaptchaImg')[0]) {
-            alert("No Paid 6R found!");
+            ShowAlert(MessageType.Error, "No Paid 6R found!", 3);
             this.HideModal();
             return true;
         }
