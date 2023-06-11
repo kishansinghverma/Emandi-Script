@@ -1,5 +1,6 @@
+import { MessageType } from "./constants.js";
 import { Form } from "./form.js";
-import { Capitalize } from "./utils.js";
+import { Capitalize, ShowAlert } from "./utils.js";
 
 class Niner extends Form {
     async InitializeForm() {

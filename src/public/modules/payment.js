@@ -1,5 +1,5 @@
-import { MessageType } from "./constants";
-import { ShowAlert } from "./utils";
+import { MessageType } from "./constants.js";
+import { ShowAlert } from "./utils.js";
 
 class DigitalPayment {
     InitializeForm() {
