@@ -55,6 +55,14 @@ class NinerSubmit extends Form {
 
     PostSubmit(url, jqXHR) {
         if (url === '/Traders/NineRSubmit') {
+            // Reload the Page if parsed captcha is invalid.
+            if (jqXHR?.responseJSON[0]?.status === 0) {
+                if (jqXHR?.responseJSON[0]?.msg?.includes('Captcha')) {
+                    ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
+                    setTimeout(() => location.reload(), 1000);
+                }
+            }
+
             if (jqXHR?.responseJSON[0]?.status > 0) {
                 ShowAlert(MessageType.Success, "Niner Created Successfully.");
                 //Update the NinerR number in source record.

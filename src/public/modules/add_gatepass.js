@@ -87,6 +87,15 @@ class AddGatepass extends Form {
 
         //Handle form submission.
         if (ajaxOptions.url === 'https://emandi.up.gov.in/Traders/add_gatepass') {
+            // Reload the Page if parsed captcha is invalid.
+            if (jqXHR?.responseJSON[0]?.status === 0) {
+                if (jqXHR?.responseJSON[0]?.msg?.includes('Captcha')) {
+                    ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
+                    setTimeout(() => location.reload(), 1000);
+                }
+            }
+
+            // Handle form submit.
             if (jqXHR[0]?.status > 0) {
                 if (this.record) {
                     const requestData = {

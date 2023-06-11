@@ -1,7 +1,7 @@
 import { Form } from "./form.js";
 import { AlertError, HandleResponse } from "./common.js";
 import { FetchParams, Url, MessageType } from "./constants.js";
-import { ComplexPromise, ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
+import { Capitalize, ComplexPromise, ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
 
 class AddSixR extends Form {
     constructor() {
@@ -37,7 +37,7 @@ class AddSixR extends Form {
     };
 
     UpdateForm() {
-        $('#vikreta_details').val(this.Capitalize($('#sname').val()));
+        $('#vikreta_details').val(Capitalize($('#sname').val()));
         $('#vikreta_mobile').val('7037433280');
         if ($('#licence').val()) {
             $('#trader_type').prop('checked', true).trigger('change');
@@ -62,7 +62,18 @@ class AddSixR extends Form {
     }
 
     PostSubmit(url, jqXHR) {
+        console.log(url);
+        console.log(jqXHR);
+
         if (url === 'https://emandi.up.gov.in/Traders/add_six_r') {
+            // Reload the Page if parsed captcha is invalid. 
+            if (jqXHR?.responseJSON[0]?.status === 0) {
+                if (jqXHR?.responseJSON[0]?.msg?.includes('Captcha')) {
+                    ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
+                    setTimeout(() => location.reload(), 1000);
+                }
+            }
+
             if (jqXHR?.responseJSON[0]?.status > 0) {
 
                 //Update the Rate in source record & redirect the page.
