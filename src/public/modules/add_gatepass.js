@@ -18,7 +18,7 @@ class AddGatepass extends Form {
     }
 
     AttachListener() {
-        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.HandleAjaxResponse(ajaxOptions, jqXHR.responseJSON));
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.HandleAjaxResponse(ajaxOptions, jqXHR));
     }
 
     ResolveParentPromise(target) {
@@ -78,11 +78,11 @@ class AddGatepass extends Form {
         window.location.href = '/Traders/generated_gatepass';
     }
 
-    HandleAjaxResponse(ajaxOptions, response) {
+    HandleAjaxResponse(ajaxOptions, jqXHR) {
         //Handle fetching of Paid NineR(s).
         if (ajaxOptions.url === '/Traders/Bind9RDropDown') {
-            if (ajaxOptions.data === 'ExportType=0&PaidType=1')
-                this.ResolveParentPromise({ Type: 'Niner', Response: response });
+            if (ajaxOptions.data === 'ExportType=0&PaidType=1'){}
+                this.ResolveParentPromise({ Type: 'Niner', Response: jqXHR.responseJSON });
         }
 
         //Handle form submission.
@@ -96,7 +96,7 @@ class AddGatepass extends Form {
             }
 
             // Handle form submit.
-            if (jqXHR[0]?.status > 0) {
+            if (jqXHR?.responseJSON[0]?.status > 0) {
                 if (this.record) {
                     const requestData = {
                         ...FetchParams.Post,

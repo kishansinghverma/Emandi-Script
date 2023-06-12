@@ -62,9 +62,6 @@ class AddSixR extends Form {
     }
 
     PostSubmit(url, jqXHR) {
-        console.log(url);
-        console.log(jqXHR);
-
         if (url === 'https://emandi.up.gov.in/Traders/add_six_r') {
             // Reload the Page if parsed captcha is invalid. 
             if (jqXHR?.responseJSON[0]?.status === 0) {
