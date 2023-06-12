@@ -81,11 +81,10 @@ class AddGatepass extends Form {
     HandleAjaxResponse(ajaxOptions, jqXHR) {
         //Handle fetching of Paid NineR(s).
         if (ajaxOptions.url === '/Traders/Bind9RDropDown') {
-            if (ajaxOptions.data === 'ExportType=0&PaidType=1'){}
-                this.ResolveParentPromise({ Type: 'Niner', Response: jqXHR.responseJSON });
+            if (ajaxOptions.data === 'ExportType=0&PaidType=1') { }
+            this.ResolveParentPromise({ Type: 'Niner', Response: jqXHR.responseJSON });
         }
 
-        //Handle form submission.
         if (ajaxOptions.url === 'https://emandi.up.gov.in/Traders/add_gatepass') {
             // Reload the Page if parsed captcha is invalid.
             if (jqXHR?.responseJSON[0]?.status === 0) {
