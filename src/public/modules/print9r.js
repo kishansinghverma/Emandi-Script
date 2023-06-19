@@ -18,6 +18,10 @@ class PrintNiner extends Form {
         }
     }
 
+    RedirectPage() {
+        window.location.href = '//Traders/Dashboard';
+    }
+
     Print(isExpress = false) {
         const contents = document.querySelector('body > div.row > #content');
 
@@ -48,7 +52,11 @@ class PrintNiner extends Form {
             .catch(AlertError)
             .finally(() => {
                 $('#customModal').hide();
-                if (isExpress) localStorage.removeItem('ExpressPrint');
+                if (isExpress) {
+                    localStorage.removeItem('ExpressPrint');
+                    if (confirm("Express Flow Is Complete!\nDo You Want To Redirect To Home?"))
+                        this.RedirectPage();
+                }
             });
     }
 }
