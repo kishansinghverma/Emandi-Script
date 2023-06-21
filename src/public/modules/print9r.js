@@ -19,7 +19,7 @@ class PrintNiner extends Form {
     }
 
     RedirectPage() {
-        window.location.href = '//Traders/Dashboard';
+        window.location.href = '/Traders/Dashboard';
     }
 
     Print(isExpress = false) {
