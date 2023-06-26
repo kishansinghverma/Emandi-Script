@@ -20,10 +20,10 @@ export const ResolveCaptcha = async (source) => {
 
     while (!isResolved) {
         if (isNaN(parsedText))
-            ShowAlert(MessageType.Error, "Captcha Error! Retrying...", 1);
+            ShowAlert(MessageType.Error, "Captcha Error (NaN)! Retrying...", 1);
         else {
             if (parsedText < 1000 || parsedText > 9999)
-                ShowAlert(MessageType.Error, "Captcha Error! Retrying...", 1);
+                ShowAlert(MessageType.Error, "Captcha Error (Range)! Retrying...", 1);
             else {
                 isResolved = true;
                 break;

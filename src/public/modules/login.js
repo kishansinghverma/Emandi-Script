@@ -1,42 +1,52 @@
 import { AlertError } from "./common.js";
 import { MessageType } from "./constants.js";
 import { Form } from "./form.js";
-import { ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
+import { ComplexPromise, ParseCaptcha, ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
 
 class LoginForm extends Form {
     InitializeForm = () => {
-        ShowAlert(MessageType.Info, 'Logging In, Please Wait...', 5);
-        this.ParseCaptcha();
+        this.LoginPromise = new ComplexPromise();
         this.RegisterListeners();
+        this.ExecuteInitialActions();
     }
 
     RegisterListeners() {
-        const targetNode = document.querySelector('form > div:nth-child(3) .col-sm-10');
-        const config = { childList: true };
-        const callback = (mutationList, observer) => {
-            for (const mutation of mutationList) {
-                this.ParseCaptcha();
-            }
-        };
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.HandleAjaxResponse(ajaxOptions, jqXHR));
 
-        const observer = new MutationObserver(callback);
-        observer.observe(targetNode, config);
+        const observer = new MutationObserver((mutationList, observer) => {
+            for (const mutation of mutationList)
+                if (mutation.addedNodes.length > 0)
+                    $('#dntCaptchaImg').on('load', () => this.LoginPromise.Operator.then(() => this.Login()));
+        });
+
+        observer.observe($('form > div:nth-child(3) .col-sm-10')[0], { childList: true });
     }
 
-    ParseCaptcha() {
-        this.Source = $('#dntCaptchaImg').attr('src');
+    ExecuteInitialActions() {
+        ShowAlert(MessageType.Info, 'Logging In, Please Wait...', 5);
+        $('#dntCaptchaRefreshButton').click();
+        this.LoginPromise.Resolve();
+    }
+
+    Login() {
         $('#userid').val("Kishanverma.guest@gmail.com");
         $('#pwd').val("Kishan@123");
 
         ResolveCaptcha('dntCaptchaImg')
             .then(text => {
-                if (this.Source === $('#dntCaptchaImg').attr('src')) {
-                    SetResolvedCaptcha(text, 'DNTCaptchaInputText');
-                    $('#btnsubmit').click();
-                }
-                else this.ParseCaptcha();
+                SetResolvedCaptcha(text, 'DNTCaptchaInputText');
+                $('#btnsubmit').click();
             })
             .catch(AlertError);
+    }
+
+    HandleAjaxResponse(ajaxOptions, jqXHR) {
+        if (ajaxOptions.url === 'https://emandi.up.gov.in/Account') {
+            if (!jqXHR.responseJSON.succeeded) {
+                ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
+                setTimeout(() => location.reload(), 1000);
+            }
+        }
     }
 }
 
