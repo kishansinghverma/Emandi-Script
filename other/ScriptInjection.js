@@ -14,10 +14,10 @@
 window.addEventListener('load', () => {
     // To Inject On Payment Gateway
     const page = window.location.href;
-    if(page.includes('merchantprelogin')) paySubmitUPI('UPI');
-    if(page.includes('merchantotherupidisplay')){$('#vpa').click(); $('#vpa1').val('7037433280@ybl'); submitDataUpi();}
-    if(page.includes('merchantinterother')) $('#Go').click();
-    if(page.includes('merchantupiconfirm')) redirectToHandler();
+    if (page.includes('merchantprelogin')) paySubmitUPI('UPI');
+    if (page.includes('merchantotherupidisplay')) { $('#vpa').click(); $('#vpa1').val('7037433280@ybl'); submitDataUpi(); }
+    if (page.includes('merchantinterother')) $('#Go').click();
+    if (page.includes('merchantupiconfirm')) redirectToHandler();
 
     // To Inject On Emandi
     const script = document.createElement('script');
