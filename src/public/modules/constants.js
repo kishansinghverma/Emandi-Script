@@ -18,8 +18,6 @@ export const Url = {
     SetRate: getUrl('rate'),
     PeekRecord: getUrl('peek'),
     PopRecord: getUrl('pop'),
-    GetBySixR: getUrl('searchbysixr?id'),
-    GetByNineR: getUrl('searchbygatepass?id'),
     PrintPdf: `${homeUrl}/files/html`
 }
 
