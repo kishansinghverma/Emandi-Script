@@ -13,16 +13,11 @@
 
 window.addEventListener('load', () => {
     // To Inject On Payment Gateway
-    switch (window.location.href.split('/').pop()) {
-        case 'merchantprelogin.htm':
-            paySubmitUPI('UPI'); break;
-        case 'merchantotherupidisplay.htm':
-            $('#vpa').click(); $('#vpa1').val('7037433280@ybl'); submitDataUpi(); break;
-        case 'merchantinterother.htm':
-            $('#Go').click(); break;
-        case 'merchantupiconfirm.htm':
-            redirectToHandler(); break;
-    }
+    const page = window.location.href;
+    if(page.includes('merchantprelogin')) paySubmitUPI('UPI');
+    if(page.includes('merchantotherupidisplay')){$('#vpa').click(); $('#vpa1').val('7037433280@ybl'); submitDataUpi();}
+    if(page.includes('merchantinterother')) $('#Go').click();
+    if(page.includes('merchantupiconfirm')) redirectToHandler();
 
     // To Inject On Emandi
     const script = document.createElement('script');
