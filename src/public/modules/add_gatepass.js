@@ -1,4 +1,4 @@
-import { AlertError, HandleResponse } from "./common.js";
+import { AlertError, HandleResponse, PrintLastRecords } from "./common.js";
 import { FetchParams, MessageType, Url } from "./constants.js";
 import { Form } from "./form.js";
 import { Capitalize, ComplexPromise, ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
@@ -96,21 +96,17 @@ class AddGatepass extends Form {
 
             // Handle form submit.
             if (jqXHR?.responseJSON[0]?.status > 0) {
-                if (this.record) {
-                    const requestData = {
-                        ...FetchParams.Post,
-                        body: JSON.stringify({
-                            GatepassId: $('#transaction_number').val(),
-                            Finalize: true
-                        })
-                    };
+                ShowAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
 
-                    fetch(Url.UpdateRecord, requestData)
+                if (this.record) {
+                    fetch(Url.PopRecord)
                         .then(HandleResponse)
                         .catch(err => { if (err.code !== 204) AlertError(err) })
                         .finally(() => {
-                            this.RemoveExpressConfig();
-                            this.RedirectPage();
+                            this.TryExpressMode(() => {
+                                this.RemoveExpressConfig();
+                                PrintLastRecords();
+                            })
                         });
                 }
                 else this.RedirectPage();
@@ -124,7 +120,6 @@ class AddGatepass extends Form {
             this.SelectEntry();
             this.UpdateForm();
             $("#form1").submit();
-            localStorage.setItem('ExpressPrint', 'true');
         })
     }
 }

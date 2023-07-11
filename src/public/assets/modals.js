@@ -159,10 +159,6 @@ const Print = `
 		<button onclick="window.formContext.HideModal()">x</button>
 	</div>
 	<div id="modalContent" class="custom-modal-content">
-		<div id="record">
-        	${LoadingIcon}
-        </div>
-        <hr>
         <div style="display: flex; flex-direction: column" id="msgholder">
 			<label for="print">
             	<input type="radio" id="print" name="printtype" /> 
@@ -176,8 +172,7 @@ const Print = `
         <hr>
         <button class="btn btn-success" onclick="window.formContext.Print()">Print Document</button>
 	</div>
-</div>
-`
+</div>`;
 
 export const Modals = {
 	Account: BlankModal,

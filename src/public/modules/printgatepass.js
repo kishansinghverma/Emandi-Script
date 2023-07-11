@@ -1,26 +1,16 @@
 import { LoadingIcon } from "../assets/loader.js";
-import { Download, HandleJsonResponse, HandleByStatusCode, AlertError } from "./common.js";
+import { Download, HandleByStatusCode, AlertError, GetPrintConfig, RemovePrintConfig } from "./common.js";
 import { FetchParams, Url, MessageType } from "./constants.js";
 import { Form } from "./form.js";
 import { ShowAlert } from "./utils.js";
 
 class PrintGatepass extends Form {
     InitializeForm() {
-        if (localStorage.getItem('ExpressPrint') === "true")
+       const config = GetPrintConfig();
+        if (config.IsExpress) {
+            $('#print').prop("checked", config.Target === 'Printer');
             this.Print(true);
-        else {
-            const ninerId = $('#content > table.table.table-bordered > tbody > tr:nth-child(1) > td:nth-child(4) > label').html().trim();
-
-            fetch(`${Url.GetByNineR}=${ninerId}`)
-                .then(HandleJsonResponse)
-                .then(data => $('#print').prop('checked', data?.Mode === "Print").trigger('change'))
-                .catch(err => { if (err.code !== 204) AlertError(err) })
-                .finally(() => $('#record').html(''));
         }
-    }
-
-    RedirectPage() {
-        window.location.href = '/Traders/generated_9R';
     }
 
     Print(isExpress = false) {
@@ -52,9 +42,14 @@ class PrintGatepass extends Form {
                 if (response.status === 202) ShowAlert(MessageType.Success, 'Print Job Sent.', 3);
                 if (response.status === 200) await Download(response);
             })
-            .then(() => { if (isExpress) this.RedirectPage() })
             .catch(AlertError)
-            .finally(() => $('#customModal').hide());
+            .finally(() => {
+                $('#customModal').hide();
+                if (isExpress) {
+                    RemovePrintConfig('GP');
+                    setTimeout(window.close, 3000);
+                }
+            });
     }
 }
 

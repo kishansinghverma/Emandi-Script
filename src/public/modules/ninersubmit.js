@@ -65,17 +65,9 @@ class NinerSubmit extends Form {
 
             if (jqXHR?.responseJSON[0]?.status > 0) {
                 ShowAlert(MessageType.Success, "Niner Created Successfully.");
-                //Update the NinerR number in source record.
-                if (this.record)
-                    fetch(Url.UpdateRecord, {
-                        ...FetchParams.Post,
-                        body: JSON.stringify({ SixrId: $('.instrumentNumber').val() })
-                    }).then(HandleResponse).catch(AlertError).finally(() => this.RedirectPage());
-
-                else this.RedirectPage();
+                this.RedirectPage();
             }
         }
-
     }
 
     RunHeadless() {
@@ -83,11 +75,14 @@ class NinerSubmit extends Form {
         this.CaptchaResolvePromise.then(() => {
             this.UpdateForm();
 
+            $('#loader').show();
             $.ajax({
                 url: $("#form1").attr("action"),
                 method: "post",
-                data: $('#form1').serialize()
+                data: $('#form1').serialize(),
+                async: false
             });
+            $('#loader').hide();
         })
     }
 }

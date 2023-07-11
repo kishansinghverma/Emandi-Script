@@ -8,7 +8,7 @@ import { NineR } from "./niner.js";
 import { NineRSubmit } from "./ninersubmit.js";
 import { PrintNinerR } from "./print9r.js";
 import { PrintGatePass } from "./printgatepass.js";
-import { ShowAlert } from "./utils.js";
+import { FetchLastRecordId, ShowAlert } from "./utils.js";
 
 const CommonDiv = '#content > div > div';
 const PrintDiv = '#content';
@@ -55,4 +55,21 @@ export const Download = async (response) => {
     document.body.appendChild(link);
     link.click();
     link.remove();
+}
+
+export const SetPrintConfig = (target, ninerId, gatepassId) => localStorage.setItem('ExpressPrint', JSON.stringify({ IsExpress: true, Target: target, GP: gatepassId, NinerR: ninerId }));
+
+export const RemovePrintConfig = async () => localStorage.removeItem('ExpressPrint');
+
+export const GetPrintConfig = () => {
+    const config = JSON.parse(localStorage.getItem('ExpressPrint'));
+    return config?.IsExpress ? config : { IsExpress: false };
+}
+
+export const PrintLastRecords = async (target) => {
+    const ninerId = await FetchLastRecordId('/Traders/SP_Get_9R_List');
+    const gatepassId = await FetchLastRecordId('/Traders/SP_Get_Gatepass_List');
+    SetPrintConfig(target, ninerId, gatepassId);
+
+    window.open(`/Receipt/print_9rs/${ninerId}`, '_blank');
 }

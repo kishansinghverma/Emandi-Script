@@ -164,17 +164,17 @@ h4:hover {
     white-space: normal;
 }
 
-.success {
+#notification-container.success {
     color: #155724;
     background-color: #d4edda;
     border: 2px solid #c3e6cb;
 }
-.error {
+#notification-container.error {
     color: #721c24;
     background-color: #f8d7da;
     border: 2px solid #f5c6cb;
 }
-.info {
+#notification-container.info {
     color: #004085;
     background-color: #cce5ff;
     border: 2px solid #b8daff;

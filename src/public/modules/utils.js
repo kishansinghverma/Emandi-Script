@@ -90,3 +90,16 @@ export const ShowAlert = (type, message, hideAfter = 0) => {
     if (hideAfter > 0)
         setTimeout(() => $('#notification-container').fadeOut(200), hideAfter * 1000);
 }
+
+export const FetchLastRecordId = async (url) => {
+    $('#loader').show();
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+        body: `draw=1&order[0][column]=1&order[0][dir]=desc&start=0&length=1`
+    });
+
+    const data = await response.json();
+    $('#loader').hide();
+    return data.data[0].id;
+}

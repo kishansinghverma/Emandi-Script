@@ -1,25 +1,20 @@
 import { LoadingIcon } from "../assets/loader.js";
 import { Form } from "./form.js";
 import { FetchParams, Url, MessageType } from "./constants.js";
-import { AlertError, Download, HandleByStatusCode, HandleJsonResponse } from "./common.js";
+import { AlertError, Download, GetPrintConfig, HandleByStatusCode, RemovePrintConfig } from "./common.js";
 import { ShowAlert } from "./utils.js";
 
 class PrintNiner extends Form {
     InitializeForm() {
-        if (localStorage.getItem('ExpressPrint') === "true")
+        const config = GetPrintConfig();
+        if (config.IsExpress) {
+            $('#print').prop("checked", config.Target === 'Printer');
             this.Print(true);
-        else {
-            const sixrId = $('#tab_logic > tbody > tr > td:nth-child(8) > label').html().trim();
-            fetch(`${Url.GetBySixR}=${sixrId}`)
-                .then(HandleJsonResponse)
-                .then(data => $('#print').prop('checked', data?.Mode === "Print").trigger('change'))
-                .catch(err => { if (err.code !== 204) AlertError(err) })
-                .finally(() => $('#record').html(''));
         }
     }
 
     RedirectPage() {
-        window.location.href = '/Traders/Dashboard';
+        window.location.href = `/Receipt/print_gps/${GetPrintConfig().GP}`;
     }
 
     Print(isExpress = false) {
@@ -52,11 +47,7 @@ class PrintNiner extends Form {
             .catch(AlertError)
             .finally(() => {
                 $('#customModal').hide();
-                if (isExpress) {
-                    localStorage.removeItem('ExpressPrint');
-                    if (confirm("Express Flow Is Complete!\nDo You Want To Redirect To Home?"))
-                        this.RedirectPage();
-                }
+                if (isExpress) this.RedirectPage();
             });
     }
 }
