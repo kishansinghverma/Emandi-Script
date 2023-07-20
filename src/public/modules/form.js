@@ -3,16 +3,17 @@ import { Url } from "./constants.js";
 
 export class Form {
     async FetchRecord() {
+        let contents = '';
+        const placeholder = document.getElementById('record');
+
         await fetch(Url.PeekRecord)
             .then(HandleJsonResponse)
             .then(data => {
                 window.formContext.record = data;
-                document.getElementById('record').innerHTML = `<h4 onclick="window.formContext.SelectEntry()">${data.Seller}</h4>`;
+                contents = `<h4 onclick="window.formContext.SelectEntry()">${data.Seller}</h4>`;
             })
-            .catch(err => {
-                document.getElementById('record').innerHTML = '';
-                if (err.code !== 204) AlertError(err);
-            })
+            .catch(err => { if (err.code !== 204) AlertError(err); })
+            .finally(() => { if (placeholder) placeholder.innerHTML = contents });
     }
 
     HideModal() {

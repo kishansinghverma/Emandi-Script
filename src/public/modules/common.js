@@ -24,6 +24,7 @@ export const RouteMap = {
     DigitalPayment: { Script: Digital_Payment, Div: CommonDiv },
     GeneratedDigitalPayment: { Script: Generated_Digital_Payment, Div: CommonDiv },
     generated_9R: { Script: List_Entries, Div: CommonDiv },
+    DigitalPaymentList: { Script: List_Entries, Div: CommonDiv },
     generated_gatepass: { Script: List_Entries, Div: CommonDiv },
     index: { Script: Login, Div: LoginDiv },
     Account: { Script: Login, Div: LoginDiv },

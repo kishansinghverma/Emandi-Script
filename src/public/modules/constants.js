@@ -18,7 +18,8 @@ export const Url = {
     SetRate: getUrl('rate'),
     PeekRecord: getUrl('peek'),
     PopRecord: getUrl('pop'),
-    PrintPdf: `${homeUrl}/files/html`
+    PrintPdf: `${homeUrl}/files/html`,
+    LogTransaction: `${homeUrl}/transaction/gatepass`
 }
 
 export const HttpMessages = {

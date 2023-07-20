@@ -91,7 +91,7 @@ export const ShowAlert = (type, message, hideAfter = 0) => {
         setTimeout(() => $('#notification-container').fadeOut(200), hideAfter * 1000);
 }
 
-export const FetchLastRecordId = async (url) => {
+export const FetchLastRecord = async (url) => {
     $('#loader').show();
     const response = await fetch(url, {
         method: 'POST',
@@ -101,5 +101,10 @@ export const FetchLastRecordId = async (url) => {
 
     const data = await response.json();
     $('#loader').hide();
-    return data.data[0].id;
+    return data.data[0];
+}
+
+export const FetchLastRecordId = async (url) => {
+    const data = await FetchLastRecord(url);
+    return data.id;
 }

@@ -1,6 +1,7 @@
 import { Modals } from "./assets/modals.js";
 import { RouteMap } from "./modules/common.js";
 import { RunBasicCustomizations } from "./modules/basiccustomization.js";
+import { FetchLastRecord, FetchLastRecordId } from "./modules/utils.js";
 
 const RunScript = () => {
     console.log("Injecting Emandi Script...");
