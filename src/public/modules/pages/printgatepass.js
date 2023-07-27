@@ -1,10 +1,10 @@
-import { LoadingIcon } from "../assets/loader.js";
-import { Form } from "./form.js";
-import { FetchParams, Url, MessageType } from "./constants.js";
-import { AlertError, Download, GetPrintConfig, HandleByStatusCode, RemovePrintConfig } from "./common.js";
-import { ShowAlert } from "./utils.js";
+import { LoadingIcon } from "../../assets/loader.js";
+import { Download, HandleByStatusCode, AlertError, ShowAlert } from "../services/utils.js";
+import { FetchParams, Url, MessageType } from "../constants.js";
+import { Form } from "../services/form.js";
+import { GetPrintConfig, RemovePrintConfig } from "../services/express.js";
 
-class PrintNiner extends Form {
+class PrintGatepass extends Form {
     InitializeForm() {
         const config = GetPrintConfig();
         if (config.IsExpress) {
@@ -13,21 +13,19 @@ class PrintNiner extends Form {
         }
     }
 
-    RedirectPage() {
-        window.location.href = `/Receipt/print_gps/${GetPrintConfig().GP}`;
-    }
-
     Print(isExpress = false) {
         const contents = document.querySelector('body > div.row > #content');
 
         const requestParams = {
             ...FetchParams.Post,
             body: JSON.stringify({
-                Name: 'Niner',
-                Party: $('tbody > tr:nth-child(4) > td:nth-child(6) > label').html().trim(),
+                Name: 'Gatepass',
+                Party: $('tbody > tr:nth-child(1) > td:nth-child(8) > label').html(),
                 Tables: [
                     contents.querySelector('.table').outerHTML,
-                    contents.querySelector('.row .col-md-12 table').outerHTML
+                    contents.querySelector('.row .col-md-12 table').outerHTML,
+                    contents.querySelectorAll('.row .col-md-12 table')[1].outerHTML,
+                    contents.querySelectorAll('.row .col-md-12 .row')[0].outerHTML
                 ],
                 QR: contents.querySelector('#qrcode img').src,
                 Print: $('#print').is(':checked'),
@@ -47,9 +45,12 @@ class PrintNiner extends Form {
             .catch(AlertError)
             .finally(() => {
                 $('#customModal').hide();
-                if (isExpress) this.RedirectPage();
+                if (isExpress) {
+                    RemovePrintConfig('GP');
+                    setTimeout(window.close, 3000);
+                }
             });
     }
 }
 
-export const PrintNinerR = new PrintNiner();
+export const PrintGatePass = new PrintGatepass();

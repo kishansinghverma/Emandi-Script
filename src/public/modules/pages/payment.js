@@ -1,7 +1,7 @@
-import { AlertError } from "./common.js";
-import { FetchParams, MessageType, Url } from "./constants.js";
-import { Form } from "./form.js";
-import { FetchLastRecord, ShowAlert } from "./utils.js";
+import { FetchParams, MessageType, Url } from "../constants.js";
+import { Form } from "../services/form.js";
+import { ShowAlert, AlertError } from "../services/utils.js";
+import { FetchLastRecord } from "../services/provider.js";
 
 class DigitalPayment {
     InitializeForm() {

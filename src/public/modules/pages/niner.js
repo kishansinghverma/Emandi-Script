@@ -1,24 +1,23 @@
-import { MessageType } from "./constants.js";
-import { Form } from "./form.js";
-import { Capitalize, ShowAlert } from "./utils.js";
+import { MessageType } from "../constants.js";
+import { Form } from "../services/form.js";
+import { Capitalize, ShowAlert } from "../services/utils.js";
 
 class Niner extends Form {
     async InitializeForm() {
-        await this.FetchRecord();
-        this.record = window.formContext.record;
-        this.ExecuteInitialActions();
+        this.ShowRecord();
+        await this.ExecuteInitialActions();
     }
 
-    ExecuteInitialActions() {
-        this.TryExpressMode(() => this.RunHeadless());
+    async ExecuteInitialActions() {
+        await this.ExpressConfiguration.ExecuteViaExpress(() => this.RunHeadless());
     }
 
     SelectEntry() {
-        $('#bname').val(this.record.Party);
+        $('#bname').val(this.Record.Party);
     };
 
     UpdateForm() {
-        if (this.record?.PartyLicence) {
+        if (this.Record?.PartyLicence) {
             $('#uttar_pradesh').prop('checked', true).trigger('change');
             $('#br').prop('checked', true).trigger('change');
         }
@@ -33,10 +32,7 @@ class Niner extends Form {
         $('#nextBtn').removeAttr('disabled');
     }
 
-    Next() {
-        this.RemoveExpressConfig();
-        submitDetailsForm();
-    }
+    Next = () => submitDetailsForm();
 
     RunHeadless() {
         ShowAlert(MessageType.Info, 'Running In Express Mode...');

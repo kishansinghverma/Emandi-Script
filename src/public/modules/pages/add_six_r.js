@@ -1,7 +1,7 @@
-import { Form } from "./form.js";
-import { AlertError, HandleResponse } from "./common.js";
-import { FetchParams, Url, MessageType } from "./constants.js";
-import { Capitalize, ComplexPromise, ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
+import { Form } from "../services/form.js";
+import { FetchParams, Url, MessageType } from "../constants.js";
+import { Capitalize, ComplexPromise, ShowAlert, AlertError, HandleResponse } from "../services/utils.js";
+import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
 
 class AddSixR extends Form {
     constructor() {
@@ -10,10 +10,9 @@ class AddSixR extends Form {
     }
 
     async InitializeForm() {
-        await this.FetchRecord();
-        this.record = window.formContext.record;
         this.AttachListener();
-        this.ExecuteInitialActions();
+        this.ShowRecord();
+        await this.ExecuteInitialActions();
     }
 
     AttachListener() {
@@ -22,18 +21,17 @@ class AddSixR extends Form {
         $('#rateofcrop').on('DOMSubtreeModified', () => $('#crop_rate').val($('#crop_rate').data('min')).trigger('change'));
     }
 
-    ExecuteInitialActions() {
-        if (this.record) $('#expressBtn').css('display', 'block');
+    async ExecuteInitialActions() {
         $('#img-captcha').append($('#dntCaptchaImg'));
-
         this.CaptchaResolvePromise = ResolveCaptcha('dntCaptchaImg');
         this.CaptchaResolvePromise.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
+        await this.ExpressConfiguration.ExecuteViaExpress(() => this.RunHeadless());
     }
 
     SelectEntry() {
-        $('#sname').val(this.record.Seller);
-        $('#quantity').val(this.record.Weight);
-        $('#licence').val(this.record.PartyLicence ?? '');
+        $('#sname').val(this.Record.Seller);
+        $('#quantity').val(this.Record.Weight);
+        $('#licence').val(this.Record.PartyLicence ?? '');
     };
 
     UpdateForm() {
@@ -52,10 +50,7 @@ class AddSixR extends Form {
         $('#previewBtn').removeAttr('disabled');
     }
 
-    PreviewForm() {
-        this.RemoveExpressConfig();
-        preview_data();
-    }
+    PreviewForm = () => preview_data();
 
     RedirectPage() {
         window.location.href = '/Traders/DigitalPayment';
@@ -99,7 +94,6 @@ class AddSixR extends Form {
             this.UpdateForm();
 
             this.ExpressPromise.Operator.then(() => {
-                this.SetExpressConfig();
                 $("#form1").submit();
             });
         })

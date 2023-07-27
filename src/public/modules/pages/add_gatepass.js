@@ -1,7 +1,8 @@
-import { AlertError, HandleResponse, PrintLastRecords } from "./common.js";
-import { FetchParams, MessageType, Url } from "./constants.js";
-import { Form } from "./form.js";
-import { Capitalize, ComplexPromise, ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
+import { AlertError, HandleResponse, Capitalize, ComplexPromise, ShowAlert } from "../services/utils.js";
+import { MessageType, Url } from "../constants.js";
+import { Form } from "../services/form.js";
+import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
+import { PrintLastRecords } from "../services/common.js";
 
 class AddGatepass extends Form {
     constructor() {
@@ -11,10 +12,9 @@ class AddGatepass extends Form {
     }
 
     async InitializeForm() {
-        await this.FetchRecord();
-        this.record = window.formContext.record;
         this.AttachListener();
-        this.ExecuteInitialActions();
+        this.ShowRecord();
+        await this.ExecuteInitialActions();
     }
 
     AttachListener() {
@@ -33,7 +33,7 @@ class AddGatepass extends Form {
         if (this.RemainingRequirements.length === 0) this.ParentPromise.Resolve();
     }
 
-    ExecuteInitialActions() {
+    async ExecuteInitialActions() {
         $('#img-captcha').append($('#dntCaptchaImg'));
         $('#PaidType').val($('#PaidType option:eq(1)').val()).trigger('change');
 
@@ -47,17 +47,17 @@ class AddGatepass extends Form {
             $('#nine_r_id').val($('#nine_r_id option:eq(1)').val()).trigger('change');
         });
 
-        this.TryExpressMode(() => this.RunHeadless());
+        await this.ExpressConfiguration.ExecuteViaExpress(() => this.RunHeadless());
     }
 
     SelectEntry() {
-        $('#destination').val(this.record.Mandi).trigger('change');
-        $('#carrier').val(this.record.Type);
-        $('#carrier-no').val(this.record.VehicleNo);
-        $('#packets').val(this.record.Packets);
-        $('#statename').val(this.record.StateCode);
-        $('#space').val(this.record.Distance);
-        $('#mandiname').val(this.record.Mandi);
+        $('#destination').val(this.Record.Mandi).trigger('change');
+        $('#carrier').val(this.Record.Type);
+        $('#carrier-no').val(this.Record.VehicleNo);
+        $('#packets').val(this.Record.Packets);
+        $('#statename').val(this.Record.StateCode);
+        $('#space').val(this.Record.Distance);
+        $('#mandiname').val(this.Record.Mandi);
     };
 
     UpdateForm() {

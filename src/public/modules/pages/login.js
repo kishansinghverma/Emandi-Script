@@ -1,7 +1,7 @@
-import { AlertError } from "./common.js";
-import { MessageType } from "./constants.js";
-import { Form } from "./form.js";
-import { ComplexPromise, ParseCaptcha, ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
+import { MessageType } from "../constants.js";
+import { Form } from "../services/form.js";
+import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
+import { ComplexPromise, ShowAlert, AlertError } from "../services/utils.js";
 
 class LoginForm extends Form {
     InitializeForm = () => {

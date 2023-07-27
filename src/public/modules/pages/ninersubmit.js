@@ -1,15 +1,13 @@
-import { AlertError, HandleResponse } from "./common.js";
-import { FetchParams, Url, MessageType } from "./constants.js";
-import { Form } from "./form.js";
-import { ResolveCaptcha, SetResolvedCaptcha, ShowAlert } from "./utils.js";
+import { MessageType } from "../constants.js";
+import { Form } from "../services/form.js";
+import { ShowAlert, AlertError } from "../services/utils.js";
+import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
 
 class NinerSubmit extends Form {
     async InitializeForm() {
-        await this.FetchRecord();
-        this.record = window.formContext.record;
         if (this.IsNotReady()) return;
         this.AttachListener();
-        this.ExecuteInitialActions();
+        await this.ExecuteInitialActions();
     }
 
     AttachListener() {
@@ -17,7 +15,7 @@ class NinerSubmit extends Form {
         $('#in-captcha').on('change', ({ target }) => this.AllowUpdate(target.value));
     }
 
-    ExecuteInitialActions() {
+    async ExecuteInitialActions() {
         $('#img-captcha').append($('#dntCaptchaImg'));
         $('#crop_type').val('Regular');
         $('input[type="checkbox"]').first().click();
@@ -25,7 +23,7 @@ class NinerSubmit extends Form {
         this.CaptchaResolvePromise = ResolveCaptcha('dntCaptchaImg');
         this.CaptchaResolvePromise.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
 
-        this.TryExpressMode(() => this.RunHeadless());
+        await this.ExpressConfiguration.ExecuteViaExpress(() => this.RunHeadless());
     }
 
     IsNotReady() {
