@@ -1,15 +1,16 @@
 import { MessageType } from "../constants.js";
+import { ExpressConfig } from "../services/express.js";
 import { Form } from "../services/form.js";
 import { Capitalize, ShowAlert } from "../services/utils.js";
 
 class Niner extends Form {
-    async InitializeForm() {
-        this.ShowRecord();
-        await this.ExecuteInitialActions();
+    InitializeForm() {
+        this.FetchRecord();
+        this.ExecuteInitialActions();
     }
 
-    async ExecuteInitialActions() {
-        await this.ExpressConfiguration.ExecuteViaExpress(() => this.RunHeadless());
+    ExecuteInitialActions() {
+        ExpressConfig.ExecuteViaExpress(() => this.RunHeadless());
     }
 
     SelectEntry() {
@@ -35,7 +36,7 @@ class Niner extends Form {
     Next = () => submitDetailsForm();
 
     RunHeadless() {
-        ShowAlert(MessageType.Info, 'Running In Express Mode...');
+        this.SetInProgress();
         this.SelectEntry();
         this.UpdateForm();
         submitDetailsForm();

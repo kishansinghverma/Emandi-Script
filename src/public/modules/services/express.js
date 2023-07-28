@@ -1,5 +1,5 @@
-import { FetchRecordToProcess } from "./provider.js";
-import { ComplexPromise } from "./utils.js";
+import { MessageType, StageMap, Stages, Status } from "../constants.js";
+import { ComplexPromise, ShowAlert } from "./utils.js";
 
 
 class ExpressConfiguration {
@@ -7,43 +7,38 @@ class ExpressConfiguration {
         this.Promise = new ComplexPromise();
     }
 
-    InitConfiguration = async () => {
-        this.RemoveConfiguration();
-        const record = await FetchRecordToProcess();
-        if (record) localStorage.setItem('Configuration', JSON.stringify({ Record: record }));
-    }
+    SetConfiguration = (config) => localStorage.setItem('Express', JSON.stringify(config));
 
-    GetConfiguration = async () => {
-        if (!localStorage.getItem('Configuration')) await this.InitConfiguration();
-        const localData = localStorage.getItem('Configuration');
+    RemoveConfiguration = () => localStorage.removeItem('Express');
+
+    InitConfiguration = () => this.SetConfiguration({ Record: window.queuedRecord, Stage: Stages.SixR, Status: Status.Init });
+
+    GetConfiguration = () => {
+        const localData = localStorage.getItem('Express');
         if (localData) return JSON.parse(localData);
     }
 
-    RemoveConfiguration = () => localStorage.removeItem('Configuration');
-
-    DisplayRecord = async () => {
-        const configuration = await this.GetConfiguration();
-        this.Promise.Resolve();
-
-        const container = $('div.navbar-collapse.nav-responsive-disabled > ul:nth-child(1) > li:nth-child(1)');
-        container.parent().find('li').slice(1).remove();
-        container.after($('<li><a onclick="window.commonContext.RefreshRecord()"><i class="fa fa-refresh" aria-hidden="true"></i></a></li>'));
-
-        const contents = configuration ?
-            $(`<li><a onclick="window.commonContext.StartExpress()"><b>Queued : </b>${configuration.Record.Party}</a></li>`) :
-            $(`<li><a href="#"><b>No Queued Request!</b></a></li>`);
-        container.after(contents);
+    DispatchActionByStage = () => {
+        const configuration = this.GetConfiguration();
+        if (configuration) {
+            const applicableUrl = StageMap[configuration.Stage].Url;
+            if (StageMap[configuration.Stage].Redirect)
+                if (!window.location.href.includes(applicableUrl))
+                    window.location.href = applicableUrl;
+        }
     }
 
-    StartExpress = async () => {
-        const configuration = await this.GetConfiguration();
-        localStorage.setItem('Configuration', JSON.stringify({ ...configuration, IsExpress: true }));
-        window.location.href = '/Traders/add_six_r';
+    StartExpress = () => {
+        this.InitConfiguration();
+        this.DispatchActionByStage(true);
     };
 
-    ExecuteViaExpress = async (callback) => {
-        const configuration = await this.GetConfiguration();
-        if (configuration?.IsExpress) callback();
+    ExecuteViaExpress = (callback) => {
+        const configuration = this.GetConfiguration();
+        if (configuration?.Status === Status.Init) {
+            ShowAlert(MessageType.Info, 'Running In Express Mode...', 3);
+            callback();
+        }
     }
 }
 

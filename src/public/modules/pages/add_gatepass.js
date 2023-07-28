@@ -2,52 +2,37 @@ import { AlertError, HandleResponse, Capitalize, ComplexPromise, ShowAlert } fro
 import { MessageType, Url } from "../constants.js";
 import { Form } from "../services/form.js";
 import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
-import { PrintLastRecords } from "../services/common.js";
+import { ExpressConfig } from "../services/express.js";
 
 class AddGatepass extends Form {
     constructor() {
         super();
-        this.RemainingRequirements = ['Niner', 'Captcha'];
-        this.ParentPromise = new ComplexPromise();
+        this.NinerFetcher = new ComplexPromise();
     }
 
     async InitializeForm() {
+        this.FetchRecord();
         this.AttachListener();
-        this.ShowRecord();
-        await this.ExecuteInitialActions();
+        this.ExecuteInitialActions();
     }
 
     AttachListener() {
-        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.HandleAjaxResponse(ajaxOptions, jqXHR));
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.HandleAjaxResponse(ajaxOptions, jqXHR?.responseJSON));
     }
 
-    ResolveParentPromise(target) {
-        if (target.Type === 'Niner') {
-            if (Array.isArray(target.Response) && target.Response.length > 0)
-                this.RemainingRequirements = this.RemainingRequirements.filter(item => (item != 'Niner'));
-            else ShowAlert(MessageType.Error, 'No Paid 9R Found!', 3);
-        }
-        if (target.Type === 'Captcha')
-            this.RemainingRequirements = this.RemainingRequirements.filter(item => (item != 'Captcha'));
-
-        if (this.RemainingRequirements.length === 0) this.ParentPromise.Resolve();
-    }
-
-    async ExecuteInitialActions() {
+    ExecuteInitialActions() {
         $('#img-captcha').append($('#dntCaptchaImg'));
         $('#PaidType').val($('#PaidType option:eq(1)').val()).trigger('change');
 
-        ResolveCaptcha('dntCaptchaImg').then(text => {
-            SetResolvedCaptcha(text, 'in-captcha');
-            this.ResolveParentPromise({ Type: 'Captcha' });
-        });
+        this.CaptchaResolver = ResolveCaptcha('dntCaptchaImg');
+        this.CaptchaResolver.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
 
-        this.ParentPromise.Operator.then(() => {
+        Promise.all([this.CaptchaResolver, this.NinerFetcher.Operator]).then(() => {
             this.AllowUpdate($('#in-captcha').val());
             $('#nine_r_id').val($('#nine_r_id option:eq(1)').val()).trigger('change');
         });
 
-        await this.ExpressConfiguration.ExecuteViaExpress(() => this.RunHeadless());
+        ExpressConfig.ExecuteViaExpress(() => this.RunHeadless());
     }
 
     SelectEntry() {
@@ -74,49 +59,47 @@ class AddGatepass extends Form {
 
     PreviewForm = () => preview_data();
 
-    RedirectPage() {
-        window.location.href = '/Traders/generated_gatepass';
+    OnComplete() {
+
     }
 
-    HandleAjaxResponse(ajaxOptions, jqXHR) {
-        //Handle fetching of Paid NineR(s).
-        if (ajaxOptions.url === '/Traders/Bind9RDropDown') {
-            if (ajaxOptions.data === 'ExportType=0&PaidType=1')
-                this.ResolveParentPromise({ Type: 'Niner', Response: jqXHR.responseJSON });
-        }
+    HandleAjaxResponse(option, response) {
+        if (Array.isArray(response)) {
+            //Handle fetching of Paid NineR(s).
+            if (option.url.includes('/Traders/Bind9RDropDown') && option.data.includes('ExportType=0&PaidType=1'))
+                response.length > 0 ? this.NinerFetcher.Resolve() : ShowAlert(MessageType.Error, 'No Paid 9R Found!', 3);
 
-        if (ajaxOptions.url === 'https://emandi.up.gov.in/Traders/add_gatepass') {
-            // Reload the Page if parsed captcha is invalid.
-            if (jqXHR?.responseJSON[0]?.status === 0) {
-                if (jqXHR?.responseJSON[0]?.msg?.includes('Captcha')) {
-                    ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
-                    setTimeout(() => location.reload(), 1000);
+            else if (option.url.includes('/Traders/add_gatepass')) {
+                // Reload the Page if parsed captcha is invalid.
+                if (response[0].status === 0) {
+                    if (response[0].msg?.includes('Captcha')) {
+                        ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
+                        setTimeout(() => location.reload(), 1000);
+                    }
                 }
-            }
 
-            // Handle form submit.
-            if (jqXHR?.responseJSON[0]?.status > 0) {
-                ShowAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
+                // Handle Form Submit.
+                if (response[0].status > 0) {
+                    ShowAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
 
-                if (this.record) {
-                    fetch(Url.PopRecord)
-                        .then(HandleResponse)
-                        .catch(err => { if (err.code !== 204) AlertError(err) })
-                        .finally(() => {
-                            this.TryExpressMode(() => {
-                                this.RemoveExpressConfig();
-                                PrintLastRecords();
-                            })
-                        });
+                    if (this.Record) {
+                        fetch(Url.PopRecord)
+                            .then(HandleResponse)
+                            .catch(err => { if (err.code !== 204) AlertError(err) })
+                            .finally(() => {
+                                this.OnComplete();
+                            });
+                    }
+                    else this.OnComplete();
                 }
-                else this.RedirectPage();
+
             }
         }
     }
 
     RunHeadless() {
-        ShowAlert(MessageType.Info, 'Running In Express Mode...');
-        this.ParentPromise.Operator.then(() => {
+        Promise.all([this.CaptchaResolver, this.NinerFetcher.Operator]).then(() => {
+            this.SetInProgress();
             this.SelectEntry();
             this.UpdateForm();
             $("#form1").submit();

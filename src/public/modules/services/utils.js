@@ -1,4 +1,4 @@
-import { HttpMessages, Icon, MessageType } from "../constants.js";
+import { HttpMessages, Icon, MessageType, Status } from "../constants.js";
 
 export class ComplexPromise {
     constructor() {
@@ -8,6 +8,14 @@ export class ComplexPromise {
         })
     }
 };
+
+export const AlertError = (err) => err.message ? ShowAlert(MessageType.Error, err.message, 3) : ShowAlert(MessageType.Error, err, 3);
+
+export const LogError = (err) => console.log(err.message);
+
+export const ShowLoader = () => $('#loader').show();
+
+export const HideLoader = () => $('#loader').hide();
 
 export const HandleResponse = (response) => {
     if (!response.ok || response.status === 204)
@@ -46,6 +54,22 @@ export const ShowAlert = (type, message, hideAfter = 0) => {
     if (hideAfter > 0) setTimeout(() => $('#notification-container').fadeOut(200), hideAfter * 1000);
 }
 
-export const AlertError = (err) => err.message ? ShowAlert(MessageType.Error, err.message, 3) : ShowAlert(MessageType.Error, err, 3);
+export const SetRecordStatus = (status, data) => {
+    const container = $('div.navbar-collapse.nav-responsive-disabled > ul:nth-child(1) > li:nth-child(1)');
+    container.parent().find('li').slice(1).remove();
 
-export const LogError = (err) => console.log(err.message);
+    switch (status) {
+        case Status.InProgress:
+            container.after($(`<li><a href="#"><b>In Progress : </b>${data?.Party}</a></li>`));
+            break;
+        
+        case Status.Queued:
+            window.queuedRecord = data;
+            container.after($(`<li><a href="#" onclick="window.commonContext.StartExpress()"><b>Queued : </b>${data?.Party}</a></li>`));
+            break;
+    
+        case Status.None:
+            container.after($(`<li><a href="#"><b>No Queued Request</b></a></li>`));
+            break;
+    }
+}

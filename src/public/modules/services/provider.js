@@ -18,20 +18,3 @@ export const FetchLastRecordId = async (url) => {
     const data = await FetchLastRecord(url);
     return data.id;
 }
-
-export const FetchRecordToProcess = async () => {
-    try {
-        $('#loader').show();
-        const response = await fetch(Url.PeekRecord);
-        HandleResponse(response);
-        return response.json();
-    }
-    catch (err) {
-        err.code === 204 ?
-            ShowAlert(MessageType.Info, 'No Pending Gatepass Request.', 3) :
-            AlertError(err);
-    }
-    finally {
-        $('#loader').hide();
-    }
-}

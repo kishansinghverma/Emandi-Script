@@ -1,7 +1,8 @@
-import { FetchParams, MessageType, Url } from "../constants.js";
+import { FetchParams, MessageType, Stages, Url } from "../constants.js";
 import { Form } from "../services/form.js";
 import { ShowAlert, AlertError } from "../services/utils.js";
 import { FetchLastRecord } from "../services/provider.js";
+import { ExpressConfig } from "../services/express.js";
 
 class DigitalPayment {
     InitializeForm() {
@@ -9,15 +10,16 @@ class DigitalPayment {
     }
 
     AttachListener() {
-        let wait = setInterval(() => {
-            if (document.querySelector('#datatable1 > tbody').childElementCount > 0) {
-                clearInterval(wait);
-                const requests = document.getElementsByClassName('chk');
-                if (requests.length < 1) { ShowAlert(MessageType.Info, 'No Payments Pending!', 3); return };
-                requests[0].click();
-                document.getElementById('proceddnow').click();
-            }
-        }, 1000);
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.PostAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
+    }
+
+    PostAjaxCall(url, response) {
+        if (url.includes('/Traders/Get6RListForPayment')) {
+            if (Array.isArray(response))
+                response.length > 0 ?
+                    document.getElementsByClassName('chk')[0].click() :
+                    ShowAlert(MessageType.Info, 'No Payments Pending!', 3);
+        }
     }
 }
 
@@ -27,21 +29,33 @@ class GeneratedDigitalPayment {
 
 class PostSuccess extends Form {
     InitializeForm = async () => {
-        await this.FetchRecord();
-        this.record = window.formContext.record;
+        this.FetchRecord();
 
         try {
             const record = await FetchLastRecord('/Traders/GetDigitalPaymentList');
             const txnData = {
                 cost: `${record.totalAmount}`,
                 description: `Gatepass/${record.sbirefno}`,
-                details: this.record ? `${this.record.Party}, ${this.record.Mandi}, ${this.record.State}` : 'Manual'
+                details: this.Record ? `${this.Record.Party}, ${this.Record.Mandi}, ${this.Record.State}` : 'Manual'
             };
             $('#loader').show();
             await fetch(Url.LogTransaction, { ...FetchParams.Post, body: JSON.stringify(txnData) });
         }
         catch (err) { AlertError(err) }
-        finally { $('a.btn.btn-success')[0].click(); }
+        finally {
+            this.OnComplete();
+            $('a.btn.btn-success')[0].click();
+        }
+    }
+
+    OnComplete() {
+        if (this.Configuration) {
+            ExpressConfig.SetConfiguration({
+                ...this.Configuration,
+                Stage: Stages.NineR,
+                Status: Status.Init
+            });
+        }
     }
 }
 

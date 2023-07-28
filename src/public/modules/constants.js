@@ -72,6 +72,43 @@ export const MessageType = {
     Info: 'info'
 }
 
+export const StageMap = {
+    SixR: {
+        Url: '/Traders/add_six_r',
+        Redirect: true
+    },
+    Payment: {
+        Url: '/Traders/DigitalPayment',
+        Redirect: false
+    },
+    Niner: {
+        Url: '/Traders/NineR',
+        Redirect: true
+    },
+    Gatepass: {
+        Url: '/Traders/add_gatepass',
+        Redirect: true
+    }
+}
+
+export const Stages = {
+    SixR: 'SixR',
+    Payment: 'Payment',
+    NineR: 'NineR',
+    Gatepass: 'Gatepass'
+}
+
+export const Status = {
+    Init: 'Init',
+    InProgress: 'InProgress',
+    None: 'None',
+    Queued: 'Queued'
+}
+
+export const Events = {
+    RecordLoaded: 'RecordLoaded'
+}
+
 export const ItemsToHide = [
     '[href="/MultiCommodity/Index"]',
     '[href="/Traders/Niner2Dashboard"]',

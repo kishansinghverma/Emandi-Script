@@ -1,8 +1,9 @@
 import * as CommonFunctions from './common.js';
 import { CSS } from "../../assets/style.js";
-import { ItemsToHide } from '../constants.js';
+import { Events, ItemsToHide, Status, Url } from '../constants.js';
 import { NotificationContainer, PrintRecieptButton, SendRecieptButton } from '../../assets/elements.js';
 import { ExpressConfig } from './express.js';
+import { AlertError, HandleJsonResponse, HideLoader, SetRecordStatus, ShowLoader } from './utils.js';
 
 const HideLinks = () => ItemsToHide.forEach(item => $(item)?.hide());
 const ReplaceLink = () => document.querySelector('[href="/Traders/NinerDashboard"]')?.setAttribute('href', '/Traders/NineR');
@@ -15,11 +16,20 @@ const AddLinks = () => {
     $('#aside > ul > li:nth-child(10)')?.after($(PrintRecieptButton));
 }
 
-const ClearRecordOnPageReload = () => {
-    if (performance.getEntriesByType("navigation")[0].type === 'reload') {
-        const configuration = localStorage.getItem("Configuration");
-        if (configuration && !(JSON.parse(configuration).IsExpress))
-            ExpressConfig.RemoveConfiguration();
+export const InjectRecordStatus = () => {
+    const localData = ExpressConfig.GetConfiguration();
+    if (localData)
+        SetRecordStatus(Status.InProgress, localData.Record)
+    else {
+        ShowLoader();
+        fetch(Url.PeekRecord)
+            .then(HandleJsonResponse)
+            .then(data => SetRecordStatus(Status.Queued, data))
+            .catch((err) => err.code === 204 ? SetRecordStatus(Status.None) : AlertError(err))
+            .finally(() => {
+                document.body.dispatchEvent(new CustomEvent(Events.RecordLoaded));
+                HideLoader()
+            });
     }
 }
 
@@ -33,8 +43,8 @@ const InjectPostLogin = async () => {
     AddLinks();
     HideLinks();
     HookCommonFunctions();
-    ClearRecordOnPageReload();
-    await ExpressConfig.DisplayRecord();
+    ExpressConfig.DispatchActionByStage();
+    InjectRecordStatus();
 }
 
 export const RunInitialServices = async () => {

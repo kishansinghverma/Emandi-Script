@@ -1,31 +1,32 @@
 import { Form } from "../services/form.js";
-import { FetchParams, Url, MessageType } from "../constants.js";
+import { FetchParams, Url, MessageType, Stages } from "../constants.js";
 import { Capitalize, ComplexPromise, ShowAlert, AlertError, HandleResponse } from "../services/utils.js";
 import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
+import { ExpressConfig } from "../services/express.js";
 
 class AddSixR extends Form {
     constructor() {
         super();
-        this.ExpressPromise = new ComplexPromise();
+        this.LicenceFetcher = new ComplexPromise();
+        this.RateFetcher = new ComplexPromise();
     }
 
-    async InitializeForm() {
+    InitializeForm() {
         this.AttachListener();
-        this.ShowRecord();
-        await this.ExecuteInitialActions();
+        this.FetchRecord();
+        this.ExecuteInitialActions();
     }
 
     AttachListener() {
-        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.PostSubmit(ajaxOptions.url, jqXHR));
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.PostAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
         $('#in-captcha').on('change', ({ target }) => this.AllowUpdate(target.value));
-        $('#rateofcrop').on('DOMSubtreeModified', () => $('#crop_rate').val($('#crop_rate').data('min')).trigger('change'));
     }
 
-    async ExecuteInitialActions() {
+    ExecuteInitialActions() {
         $('#img-captcha').append($('#dntCaptchaImg'));
-        this.CaptchaResolvePromise = ResolveCaptcha('dntCaptchaImg');
-        this.CaptchaResolvePromise.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
-        await this.ExpressConfiguration.ExecuteViaExpress(() => this.RunHeadless());
+        this.CaptchaResolver = ResolveCaptcha('dntCaptchaImg');
+        this.CaptchaResolver.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
+        ExpressConfig.ExecuteViaExpress(() => this.RunHeadless());
     }
 
     SelectEntry() {
@@ -52,50 +53,58 @@ class AddSixR extends Form {
 
     PreviewForm = () => preview_data();
 
-    RedirectPage() {
-        window.location.href = '/Traders/DigitalPayment';
+    OnComplete() {
+        if (this.Configuration) {
+            ExpressConfig.SetConfiguration({
+                ...this.Configuration,
+                Stage: Stages.Payment,
+                Status: Status.Init
+            });
+        }
+
+        window.location.href = StageMap[Stages.Payment].Url;
     }
 
-    PostSubmit(url, jqXHR) {
-        if (url === 'https://emandi.up.gov.in/Traders/add_six_r') {
-            // Reload the Page if parsed captcha is invalid. 
-            if (jqXHR?.responseJSON[0]?.status === 0) {
-                if (jqXHR?.responseJSON[0]?.msg?.includes('Captcha')) {
+    PostAjaxCall(url, response) {
+        if (Array.isArray(response) && response.length > 0) {
+            // Resolves the Promise waiting for fetching Rate.
+            if (url.includes('/Traders/get_crop_fees')) {
+                $('#crop_rate').val(response[0].min_rate).trigger('change');
+                this.RateFetcher.Resolve();
+            }
+            // Resolves the Promise waiting for Kreta Details. 
+            else if (url.includes('/Traders/get_license_detail')) {
+                this.LicenceFetcher.Resolve();
+            }
+            else if (url.includes('Traders/add_six_r')) {
+                // Reload the Page if parsed captcha is invalid. 
+                if (response[0].status === 0 && response[0].msg?.includes('Captcha')) {
                     ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
                     setTimeout(() => location.reload(), 1000);
                 }
-            }
-
-            if (jqXHR?.responseJSON[0]?.status > 0) {
-
                 //Update the Rate in source record & redirect the page.
-                if (this.record) {
-                    fetch(Url.UpdateRecord, {
-                        ...FetchParams.Post,
-                        body: JSON.stringify({ Rate: $('#crop_rate').val() })
-                    }).then(HandleResponse).catch(AlertError).finally(() => this.RedirectPage());
+                else if (response[0].status > 0) {
+                    if (this.Record) {
+                        const requestParams = { ...FetchParams.Post, body: JSON.stringify({ Rate: $('#crop_rate').val() }) };
+                        fetch(Url.UpdateRecord, requestParams)
+                            .then(HandleResponse)
+                            .catch(AlertError)
+                            .finally(() => this.OnComplete());
+                    }
+                    else this.OnComplete();
                 }
-                else this.RedirectPage();
             }
         }
     }
 
     RunHeadless() {
-        ShowAlert(MessageType.Info, 'Running In Express Mode...');
-        const timerId = setInterval(() => {
-            if ($('#kreta_details').val()) {
-                this.ExpressPromise.Resolve();
-                clearInterval(timerId);
-            }
-        }, 500);
-
-        this.CaptchaResolvePromise.then(() => {
+        this.CaptchaResolver.then(() => {
+            this.SetInProgress();
             this.SelectEntry();
             this.UpdateForm();
-
-            this.ExpressPromise.Operator.then(() => {
+            Promise.all([this.RateFetcher.Operator, this.LicenceFetcher.Operator]).then(() => {
                 $("#form1").submit();
-            });
+            })
         })
     }
 }
