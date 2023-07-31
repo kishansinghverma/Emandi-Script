@@ -81,7 +81,7 @@ export const StageMap = {
         Url: '/Traders/DigitalPayment',
         Redirect: false
     },
-    Niner: {
+    NineR: {
         Url: '/Traders/NineR',
         Redirect: true
     },

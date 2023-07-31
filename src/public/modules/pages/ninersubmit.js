@@ -1,4 +1,4 @@
-import { MessageType, StageMap, Stages } from "../constants.js";
+import { MessageType, StageMap, Stages, Status } from "../constants.js";
 import { Form } from "../services/form.js";
 import { ShowAlert, AlertError } from "../services/utils.js";
 import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
@@ -22,6 +22,8 @@ class NinerSubmit extends Form {
         $('input[type="checkbox"]').first().click();
         this.CaptchaResolver = ResolveCaptcha('dntCaptchaImg');
         this.CaptchaResolver.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
+        
+        if(this.Configuration) ExpressConfig.SetConfiguration({ ...this.Configuration, Status: Status.Init });
         ExpressConfig.ExecuteViaExpress(() => this.RunHeadless());
     }
 

@@ -1,4 +1,4 @@
-import { FetchParams, MessageType, Stages, Url } from "../constants.js";
+import { FetchParams, MessageType, Stages, Status, Url } from "../constants.js";
 import { Form } from "../services/form.js";
 import { ShowAlert, AlertError } from "../services/utils.js";
 import { FetchLastRecord } from "../services/provider.js";
@@ -15,10 +15,14 @@ class DigitalPayment {
 
     PostAjaxCall(url, response) {
         if (url.includes('/Traders/Get6RListForPayment')) {
-            if (Array.isArray(response))
-                response.length > 0 ?
-                    document.getElementsByClassName('chk')[0].click() :
+            if (Array.isArray(response)) {
+                if (response.length < 1)
                     ShowAlert(MessageType.Info, 'No Payments Pending!', 3);
+                else {
+                    $('.chk')[0].click();
+                    $('#proceddnow').click();
+                }
+            }
         }
     }
 }
