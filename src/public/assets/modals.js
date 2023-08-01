@@ -6,7 +6,7 @@ const add_six_r = `
 <div id="customModal" class="custom-modal">
 	<div class="head">
 		<div style="color: #e7e9eb">Provide The Information</div>
-		<button onclick="$('#customModal').hide()">x</button>
+		<div class="btn-close" onclick="$('#customModal').hide()"></div>
 	</div>
 	<div id="modalContent" class="custom-modal-content">
 		<div id="record">
@@ -35,7 +35,7 @@ const NineR = `
 <div id="customModal" class="custom-modal">
 	<div class="head">
 		<div style="color: #e7e9eb">Provide The Information</div>
-		<button onclick="$('#customModal').hide()">x</button>
+		<div class="btn-close" onclick="$('#customModal').hide()"></div>
 	</div>
 	<div id="modalContent" class="custom-modal-content">
 		<div id="record">
@@ -55,7 +55,7 @@ const NineRSubmit = `
 <div id="customModal" class="custom-modal">
 	<div class="head">
 		<div style="color: #e7e9eb">Provide The Information</div>
-		<button onclick="$('#customModal').hide()">x</button>
+		<div class="btn-close" onclick="$('#customModal').hide()"></div>
 	</div>
 	<div id="modalContent" class="custom-modal-content">
 		<div id="record" style="display: none"></div>
@@ -74,7 +74,7 @@ const add_gatepass = `
 <div id="customModal" class="custom-modal">
 	<div class="head">
 		<div style="color: #e7e9eb">Provide The Information</div>
-		<button onclick="$('#customModal').hide()">x</button>
+		<div class="btn-close" onclick="$('#customModal').hide()"></div>
 	</div>
 	<div id="modalContent" class="custom-modal-content">
 		<div id="record">
@@ -154,7 +154,7 @@ const Print = `
 <div id="customModal" class="custom-modal">
 	<div class="head">
 		<div style="color: #e7e9eb">Provide The Information</div>
-		<button onclick="$('#customModal').hide()">x</button>
+		<div class="btn-close" onclick="$('#customModal').hide()"></div>
 	</div>
 	<div id="modalContent" class="custom-modal-content">
         <div style="display: flex; flex-direction: column" id="msgholder">

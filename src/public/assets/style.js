@@ -19,11 +19,40 @@ input[type='radio']:checked+label {
     margin-bottom: 4px 
 }
 
-.custom-modal > div.head > button { 
-    margin-top: -4px; 
-    border-radius: 8px; 
-    color: red; 
-    background-color: white !important; 
+.btn-close { 
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #ff670eed;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-close::before,
+.btn-close::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60%;
+    height: 2px;
+    background-color: #fff;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    transition: background-color 0.2s ease;
+}
+
+.btn-close::after {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.btn-close:hover {
+    transform: scale(1.1);
+}
+  
+.btn-close:hover::before,
+.btn-close:hover::after {
+    background-color: #333;
 }
 
 .custom-modal-container{
