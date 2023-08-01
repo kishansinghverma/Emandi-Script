@@ -51,7 +51,6 @@ const NineR = `
 	</div>
 </div>
 `
-
 const NineRSubmit = `
 <div id="customModal" class="custom-modal">
 	<div class="head">
@@ -71,7 +70,6 @@ const NineRSubmit = `
 	</div>
 </div>
 `
-
 const add_gatepass = `
 <div id="customModal" class="custom-modal">
 	<div class="head">
@@ -150,8 +148,8 @@ const add_gatepass = `
 		    <button class="btn btn-success" onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
         </div>
 	</div>
-</div>`;
-
+</div>
+`
 const Print = `
 <div id="customModal" class="custom-modal">
 	<div class="head">
@@ -172,7 +170,8 @@ const Print = `
         <hr>
         <button class="btn btn-success" onclick="window.formContext.Print()">Print Document</button>
 	</div>
-</div>`;
+</div>
+`
 
 export const Modals = {
 	Account: BlankModal,

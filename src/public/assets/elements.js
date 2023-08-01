@@ -1,12 +1,12 @@
 export const SendRecieptButton = `<li>
-                                        <a href="#" onclick="{ window.commonContext.PrintLastRecords('PDF'); }">
+                                        <a href="#" onclick="{ window.commonContext.PrintLastRecords(false); }">
                                             <i class="fa fa-envelope-o"></i>
                                             <span> Send Last Reciepts </span> 
                                         </a>
                                     </li>`;
 
 export const PrintRecieptButton = `<li>
-                                        <a href="#" onclick="{ if(confirm('Are You Sure To Print?')) window.commonContext.PrintLastRecords('Printer'); }">
+                                        <a href="#" onclick="{ if(confirm('Are You Sure To Print?')) window.commonContext.PrintLastRecords(true); }">
                                             <i class="fa fa-print"></i>
                                             <span> Print Last Reciepts </span> 
                                         </a>

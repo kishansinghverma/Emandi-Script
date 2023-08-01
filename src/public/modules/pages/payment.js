@@ -1,7 +1,6 @@
 import { FetchParams, MessageType, Stages, Status, Url } from "../constants.js";
 import { Form } from "../services/form.js";
-import { ShowAlert, AlertError } from "../services/utils.js";
-import { FetchLastRecord } from "../services/provider.js";
+import { ShowAlert, AlertError, FetchLastRecord, ShowLoader } from "../services/utils.js";
 import { ExpressConfig } from "../services/express.js";
 
 class DigitalPayment {
@@ -36,13 +35,14 @@ class PostSuccess extends Form {
         this.FetchRecord();
 
         try {
+            ShowLoader('Fetching Details');
             const record = await FetchLastRecord('/Traders/GetDigitalPaymentList');
             const txnData = {
                 cost: `${record.totalAmount}`,
                 description: `Gatepass/${record.sbirefno}`,
                 details: this.Record ? `${this.Record.Party}, ${this.Record.Mandi}, ${this.Record.State}` : 'Manual'
             };
-            $('#loader').show();
+            ShowLoader('Saving Transaction')
             await fetch(Url.LogTransaction, { ...FetchParams.Post, body: JSON.stringify(txnData) });
         }
         catch (err) { AlertError(err) }

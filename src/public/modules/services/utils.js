@@ -7,15 +7,21 @@ export class ComplexPromise {
             this.Reject = reject;
         })
     }
-};
+}
 
 export const AlertError = (err) => err.message ? ShowAlert(MessageType.Error, err.message, 3) : ShowAlert(MessageType.Error, err, 3);
 
 export const LogError = (err) => console.log(err.message);
 
-export const ShowLoader = () => $('#loader').show();
+export const ShowLoader = (msg) => {
+    $('#loader').show();
+    if (msg) $('#processMessage').html(`<div>${msg}</div><img alt="Loading" src="/images/please_wait.gif">`);
+}
 
-export const HideLoader = () => $('#loader').hide();
+export const HideLoader = () => {
+    $('#loader').hide();
+    $('#processMessage').html(`<span>Please Wait...</span><img alt="Loading" src="/images/please_wait.gif">`);
+}
 
 export const HandleResponse = (response) => {
     if (!response.ok || response.status === 204)
@@ -47,6 +53,22 @@ export const Download = async (response) => {
     link.remove();
 }
 
+export const FetchLastRecord = async (url) => {
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+        body: `draw=1&order[0][column]=1&order[0][dir]=desc&start=0&length=1`
+    });
+
+    const data = await response.json();
+    return data.data[0];
+}
+
+export const FetchLastRecordId = async (url) => {
+    const data = await FetchLastRecord(url);
+    return data.id;
+}
+
 export const ShowAlert = (type, message, hideAfter = 0) => {
     $('#notification-container').removeClass().addClass(type).show();
     $('#icon').html(Icon[type]);
@@ -62,12 +84,12 @@ export const SetRecordStatus = (status, data) => {
         case Status.InProgress:
             container.after($(`<li><a href="#"><b>In Progress : </b>${data?.Party}</a></li>`));
             break;
-        
+
         case Status.Queued:
             window.queuedRecord = data;
             container.after($(`<li><a href="#" onclick="window.commonContext.StartExpress()"><b>Queued : </b>${data?.Party}</a></li>`));
             break;
-    
+
         case Status.None:
             container.after($(`<li><a href="#"><b>No Queued Request</b></a></li>`));
             break;

@@ -1,7 +1,7 @@
 import { MessageType, StageMap, Stages, Status } from "../constants.js";
 import { Form } from "../services/form.js";
 import { ShowAlert, AlertError } from "../services/utils.js";
-import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
+import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
 import { ExpressConfig } from "../services/express.js";
 
 class NinerSubmit extends Form {
@@ -59,13 +59,11 @@ class NinerSubmit extends Form {
     PostAjaxCall(url, response) {
         if (Array.isArray(response) && response.length > 0) {
             if (url.includes('/Traders/NineRSubmit')) {
-                // Reload the Page if parsed captcha is invalid.
-                if (response[0].status === 0 && response[0].msg?.includes('Captcha')) {
-                    ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
-                    setTimeout(() => location.reload(), 1000);
-                }
+                // Validate Captcha is correctly parsed.
+                ValidateCaptcha(response);
 
-                else if (response[0].status > 0) {
+                //Handles form sumission.
+                if (response[0].status > 0) {
                     ShowAlert(MessageType.Success, "Niner Created Successfully.");
                     this.OnComplete();
                 }

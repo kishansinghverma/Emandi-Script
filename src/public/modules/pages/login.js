@@ -1,6 +1,6 @@
 import { MessageType } from "../constants.js";
 import { Form } from "../services/form.js";
-import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
+import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
 import { ComplexPromise, ShowAlert, AlertError } from "../services/utils.js";
 
 class LoginForm extends Form {
@@ -41,12 +41,8 @@ class LoginForm extends Form {
     }
 
     HandleAjaxResponse(ajaxOptions, jqXHR) {
-        if (ajaxOptions.url === 'https://emandi.up.gov.in/Account') {
-            if (!jqXHR.responseJSON.succeeded) {
-                ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
-                setTimeout(() => location.reload(), 1000);
-            }
-        }
+        if (ajaxOptions.url.includes('/Account'))
+            ValidateCaptcha(jqXHR.responseJSON, true);
     }
 }
 

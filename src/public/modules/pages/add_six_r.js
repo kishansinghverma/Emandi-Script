@@ -1,7 +1,7 @@
 import { Form } from "../services/form.js";
 import { FetchParams, Url, MessageType, Stages, Status, StageMap } from "../constants.js";
 import { Capitalize, ComplexPromise, ShowAlert, AlertError, HandleResponse } from "../services/utils.js";
-import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
+import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
 import { ExpressConfig } from "../services/express.js";
 
 class AddSixR extends Form {
@@ -77,13 +77,11 @@ class AddSixR extends Form {
                 this.LicenceFetcher.Resolve();
             }
             else if (url.includes('Traders/add_six_r')) {
-                // Reload the Page if parsed captcha is invalid. 
-                if (response[0].status === 0 && response[0].msg?.includes('Captcha')) {
-                    ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
-                    setTimeout(() => location.reload(), 1000);
-                }
-                //Update the Rate in source record & redirect the page.
-                else if (response[0].status > 0) {
+                // Validate Captcha is correctly parsed.
+                ValidateCaptcha(response);
+                
+                //Handles form submission
+                if (response[0].status > 0) {
                     if (this.Record) {
                         const requestParams = { ...FetchParams.Post, body: JSON.stringify({ Rate: $('#crop_rate').val() }) };
                         fetch(Url.UpdateRecord, requestParams)

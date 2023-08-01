@@ -1,8 +1,9 @@
 import { AlertError, HandleResponse, Capitalize, ComplexPromise, ShowAlert } from "../services/utils.js";
 import { MessageType, Url } from "../constants.js";
 import { Form } from "../services/form.js";
-import { ResolveCaptcha, SetResolvedCaptcha } from "../services/captcha.js";
+import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
 import { ExpressConfig } from "../services/express.js";
+import { PrintLastReciepts } from "../services/print.js";
 
 class AddGatepass extends Form {
     constructor() {
@@ -59,8 +60,9 @@ class AddGatepass extends Form {
 
     PreviewForm = () => preview_data();
 
-    OnComplete() {
-
+    OnComplete = () => {
+        ExpressConfig.RemoveConfiguration();
+        PrintLastReciepts(false).catch(AlertError).finally(() => swal.close())
     }
 
     HandleAjaxResponse(option, response) {
@@ -70,15 +72,10 @@ class AddGatepass extends Form {
                 response.length > 0 ? this.NinerFetcher.Resolve() : ShowAlert(MessageType.Error, 'No Paid 9R Found!', 3);
 
             else if (option.url.includes('/Traders/add_gatepass')) {
-                // Reload the Page if parsed captcha is invalid.
-                if (response[0].status === 0) {
-                    if (response[0].msg?.includes('Captcha')) {
-                        ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
-                        setTimeout(() => location.reload(), 1000);
-                    }
-                }
+                // Validate Captcha is correctly parsed.
+                ValidateCaptcha(response);
 
-                // Handle Form Submit.
+                // Handles Form Submission
                 if (response[0].status > 0) {
                     ShowAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
 
@@ -86,13 +83,10 @@ class AddGatepass extends Form {
                         fetch(Url.PopRecord)
                             .then(HandleResponse)
                             .catch(err => { if (err.code !== 204) AlertError(err) })
-                            .finally(() => {
-                                this.OnComplete();
-                            });
+                            .finally(() => this.OnComplete());
                     }
                     else this.OnComplete();
                 }
-
             }
         }
     }

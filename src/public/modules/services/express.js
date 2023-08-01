@@ -43,12 +43,3 @@ class ExpressConfiguration {
 }
 
 export const ExpressConfig = new ExpressConfiguration();
-
-export const SetPrintConfig = (target, ninerId, gatepassId) => localStorage.setItem('ExpressPrint', JSON.stringify({ IsExpress: true, Target: target, GP: gatepassId, NinerR: ninerId }));
-
-export const RemovePrintConfig = async () => localStorage.removeItem('ExpressPrint');
-
-export const GetPrintConfig = () => {
-    const config = JSON.parse(localStorage.getItem('ExpressPrint'));
-    return config?.IsExpress ? config : { IsExpress: false };
-}
