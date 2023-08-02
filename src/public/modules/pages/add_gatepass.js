@@ -1,4 +1,4 @@
-import { AlertError, HandleResponse, Capitalize, ComplexPromise, ShowAlert } from "../services/utils.js";
+import { AlertError, HandleResponse, Capitalize, ComplexPromise, ShowAlert, ShowLoader } from "../services/utils.js";
 import { MessageType, Url } from "../constants.js";
 import { Form } from "../services/form.js";
 import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
@@ -62,7 +62,9 @@ class AddGatepass extends Form {
 
     OnComplete = () => {
         ExpressConfig.RemoveConfiguration();
-        PrintLastReciepts(false).catch(AlertError).finally(() => swal.close())
+        PrintLastReciepts(false).catch(AlertError).finally(() => {
+            window.location.href = '/Traders/Dashboard';
+        })
     }
 
     HandleAjaxResponse(option, response) {
@@ -78,14 +80,19 @@ class AddGatepass extends Form {
                 // Handles Form Submission
                 if (response[0].status > 0) {
                     ShowAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
+                    setTimeout(() => {
+                        $('.swal-overlay').hide();
+                        ShowLoader('Finalizing Record...');
 
-                    if (this.Record) {
-                        fetch(Url.PopRecord)
-                            .then(HandleResponse)
-                            .catch(err => { if (err.code !== 204) AlertError(err) })
-                            .finally(() => this.OnComplete());
-                    }
-                    else this.OnComplete();
+                        if (this.Record) {
+                            fetch(Url.PopRecord)
+                                .then(HandleResponse)
+                                .catch(err => { if (err.code !== 204) AlertError(err) })
+                                .finally(() => this.OnComplete());
+                        }
+                        else this.OnComplete();
+
+                    }, 100);
                 }
             }
         }
