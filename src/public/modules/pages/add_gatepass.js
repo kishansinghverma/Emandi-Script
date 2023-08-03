@@ -91,7 +91,6 @@ class AddGatepass extends Form {
                                 .finally(() => this.OnComplete());
                         }
                         else this.OnComplete();
-
                     }, 100);
                 }
             }
