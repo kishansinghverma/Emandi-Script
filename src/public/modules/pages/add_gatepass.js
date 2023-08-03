@@ -90,7 +90,7 @@ class AddGatepass extends Form {
                                 .catch(err => { if (err.code !== 204) AlertError(err) })
                                 .finally(() => this.OnComplete());
                         }
-                        else this.OnComplete();
+                        else this.OnComplete(); 
                     }, 100);
                 }
             }
