@@ -11,7 +11,11 @@ class ExpressConfiguration {
 
     RemoveConfiguration = () => localStorage.removeItem('Express');
 
-    InitConfiguration = () => this.SetConfiguration({ Record: window.queuedRecord, Stage: Stages.SixR, Status: Status.Init });
+    InitConfiguration = () => this.SetConfiguration({
+        Record: window.queuedRecord,
+        Stage: window.isPrepaid ? Stages.NineR : Stages.SixR,
+        Status: Status.Init
+    });
 
     GetConfiguration = () => {
         const localData = localStorage.getItem('Express');

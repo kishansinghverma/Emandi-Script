@@ -58,7 +58,7 @@ const NineRSubmit = `
 		<div class="btn-close" onclick="$('#customModal').hide()"></div>
 	</div>
 	<div id="modalContent" class="custom-modal-content">
-		<div id="record" style="display: none"></div>
+		<div id="record-weight"></div><br />
         <div id="img-captcha"></div>
         <hr>
         <input type="text" placeholder="Captcha Code" id="in-captcha" oninput="window.formContext.AllowUpdate(this.value)"/>

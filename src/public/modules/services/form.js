@@ -1,6 +1,5 @@
-import { Events, StageMap, Status } from "../constants.js";
+import { Events, Status } from "../constants.js";
 import { ExpressConfig } from "./express.js";
-import { AlertError } from "./utils.js";
 
 export class Form {
     constructor() {
@@ -8,9 +7,15 @@ export class Form {
     }
 
     DisplayRecord(record) {
-        record ?
-            $('#record')?.html(`<h4 onclick="window.formContext.SelectEntry()">${record.Seller}</h4>`) :
+        if (record) {
+            $('#record')?.html(`<h4 onclick="window.formContext.SelectEntry()">${record.Seller}</h4>`);
+            $('#record-weight')?.html(`<h4>Weight : ${record.Weight}</h4>`);
+
+        }
+        else {
             $('#record')?.html('');
+            $('#record-weight')?.html('');
+        }
     }
 
     FetchRecord() {

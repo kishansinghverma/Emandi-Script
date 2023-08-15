@@ -1,12 +1,13 @@
-import { MessageType, StageMap, Stages, Status } from "../constants.js";
+import { FetchParams, MessageType, StageMap, Stages, Status, Url } from "../constants.js";
 import { Form } from "../services/form.js";
-import { ShowAlert, AlertError } from "../services/utils.js";
+import { ShowAlert, AlertError, HandleResponse } from "../services/utils.js";
 import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
 import { ExpressConfig } from "../services/express.js";
 
 class NinerSubmit extends Form {
     InitializeForm() {
         this.CheckPaidSixR();
+        this.FetchRecord();
         this.AttachListener();
         this.ExecuteInitialActions();
     }
@@ -22,8 +23,8 @@ class NinerSubmit extends Form {
         $('input[type="checkbox"]').first().click();
         this.CaptchaResolver = ResolveCaptcha('dntCaptchaImg');
         this.CaptchaResolver.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
-        
-        if(this.Configuration) ExpressConfig.SetConfiguration({ ...this.Configuration, Status: Status.Init });
+
+        if (this.Configuration) ExpressConfig.SetConfiguration({ ...this.Configuration, Status: Status.Init });
         ExpressConfig.ExecuteViaExpress(() => this.RunHeadless());
     }
 
@@ -33,13 +34,6 @@ class NinerSubmit extends Form {
             $('#customModal').hide();
             throw new Error('No Paid 6R found!');
         }
-    }
-
-    UpdateForm() {
-        $('.weights').first().val($('.Currentweights').first().val()).trigger('change');
-        $('#rate').val($('#cropminrate').val()).trigger('change');
-        $('#DNTCaptchaInputText').val($('#in-captcha').val());
-        $('#previewBtn').removeAttr('disabled');
     }
 
     PreviewForm = () => preview_data();
@@ -65,11 +59,60 @@ class NinerSubmit extends Form {
                 //Handles form sumission.
                 if (response[0].status > 0) {
                     ShowAlert(MessageType.Success, "Niner Created Successfully.");
-                    this.OnComplete();
+                    if (this.Record && window.isPrepaid) {
+                        const requestParams = {
+                            ...FetchParams.Post,
+                            body: JSON.stringify({
+                                Rate: $('#rate').val(),
+                                Mode: 'Prepaid'
+                            })
+                        };
+
+                        fetch(Url.UpdateRecord, requestParams)
+                            .then(HandleResponse)
+                            .catch(AlertError)
+                            .finally(() => this.OnComplete());
+                    }
+                    else this.OnComplete();
                 }
             }
         }
+    }
 
+    SelectEntries() {
+        if (this.Record) {
+            let targetQuantity = this.Record.Weight;
+            const entries = $('#tblData1 > tbody:nth-child(2) > tr').not(':last');
+
+            entries.each((index, row) => {
+                $(row).find('.chk').prop('checked', true);
+                const weight = parseInt($(row).find('.Currentweights').val());
+
+                if (targetQuantity <= weight) {
+                    $(row).find('.weights').val(targetQuantity).trigger('change');
+                    return false;
+                }
+                else {
+                    $(row).find('.weights').val(weight).trigger('change');
+                    targetQuantity -= weight;
+                }
+            });
+
+            if (parseInt(this.Record.Weight) === parseInt($('#takenQty').html()))
+                ShowAlert(MessageType.Success, `Quantity Selected : ${$('#takenQty').html()} Quintal.`, 3)
+            else {
+                ShowAlert(MessageType.Error, 'Quantity Unavailable! Select Manually...', 5);
+                throw new Error('Select Manually...');
+            }
+        }
+        else $('.weights').first().val($('.Currentweights').first().val()).trigger('change');
+    }
+
+    UpdateForm() {
+        this.SelectEntries();
+        $('#rate').val($('#cropminrate').val()).trigger('change');
+        $('#DNTCaptchaInputText').val($('#in-captcha').val());
+        $('#previewBtn').removeAttr('disabled');
     }
 
     RunHeadless() {
