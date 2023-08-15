@@ -19,7 +19,7 @@ window.addEventListener('load', () => {
     if (page.includes('merchantinterother')) $('#Go').click();
     if (page.includes('merchantupiconfirm')) redirectToHandler();
 
-    window.isPrepaid = true;
+    window.isPrepaid = false;
 
     // To Inject On Emandi
     const script = document.createElement('script');
