@@ -1,6 +1,6 @@
-import { FetchParams, MessageType, StageMap, Stages, Status, Url } from "../constants.js";
+import { FetchParams, MessageType, SplitwiseGroupId, StageMap, Stages, Status, Url } from "../constants.js";
 import { Form } from "../services/form.js";
-import { ShowAlert, AlertError, HandleResponse } from "../services/utils.js";
+import { ShowAlert, AlertError, HandleResponse, ShowLoader } from "../services/utils.js";
 import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
 import { ExpressConfig } from "../services/express.js";
 
@@ -50,16 +50,27 @@ class NinerSubmit extends Form {
         window.location.href = StageMap[Stages.Gatepass].Url;
     }
 
-    PostAjaxCall(url, response) {
-        if (Array.isArray(response) && response.length > 0) {
-            if (url.includes('/Traders/NineRSubmit')) {
-                // Validate Captcha is correctly parsed.
-                ValidateCaptcha(response);
+    OnFormSave() {
+        ShowAlert(MessageType.Success, "Niner Created Successfully.", 3);
+        if (window.isPrepaid) {
+            const formData = {
+                ...FetchParams.Post,
+                body: JSON.stringify({
+                    cost: `${parseInt($('#takenQty').html()) * $('#rate').val() * 1.5/100}`,
+                    description: $('#SpanKretaAddrss').html(),
+                    details: $('.chk:checked').parent().parent().find('.instrumentNumber').map((index, item) => item.value).toArray().join('\n'),
+                    group_id: SplitwiseGroupId["Prepaid Gatepass"],
+                })
+            };
 
-                //Handles form sumission.
-                if (response[0].status > 0) {
-                    ShowAlert(MessageType.Success, "Niner Created Successfully.");
-                    if (this.Record && window.isPrepaid) {
+            ShowLoader('Saving Transaction');
+            fetch(Url.SplitwiseExpense, formData)
+                .then(HandleResponse)
+                .then(() => ShowAlert(MessageType.Success, 'Transaction Saved successfully...', 3))
+                .catch(AlertError)
+                .finally(() => {
+                    if (this.Record) {
+                        ShowLoader('Updating Record');
                         const requestParams = {
                             ...FetchParams.Post,
                             body: JSON.stringify({
@@ -74,7 +85,21 @@ class NinerSubmit extends Form {
                             .finally(() => this.OnComplete());
                     }
                     else this.OnComplete();
-                }
+                });
+        }
+        else this.OnComplete();
+    }
+
+
+    PostAjaxCall(url, response) {
+        if (Array.isArray(response) && response.length > 0) {
+            if (url.includes('/Traders/NineRSubmit')) {
+                // Validate Captcha is correctly parsed.
+                ValidateCaptcha(response);
+
+                //Handles form sumission.
+                if (response[0].status > 0)
+                    this.OnFormSave();
             }
         }
     }

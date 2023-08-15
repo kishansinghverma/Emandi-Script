@@ -39,7 +39,7 @@ class PostSuccess extends Form {
             const record = await FetchLastRecord('/Traders/GetDigitalPaymentList');
             const txnData = {
                 cost: `${record.totalAmount}`,
-                description: `Gatepass/${record.sbirefno}`,
+                description: `7R/${record.sbirefno}`,
                 details: this.Record ? `${this.Record.Party}, ${this.Record.Mandi}, ${this.Record.State}` : 'Manual'
             };
             ShowLoader('Saving Transaction')

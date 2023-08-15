@@ -49,7 +49,8 @@ export const Url = {
     PeekRecord: getUrl('peek'),
     PopRecord: getUrl('pop'),
     PrintPdf: `${homeUrl}/files/html`,
-    LogTransaction: `${homeUrl}/transaction/gatepass`
+    LogTransaction: `${homeUrl}/transaction/gatepass`,
+    SplitwiseExpense: `${homeUrl}/splitwise/transactions`
 }
 
 export const HttpMessages = {
@@ -107,6 +108,10 @@ export const Status = {
 
 export const Events = {
     RecordLoaded: 'RecordLoaded'
+}
+
+export const SplitwiseGroupId = {
+    "Prepaid Gatepass": 52740365 
 }
 
 export const ItemsToHide = [
