@@ -105,7 +105,6 @@ class NinerSubmit extends Form {
                 throw new Error('Select Manually...');
             }
         }
-        else $('.weights').first().val($('.Currentweights').first().val()).trigger('change');
     }
 
     UpdateForm() {
