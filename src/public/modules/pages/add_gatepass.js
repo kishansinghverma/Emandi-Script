@@ -70,9 +70,15 @@ class AddGatepass extends Form {
     HandleAjaxResponse(option, response) {
         if (Array.isArray(response)) {
             //Handle fetching of Paid NineR(s).
-            if (option.url.includes('/Traders/Bind9RDropDown') && option.data.includes('ExportType=0&PaidType=1'))
-                response.length > 0 ? this.NinerFetcher.Resolve() : ShowAlert(MessageType.Error, 'No Paid 9R Found!', 3);
-
+            if (option.url.includes('/Traders/Bind9RDropDown') && option.data.includes('ExportType=0&PaidType=1')) {
+                console.log(response);
+                if (response.length > 0) {
+                    $("#nine_r_id").html('<option style="font-weight:bold;" value="">Select 6R/ES/P</option>');
+                    response.forEach(item => $("#nine_r_id").append(`<option value="${item.id}">${item.id}</option>`))
+                    this.NinerFetcher.Resolve();
+                }
+                else ShowAlert(MessageType.Error, 'No Paid 9R Found!', 3);
+            }
             else if (option.url.includes('/Traders/add_gatepass')) {
                 // Validate Captcha is correctly parsed.
                 ValidateCaptcha(response);
@@ -90,7 +96,7 @@ class AddGatepass extends Form {
                                 .catch(err => { if (err.code !== 204) AlertError(err) })
                                 .finally(() => this.OnComplete());
                         }
-                        else this.OnComplete(); 
+                        else this.OnComplete();
                     }, 100);
                 }
             }
