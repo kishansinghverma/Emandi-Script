@@ -23,7 +23,7 @@ class AddGatepass extends Form {
 
     ExecuteInitialActions() {
         $('#img-captcha').append($('#dntCaptchaImg'));
-        $('#PaidType').val($('#PaidType option:eq(1)').val()).trigger('change');
+        setTimeout(() => $('#PaidType').val($('#PaidType option:eq(1)').val()).trigger('change'), 2000);
 
         this.CaptchaResolver = ResolveCaptcha('dntCaptchaImg');
         this.CaptchaResolver.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
@@ -88,6 +88,7 @@ class AddGatepass extends Form {
                     ShowAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
                     setTimeout(() => {
                         $('.swal-overlay').hide();
+                        $('#customModal').hide();
                         ShowLoader('Finalizing Record...');
 
                         if (this.Record) {
