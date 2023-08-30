@@ -17,6 +17,8 @@ const AddLinks = () => {
 }
 
 export const InjectRecordStatus = () => {
+    SetRecordStatus(Status.Loading);
+    
     const localData = ExpressConfig.GetConfiguration();
     if (localData)
         SetRecordStatus(Status.InProgress, localData.Record)

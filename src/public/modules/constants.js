@@ -103,7 +103,8 @@ export const Status = {
     Init: 'Init',
     InProgress: 'InProgress',
     None: 'None',
-    Queued: 'Queued'
+    Queued: 'Queued',
+    Loading: 'Loading'
 }
 
 export const Events = {

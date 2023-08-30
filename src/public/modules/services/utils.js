@@ -1,3 +1,4 @@
+import { LoadingIcon } from "../../assets/loader.js";
 import { HttpMessages, Icon, MessageType, Status } from "../constants.js";
 
 export class ComplexPromise {
@@ -81,6 +82,10 @@ export const SetRecordStatus = (status, data) => {
     container.parent().find('li').slice(1).remove();
 
     switch (status) {
+        case Status.Loading: 
+            container.after($(`<li><a href="#">${LoadingIcon}</a></li>`));
+            break;
+        
         case Status.InProgress:
             container.after($(`<li><a href="#"><b>In Progress : </b>${data?.Party}</a></li>`));
             break;
