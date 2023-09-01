@@ -1,6 +1,6 @@
 import { Form } from "../services/form.js";
-import { FetchParams, Url, MessageType, Stages, Status, StageMap } from "../constants.js";
-import { Capitalize, ComplexPromise, ShowAlert, AlertError, HandleResponse } from "../services/utils.js";
+import { FetchParams, Url, Stages, Status, StageMap } from "../constants.js";
+import { Capitalize, ComplexPromise, AlertError, HandleResponse } from "../services/utils.js";
 import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
 import { ExpressConfig } from "../services/express.js";
 

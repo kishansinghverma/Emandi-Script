@@ -11,7 +11,7 @@ class AddGatepass extends Form {
         this.NinerFetcher = new ComplexPromise();
     }
 
-    async InitializeForm() {
+    InitializeForm() {
         this.FetchRecord();
         this.AttachListener();
         this.ExecuteInitialActions();
@@ -60,9 +60,9 @@ class AddGatepass extends Form {
 
     PreviewForm = () => preview_data();
 
-    OnComplete = () => {
-        ExpressConfig.RemoveConfiguration();
-        PrintLastReciepts(false).catch(AlertError).finally(() => {
+    OnComplete = (extraRecipient) => {
+        PrintLastReciepts(false, extraRecipient).catch(AlertError).finally(() => {
+            ExpressConfig.RemoveConfiguration();
             window.location.href = '/Traders/Dashboard';
         })
     }
@@ -95,7 +95,7 @@ class AddGatepass extends Form {
                             fetch(Url.PopRecord)
                                 .then(HandleResponse)
                                 .catch(err => { if (err.code !== 204) AlertError(err) })
-                                .finally(() => this.OnComplete());
+                                .finally(() => this.OnComplete(this.Record.Recipient));
                         }
                         else this.OnComplete();
                     }, 100);

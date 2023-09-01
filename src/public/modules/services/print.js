@@ -1,10 +1,12 @@
 import { FetchParams, MessageType, Url } from "../constants.js";
 import { AlertError, Download, FetchLastRecordId, HandleByStatusCode, HideLoader, ShowAlert, ShowLoader } from "./utils.js";
 
-export const PrintLastReciepts = async (print) => {
+export const PrintLastReciepts = async (print, extraRecipient) => {
     try {
-        await PrintNiner(print, false);
-        await PrintGatepass(print, false);
+        const niner = await FetchElement('/Traders/SP_Get_9R_List', '/Receipt/print_9rs');
+        await PrintNiner(print, false, niner, extraRecipient);
+        const gatepass = await FetchElement('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps');
+        await PrintGatepass(print, false, gatepass, extraRecipient);
     }
     catch (err) { AlertError(err) }
     finally { HideLoader() };
@@ -21,12 +23,7 @@ const FetchElement = async (getList, getRecord) => {
     return node;
 }
 
-const FetchNiner = async () => (await FetchElement('/Traders/SP_Get_9R_List', '/Receipt/print_9rs'));
-
-const FetchGatepass = async () => (await FetchElement('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps'));
-
-export const PrintNiner = async (print, download, node) => {
-    const element = node ?? await FetchNiner();
+export const PrintNiner = async (print, download, element, extraRecipient) => {
     const contents = element.querySelector('body > div.row > #content');
 
     const requestParams = {
@@ -40,7 +37,8 @@ export const PrintNiner = async (print, download, node) => {
             ],
             QR: contents.querySelector('#qrcode img').src,
             Print: print,
-            ForceDownload: download
+            ForceDownload: download,
+            ExtraRecipient: extraRecipient
         })
     };
 
@@ -48,8 +46,7 @@ export const PrintNiner = async (print, download, node) => {
     await SendToPrint(requestParams);
 }
 
-export const PrintGatepass = async (print, download, node) => {
-    const element = node ?? await FetchGatepass();
+export const PrintGatepass = async (print, download, element, extraRecipient) => {
     const contents = element.querySelector('body > div.row > #content');
 
     const requestParams = {
@@ -65,7 +62,8 @@ export const PrintGatepass = async (print, download, node) => {
             ],
             QR: contents.querySelector('#qrcode img').src,
             Print: print,
-            ForceDownload: download
+            ForceDownload: download,
+            ExtraRecipient: extraRecipient
         })
     };
 
