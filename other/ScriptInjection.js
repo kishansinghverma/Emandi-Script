@@ -24,7 +24,7 @@ window.addEventListener('load', () => {
     // To Inject On Emandi
     const script = document.createElement('script');
     script.setAttribute('type', 'module');
-    script.src = "http://localhost:3001/public/index.js";
-    //script.src = "https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/index.js";
+    //script.src = "http://localhost:3001/public/index.js";
+    script.src = "https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/index.js";
     document.body.appendChild(script);
 });
