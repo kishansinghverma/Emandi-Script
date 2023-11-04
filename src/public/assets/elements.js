@@ -1,5 +1,5 @@
 export const SendRecieptButton = `<li>
-                                        <a href="#" onclick="{ window.commonContext.PrintLastRecords(false, '7037433280'); }">
+                                        <a href="#" onclick="{ window.commonContext.PrintLastRecords(false); }">
                                             <i class="fa fa-envelope-o"></i>
                                             <span> Send Last Reciepts </span> 
                                         </a>
@@ -18,4 +18,4 @@ export const NotificationContainer = `<div id="notification-container">
                                             <div id="message"></div>&emsp;
                                             <div class="close-btn" onclick="$('#notification-container').fadeOut(200)">&#x2716;</div>
                                         </div>
-                                    </div>`
+                                    </div>`;
