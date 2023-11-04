@@ -4,9 +4,9 @@ import { AlertError, Download, FetchLastRecordId, HandleByStatusCode, HideLoader
 export const PrintLastReciepts = async (print, extraRecipient) => {
     try {
         const niner = await FetchElement('/Traders/SP_Get_9R_List', '/Receipt/print_9rs');
-        await PrintNiner(print, false, niner, extraRecipient);
+        if (niner) await PrintNiner(print, false, niner, extraRecipient);
         const gatepass = await FetchElement('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps');
-        await PrintGatepass(print, false, gatepass, extraRecipient);
+        if (gatepass) await PrintGatepass(print, false, gatepass, extraRecipient);
     }
     catch (err) { AlertError(err) }
     finally { HideLoader() };
@@ -15,6 +15,11 @@ export const PrintLastReciepts = async (print, extraRecipient) => {
 const FetchElement = async (getList, getRecord) => {
     ShowLoader('Searching Record...');
     const recordId = await FetchLastRecordId(getList);
+    if (!recordId) {
+        ShowAlert(MessageType.Info, 'No Reciept Found.', 5);
+        return;
+    }
+
     ShowLoader('Fetching Record...');
     const response = await fetch(`${getRecord}/${recordId}`);
     const html = await response.text();

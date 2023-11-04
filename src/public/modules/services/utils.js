@@ -28,6 +28,7 @@ export const HandleResponse = (response) => {
     if (!response.ok || response.status === 204)
         throw { message: HttpMessages[response.status], code: response.status }
 }
+
 export const HandleJsonResponse = (response) => {
     HandleResponse(response);
     return response.json();
@@ -55,10 +56,13 @@ export const Download = async (response) => {
 }
 
 export const FetchLastRecord = async (url) => {
+    const date = new Date();
+    const toDate = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
+
     const response = await fetch(url, {
         method: 'POST',
         headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-        body: `draw=1&order[0][column]=1&order[0][dir]=desc&start=0&length=1`
+        body: `draw=0&order[0][column]=1&order[0][dir]=desc&start=0&length=1&fromDate=01/01/2023&toDate=${toDate}`
     });
 
     const data = await response.json();
@@ -67,7 +71,7 @@ export const FetchLastRecord = async (url) => {
 
 export const FetchLastRecordId = async (url) => {
     const data = await FetchLastRecord(url);
-    return data.id;
+    return data?.id;
 }
 
 export const ShowAlert = (type, message, hideAfter = 0) => {
@@ -82,10 +86,10 @@ export const SetRecordStatus = (status, data) => {
     container.parent().find('li').slice(1).remove();
 
     switch (status) {
-        case Status.Loading: 
+        case Status.Loading:
             container.after($(`<li><a href="#">${LoadingIcon}</a></li>`));
             break;
-        
+
         case Status.InProgress:
             container.after($(`<li><a href="#"><b>In Progress : </b>${data?.Party}</a></li>`));
             break;

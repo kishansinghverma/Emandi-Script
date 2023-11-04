@@ -1,5 +1,5 @@
 export const SendRecieptButton = `<li>
-                                        <a href="#" onclick="{ window.commonContext.PrintLastRecords(false); }">
+                                        <a href="#" onclick="{ window.commonContext.PrintLastRecords(false, '7037433280'); }">
                                             <i class="fa fa-envelope-o"></i>
                                             <span> Send Last Reciepts </span> 
                                         </a>
