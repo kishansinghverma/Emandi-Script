@@ -108,8 +108,10 @@ class AddGatepass extends Form {
         Promise.all([this.CaptchaResolver, this.NinerFetcher.Operator]).then(() => {
             this.SetInProgress();
             this.SelectEntry();
-            this.UpdateForm();
-            $("#form1").submit();
+            setTimeout(() => {
+                this.UpdateForm();
+                $("#form1").submit();
+            }, 1000);
         })
     }
 }
