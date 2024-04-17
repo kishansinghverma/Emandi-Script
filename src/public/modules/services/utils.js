@@ -3,48 +3,49 @@ import { HttpMessages, Icon, MessageType, Status } from "../constants.js";
 
 export class ComplexPromise {
     constructor() {
-        this.Operator = new Promise((resolve, reject) => {
-            this.Resolve = resolve;
-            this.Reject = reject;
+        this.operator = new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
         })
     }
 }
 
-export const AlertError = (err) => err.message ? ShowAlert(MessageType.Error, err.message, 3) : ShowAlert(MessageType.Error, err, 3);
+export const alertError = (err) => err.message ? showAlert(MessageType.Error, err.message, 5) : showAlert(MessageType.Error, err, 5);
 
-export const LogError = (err) => console.log(err.message);
+export const logError = (err) => console.log(err.message);
 
-export const ShowLoader = (msg) => {
+export const showLoader = (msg) => {
     $('#loader').show();
-    if (msg) $('#processMessage').html(`<div>${msg}</div><img alt="Loading" src="/images/please_wait.gif">`);
+    if (msg) $('#processMessage span').text(msg);
 }
 
-export const HideLoader = () => {
+export const hideLoader = () => {
     $('#loader').hide();
-    $('#processMessage').html(`<span>Please Wait...</span><img alt="Loading" src="/images/please_wait.gif">`);
+    $('#processMessage span').text('Please Wait...');
 }
 
-export const HandleResponse = (response) => {
-    if (!response.ok || response.status === 204)
+export const validateResponse = (response) => {
+    if (!response.ok)
         throw { message: HttpMessages[response.status], code: response.status }
 }
 
-export const HandleJsonResponse = (response) => {
-    HandleResponse(response);
-    return response.json();
+export const handleJsonResponse = (response) => {
+    validateResponse(response);
+    if (response.status !== 204)
+        return response.json();
 }
 
-export const HandleByStatusCode = (response) => {
+export const handleByStatusCode = (response) => {
     HandleResponse(response);
     return response;
 }
 
-export const Capitalize = (str) => {
+export const capitalize = (str) => {
     const result = str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     return result.trim();
 }
 
-export const Download = async (response) => {
+export const download = async (response) => {
     const fileName = response.url.split('/').pop();
     const blob = await response.blob();
     const link = document.createElement('a');
@@ -55,9 +56,9 @@ export const Download = async (response) => {
     link.remove();
 }
 
-export const FetchLastRecord = async (url) => {
+export const fetchLastRecord = async (url) => {
     const date = new Date();
-    const toDate = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
+    const toDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
     const response = await fetch(url, {
         method: 'POST',
@@ -69,19 +70,19 @@ export const FetchLastRecord = async (url) => {
     return data.data[0];
 }
 
-export const FetchLastRecordId = async (url) => {
+export const fetchLastRecordId = async (url) => {
     const data = await FetchLastRecord(url);
     return data?.id;
 }
 
-export const ShowAlert = (type, message, hideAfter = 0) => {
+export const showAlert = (type, message, hideAfter = 0) => {
     $('#notification-container').removeClass().addClass(type).show();
     $('#icon').html(Icon[type]);
     $('#message').html(message);
     if (hideAfter > 0) setTimeout(() => $('#notification-container').fadeOut(200), hideAfter * 1000);
 }
 
-export const SetRecordStatus = (status, data) => {
+export const setRecordStatus = (status, data) => {
     const container = $('div.navbar-collapse.nav-responsive-disabled > ul:nth-child(1) > li:nth-child(1)');
     container.parent().find('li').slice(1).remove();
 

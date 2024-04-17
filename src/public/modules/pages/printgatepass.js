@@ -1,5 +1,5 @@
-import { PrintGatepass as PrintRecord } from "../services/print.js";
-import { AlertError, HideLoader } from "../services/utils.js";
+// import { PrintGatepass as PrintRecord } from "../services/print.js";
+// import { AlertError, HideLoader } from "../services/utils.js";
 
 class PrintGatepass {
     InitializeForm() {}

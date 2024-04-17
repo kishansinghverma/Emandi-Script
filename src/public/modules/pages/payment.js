@@ -1,7 +1,7 @@
-import { FetchParams, MessageType, Stages, Status, Url } from "../constants.js";
+// import { FetchParams, MessageType, Stages, Status, Url } from "../constants.js";
 import { Form } from "../services/form.js";
-import { ShowAlert, AlertError, FetchLastRecord, ShowLoader } from "../services/utils.js";
-import { ExpressConfig } from "../services/express.js";
+// import { showAlert, AlertError, FetchLastRecord, showLoader } from "../services/utils.js";
+// import { ExpressConfig } from "../services/record.js";
 
 class DigitalPayment {
     InitializeForm() {
@@ -16,7 +16,7 @@ class DigitalPayment {
         if (url.includes('/Traders/Get6RListForPayment')) {
             if (Array.isArray(response)) {
                 if (response.length < 1)
-                    ShowAlert(MessageType.Info, 'No Payments Pending!', 3);
+                    showAlert(MessageType.Info, 'No Payments Pending!', 3);
                 else {
                     $('.chk')[0].click();
                     $('#proceddnow').click();
@@ -35,14 +35,14 @@ class PostSuccess extends Form {
         this.FetchRecord();
 
         try {
-            ShowLoader('Fetching Details');
+            showLoader('Fetching Details');
             const record = await FetchLastRecord('/Traders/GetDigitalPaymentList');
             const txnData = {
                 cost: `${record.totalAmount}`,
                 description: `7R/${record.sbirefno}`,
                 details: this.Record ? `${this.Record.Party}, ${this.Record.Mandi}, ${this.Record.State}` : 'Manual'
             };
-            ShowLoader('Saving Transaction')
+            showLoader('Saving Transaction')
             await fetch(Url.LogTransaction, { ...FetchParams.Post, body: JSON.stringify(txnData) });
         }
         catch (err) { AlertError(err) }

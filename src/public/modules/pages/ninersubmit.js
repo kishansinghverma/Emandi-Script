@@ -1,8 +1,8 @@
-import { FetchParams, MessageType, SplitwiseGroupId, StageMap, Stages, Status, Url } from "../constants.js";
+// import { FetchParams, MessageType, SplitwiseGroupId, StageMap, Stages, Status, Url } from "../constants.js";
 import { Form } from "../services/form.js";
-import { ShowAlert, AlertError, HandleResponse, ShowLoader } from "../services/utils.js";
-import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
-import { ExpressConfig } from "../services/express.js";
+// import { showAlert, AlertError, HandleResponse, showLoader } from "../services/utils.js";
+// import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
+// import { ExpressConfig } from "../services/record.js";
 
 class NinerSubmit extends Form {
     InitializeForm() {
@@ -30,7 +30,7 @@ class NinerSubmit extends Form {
 
     CheckPaidSixR() {
         if (!$('#dntCaptchaImg')[0]) {
-            ShowAlert(MessageType.Error, "No Paid 6R found!", 3);
+            showAlert(MessageType.Error, "No Paid 6R found!", 3);
             $('#customModal').hide();
             throw new Error('No Paid 6R found!');
         }
@@ -51,7 +51,7 @@ class NinerSubmit extends Form {
     }
 
     OnFormSave() {
-        ShowAlert(MessageType.Success, "Niner Created Successfully.", 3);
+        showAlert(MessageType.Success, "Niner Created Successfully.", 3);
         if (window.isPrepaid) {
             const formData = {
                 ...FetchParams.Post,
@@ -63,14 +63,14 @@ class NinerSubmit extends Form {
                 })
             };
 
-            ShowLoader('Saving Transaction');
+            showLoader('Saving Transaction');
             fetch(Url.SplitwiseExpense, formData)
                 .then(HandleResponse)
-                .then(() => ShowAlert(MessageType.Success, 'Transaction Saved successfully...', 3))
+                .then(() => showAlert(MessageType.Success, 'Transaction Saved successfully...', 3))
                 .catch(AlertError)
                 .finally(() => {
                     if (this.Record) {
-                        ShowLoader('Updating Record');
+                        showLoader('Updating Record');
                         const requestParams = {
                             ...FetchParams.Post,
                             body: JSON.stringify({
@@ -124,9 +124,9 @@ class NinerSubmit extends Form {
             });
 
             if (parseInt(this.Record.Weight) === parseInt($('#takenQty').html()))
-                ShowAlert(MessageType.Success, `Quantity Selected : ${$('#takenQty').html()} Quintal.`, 3)
+                showAlert(MessageType.Success, `Quantity Selected : ${$('#takenQty').html()} Quintal.`, 3)
             else {
-                ShowAlert(MessageType.Error, 'Quantity Unavailable! Select Manually...', 5);
+                showAlert(MessageType.Error, 'Quantity Unavailable! Select Manually...', 5);
                 throw new Error('Select Manually...');
             }
         }

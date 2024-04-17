@@ -1,5 +1,5 @@
 import { FetchParams, MessageType, Url } from "../constants.js";
-import { AlertError, Download, FetchLastRecordId, HandleByStatusCode, HideLoader, ShowAlert, ShowLoader } from "./utils.js";
+import { alertError, download, fetchLastRecordId, handleByStatusCode, hideLoader, showAlert, showLoader } from "./utils.js";
 
 export const PrintLastReciepts = async (print, extraRecipient) => {
     try {
@@ -13,14 +13,14 @@ export const PrintLastReciepts = async (print, extraRecipient) => {
 }
 
 const FetchElement = async (getList, getRecord) => {
-    ShowLoader('Searching Record...');
+    showLoader('Searching Record...');
     const recordId = await FetchLastRecordId(getList);
     if (!recordId) {
-        ShowAlert(MessageType.Info, 'No Reciept Found.', 5);
+        showAlert(MessageType.Info, 'No Reciept Found.', 5);
         return;
     }
 
-    ShowLoader('Fetching Record...');
+    showLoader('Fetching Record...');
     const response = await fetch(`${getRecord}/${recordId}`);
     const html = await response.text();
     const node = document.createElement('html');
@@ -47,7 +47,7 @@ export const PrintNiner = async (print, download, element, extraRecipient) => {
         })
     };
 
-    ShowLoader('Processing Niner...');
+    showLoader('Processing Niner...');
     await SendToPrint(requestParams);
 }
 
@@ -72,14 +72,14 @@ export const PrintGatepass = async (print, download, element, extraRecipient) =>
         })
     };
 
-    ShowLoader('Processing Gatepass...');
+    showLoader('Processing Gatepass...');
     await SendToPrint(requestParams);
 }
 
 const SendToPrint = async (requestParams) => {
     const response = await fetch(Url.PrintPdf, requestParams);
     HandleByStatusCode(response);
-    if (response.status === 201) ShowAlert(MessageType.Success, 'PDF Sent Via WhatsApp.', 3)
-    if (response.status === 202) ShowAlert(MessageType.Success, 'Print Job Sent.', 3);
+    if (response.status === 201) showAlert(MessageType.Success, 'PDF Sent Via WhatsApp.', 3)
+    if (response.status === 202) showAlert(MessageType.Success, 'Print Job Sent.', 3);
     if (response.status === 200) await Download(response);
 }

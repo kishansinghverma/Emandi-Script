@@ -1,43 +1,31 @@
-import { Events, Status } from "../constants.js";
-import { ExpressConfig } from "./express.js";
+import { recordService } from "./record.js";
 
 export class Form {
-    constructor() {
-        this.Configuration = ExpressConfig.GetConfiguration();
+    initForm = async () => {
+        this.record = await recordService.getRecord();
+        this.renderRecord(this.record);
     }
 
-    DisplayRecord(record) {
+    renderRecord = (record) => {
         if (record) {
-            $('#record')?.html(`<h4 onclick="window.formContext.SelectEntry()">${record.Seller}</h4>`);
-            $('#record-weight')?.html(`<h4>Weight : ${record.Weight}</h4>`);
-
-        }
-        else {
-            $('#record')?.html('');
-            $('#record-weight')?.html('');
+            this.selectRecord(record);
+            $('.record').fadeIn()
+                .append(`<div class="info-heading wrap-text">${record.seller}</div>`)
+                .append(`<div class="info-sub-heading">${record.date}</div>`)
+                .append(`<div class="info-text wrap-text">${record.party.name}, ${record.party.mandi}</div>`);
         }
     }
 
-    FetchRecord() {
-        if (this.Configuration) {
-            this.Record = this.Configuration.Record;
-            this.DisplayRecord(this.Record);
-        }
-        else {
-            document.body.addEventListener(Events.RecordLoaded, () => {
-                this.Record = window.queuedRecord;
-                this.DisplayRecord(this.Record);
-            })
-        }
+    getNestedValue = (path, record) => {
+        return path.split('.').reduce((o, k) => o && o[k], record);
     }
 
-    SetInProgress() {
-        if (this.Configuration?.Status === Status.Init)
-            ExpressConfig.SetConfiguration({ ...this.Configuration, Status: Status.InProgress });
+    selectRecord = (record) => {
+        const inputs = $('#custom-modal-content input[data-property]');
+        inputs.each((_, input) => $(input).val(this.getNestedValue($(input).data('property'), record)));
     }
 
-    AllowUpdate(str) {
-        if (str.length == 4) document.getElementById('updateBtn').removeAttribute('disabled');
-        else document.getElementById('updateBtn').setAttribute('disabled', 'disabled');
+    allowUpdate = (str) => {
+        str.length === 4 ? $('#submit-btn').removeAttr('disabled') : $('#submit-btn').attr('disabled', true);
     }
 }

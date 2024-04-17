@@ -11,7 +11,7 @@
 
 // ==/UserScript==
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     // To Inject On Payment Gateway
     const page = window.location.href;
     if (page.includes('merchantprelogin')) paySubmitUPI('UPI');
@@ -22,9 +22,10 @@ window.addEventListener('load', () => {
     window.isPrepaid = false;
 
     // To Inject On Emandi
-    const script = document.createElement('script');
-    script.setAttribute('type', 'module');
-    //script.src = "http://localhost:3001/public/index.js";
-    script.src = "https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/index.js";
-    document.body.appendChild(script);
+    // const url = 'https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist';
+    const url = 'http://localhost:3001/public';
+
+    $('<link>').attr('rel', 'stylesheet').attr('href', `${url}/assets/style.css`)
+        .on('load', async () => { await import(`${url}/index.js`) })
+        .appendTo(document.head);
 });

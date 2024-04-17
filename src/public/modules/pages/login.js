@@ -1,48 +1,48 @@
 import { MessageType } from "../constants.js";
 import { Form } from "../services/form.js";
-import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
-import { ComplexPromise, ShowAlert, AlertError } from "../services/utils.js";
+import { setResolvedCaptcha, validateCaptcha, resolveCaptcha } from "../services/captcha.js";
+import { ComplexPromise, showAlert, alertError } from "../services/utils.js";
 
 class LoginForm extends Form {
-    InitializeForm = () => {
-        this.LoginPromise = new ComplexPromise();
-        this.RegisterListeners();
-        this.ExecuteInitialActions();
+    initializeForm = () => {
+        this.loginPromise = new ComplexPromise();
+        this.registerListeners();
+        this.executeInitialActions();
     }
 
-    RegisterListeners() {
-        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.HandleAjaxResponse(ajaxOptions, jqXHR));
+    registerListeners() {
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.handleAjaxResponse(ajaxOptions, jqXHR));
 
         const observer = new MutationObserver((mutationList, observer) => {
             for (const mutation of mutationList)
                 if (mutation.addedNodes.length > 0)
-                    $('#dntCaptchaImg').on('load', () => this.LoginPromise.Operator.then(() => this.Login()));
+                    $('#dntCaptchaImg').on('load', () => this.loginPromise.operator.then(() => this.login()));
         });
 
         observer.observe($('form > div:nth-child(3) .col-sm-10')[0], { childList: true });
     }
 
-    ExecuteInitialActions() {
-        ShowAlert(MessageType.Info, 'Logging In, Please Wait...', 5);
+    executeInitialActions() {
+        showAlert(MessageType.Info, 'Logging In<br>Please Wait...')
         $('#dntCaptchaRefreshButton').click();
-        this.LoginPromise.Resolve();
+        this.loginPromise.resolve();
     }
 
-    Login() {
+    login() {
         $('#userid').val("Kishanverma.guest@gmail.com");
         $('#pwd').val("Kishan@123");
 
-        ResolveCaptcha('dntCaptchaImg')
+        resolveCaptcha('dntCaptchaImg')
             .then(text => {
-                SetResolvedCaptcha(text, 'DNTCaptchaInputText');
+                setResolvedCaptcha(text, 'DNTCaptchaInputText');
                 $('#btnsubmit').click();
             })
-            .catch(AlertError);
+            .catch(alertError);
     }
 
-    HandleAjaxResponse(ajaxOptions, jqXHR) {
+    handleAjaxResponse(ajaxOptions, jqXHR) {
         if (ajaxOptions.url.includes('/Account'))
-            ValidateCaptcha(jqXHR.responseJSON, true);
+            validateCaptcha(jqXHR.responseJSON, true);
     }
 }
 

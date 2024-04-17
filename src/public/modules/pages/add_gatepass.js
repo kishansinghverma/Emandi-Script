@@ -1,9 +1,10 @@
-import { AlertError, HandleResponse, Capitalize, ComplexPromise, ShowAlert, ShowLoader } from "../services/utils.js";
-import { MessageType, Url } from "../constants.js";
+// import { AlertError, HandleResponse, Capitalize, ComplexPromise, showAlert, showLoader } from "../services/utils.js";
+// import { MessageType, Url } from "../constants.js";
 import { Form } from "../services/form.js";
-import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
-import { ExpressConfig } from "../services/express.js";
-import { PrintLastReciepts } from "../services/print.js";
+import { ComplexPromise } from "../services/utils.js";
+// import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
+// import { ExpressConfig } from "../services/record.js";
+// import { PrintLastReciepts } from "../services/print.js";
 
 class AddGatepass extends Form {
     constructor() {
@@ -77,7 +78,7 @@ class AddGatepass extends Form {
                     response.forEach(item => $("#nine_r_id").append(`<option value="${item.id}">${item.id}</option>`))
                     this.NinerFetcher.Resolve();
                 }
-                else ShowAlert(MessageType.Error, 'No Paid 9R Found!', 3);
+                else showAlert(MessageType.Error, 'No Paid 9R Found!', 3);
             }
             else if (option.url.includes('/Traders/add_gatepass')) {
                 // Validate Captcha is correctly parsed.
@@ -85,11 +86,11 @@ class AddGatepass extends Form {
 
                 // Handles Form Submission
                 if (response[0].status > 0) {
-                    ShowAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
+                    showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
                     setTimeout(() => {
                         $('.swal-overlay').hide();
                         $('#customModal').hide();
-                        ShowLoader('Finalizing Record...');
+                        showLoader('Finalizing Record...');
 
                         if (this.Record) {
                             fetch(Url.PopRecord)

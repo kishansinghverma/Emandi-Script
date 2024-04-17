@@ -1,9 +1,8 @@
 import Tesseract from "../../assets/tesseract.js"
 import { MessageType, Status } from "../constants.js";
-import { ExpressConfig } from "./express.js";
-import { ShowAlert } from "./utils.js";
+import { showAlert } from "./utils.js";
 
-const TryResolve = async (source) => {
+const tryResolve = async (source) => {
     const canvas = document.createElement("canvas");
     canvas.width = 70;
     canvas.height = 40;
@@ -15,45 +14,45 @@ const TryResolve = async (source) => {
     return parsedText;
 }
 
-export const ResolveCaptcha = async (source) => {
+export const resolveCaptcha = async (source) => {
     let isResolved = false;
-    let parsedText = await TryResolve(source);
+    let parsedText = await tryResolve(source);
     let retryCount = 1;
 
     while (!isResolved) {
         if (isNaN(parsedText))
-            ShowAlert(MessageType.Error, "Captcha Error (NaN)! Retrying...", 1);
+            showAlert(MessageType.Error, "Captcha Error (NaN)! Retrying...", 1);
         else {
             if (parsedText < 1000 || parsedText > 9999)
-                ShowAlert(MessageType.Error, "Captcha Error (Range)! Retrying...", 1);
+                showAlert(MessageType.Error, "Captcha Error (Range)! Retrying...", 1);
             else {
                 isResolved = true;
                 break;
             }
         }
         if (retryCount > 2) location.reload();
-        parsedText = await TryResolve(source);
+        parsedText = await tryResolve(source);
         retryCount++;
     }
     return parsedText;
 }
 
-export const SetResolvedCaptcha = (value, target) => $(`#${target}`).val(value).trigger('change');
+export const setResolvedCaptcha = (value, target) => $(`#${target}`).val(value).trigger('change');
    
-export const ParseCaptcha = (source, target) => {
-    ResolveCaptcha(source).then(value => {
-        SetResolvedCaptcha(value, target);
+export const parseCaptcha = (source, target) => {
+    resolveCaptcha(source).then(value => {
+        setResolvedCaptcha(value, target);
     }).catch(AlertError);
 }
 
-export const ValidateCaptcha = (response, isLogin) => {
-    function Invalidate() {
-        ShowAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
-        const configuration = ExpressConfig.GetConfiguration();
-        if (configuration) ExpressConfig.SetConfiguration({ ...configuration, Status: Status.Init });
+export const validateCaptcha = (response, isLogin) => {
+    function invalidate() {
+        showAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
+        // const configuration = ExpressConfig.GetConfiguration();
+        // if (configuration) ExpressConfig.SetConfiguration({ ...configuration, Status: Status.Init });
         setTimeout(() => location.reload(), 1000);
     }
 
-    if (isLogin) { if (!response.succeeded) Invalidate() }
-    else { if (response[0].status === 0 && response[0].msg?.includes('Captcha')) Invalidate() }
+    if (isLogin) { if (!response.succeeded) invalidate() }
+    else { if (response[0].status === 0 && response[0].msg?.includes('Captcha')) invalidate() }
 }

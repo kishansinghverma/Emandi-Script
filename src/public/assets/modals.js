@@ -2,32 +2,26 @@ import { LoadingIcon } from "./loader.js";
 
 const BlankModal = `<div />`;
 
+const header = `
+<div class="custom-modal-header">
+	<div>E-Mandi Assistant</div>
+	<div class="link" onclick="$('#custom-modal').hide()">&#x2715;</div>
+</div>`;
+
 const add_six_r = `
-<div id="customModal" class="custom-modal">
-	<div class="head">
-		<div style="color: #e7e9eb">Provide The Information</div>
-		<div class="btn-close" onclick="$('#customModal').hide()"></div>
-	</div>
-	<div id="modalContent" class="custom-modal-content">
-		<div id="record">
-        ${LoadingIcon}
-        </div>
-		<hr class="hr">
-		<input type="text" id="sname" placeholder="Seller Name" />
-		<hr>
-		<input type="text" id="quantity" placeholder="Quantity (In Quintals)" />
-		<hr>
-		<input type="text" id="licence" placeholder="Party Licence" />
-		<hr>
+<div id="custom-modal">
+	${header}
+	<div id="custom-modal-content">
+		<div class="record"></div>
+		<input type="text" id="sname" placeholder="Seller Name" data-property="seller" />
+		<input type="text" id="quantity" placeholder="Quantity (In Quintals)" data-property="weight"/>
+		<input type="text" id="licence" placeholder="Party Licence" data-property="party.licenceNumber"/>
 		<div id="img-captcha"></div>
-		<hr>
-		<input type="text" placeholder="Captcha Code" id="in-captcha" oninput="window.formContext.AllowUpdate(this.value)"/>
-		<hr>
-        <div class="buttons">
-            <button class="btn btn-info" onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
-		    <button class="btn btn-success" onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
+		<input type="text" placeholder="Captcha Code" id="in-captcha" oninput="window.formContext.allowUpdate(this.value)"/>
+        <div class="btn-group">
+			<button class="button info" onclick="window.formContext.clearRecord()">Refresh</button>
+			<button class="button success" onclick="window.formContext.submitForm()" disabled id="submit-btn">Submit</button>
         </div>
-		<button class="btn btn-primary" onclick="window.formContext.RunHeadless()" id="expressBtn">Express</button>
 	</div>
 </div>
 `
@@ -176,14 +170,14 @@ const Print = `
 export const Modals = {
 	Account: BlankModal,
 	index: BlankModal,
-    add_six_r,
-    NineR,
-    NineRSubmit,
-    add_gatepass,
-    DigitalPayment: BlankModal,
-    GeneratedDigitalPayment: BlankModal,
-    print_9R: Print,
-    print_gatepass: Print,
+	add_six_r,
+	NineR,
+	NineRSubmit,
+	add_gatepass,
+	DigitalPayment: BlankModal,
+	GeneratedDigitalPayment: BlankModal,
+	print_9R: Print,
+	print_gatepass: Print,
 	generated_9R: BlankModal,
 	generated_gatepass: BlankModal
 };

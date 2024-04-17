@@ -1,57 +1,35 @@
 import * as CommonFunctions from './common.js';
-import { CSS } from "../../assets/style.js";
-import { Events, ItemsToHide, Status, Url } from '../constants.js';
+import { ItemsToHide, RouteMap } from '../constants.js';
+import { Modals } from '../../assets/modals.js';
 import { NotificationContainer, PrintRecieptButton, SendRecieptButton } from '../../assets/elements.js';
-import { ExpressConfig } from './express.js';
-import { AlertError, HandleJsonResponse, HideLoader, SetRecordStatus, ShowLoader } from './utils.js';
 
-const HideLinks = () => ItemsToHide.forEach(item => $(item)?.hide());
-const ReplaceLink = () => document.querySelector('[href="/Traders/NinerDashboard"]')?.setAttribute('href', '/Traders/NineR');
-const InjectCSS = () => document.head.appendChild($('<style>').html(CSS)[0]);
-const InjectAlertModal = () => $("body").append(NotificationContainer);
-const HookCommonFunctions = () => { window.commonContext = CommonFunctions };
+const hideLinks = () => ItemsToHide.forEach(item => $(item)?.hide());
+const replaceLink = () => document.querySelector('[href="/Traders/NinerDashboard"]')?.setAttribute('href', '/Traders/NineR');
+const injectAlertModal = () => $("body").append(NotificationContainer);
+const hookCommonFunctions = () => { window.commonContext = CommonFunctions };
+const addLinks = () => [SendRecieptButton, PrintRecieptButton].forEach(item => $('#aside > ul > li:nth-child(10)')?.after($(item)));
 
-const AddLinks = () => {
-    $('#aside > ul > li:nth-child(10)')?.after($(SendRecieptButton));
-    $('#aside > ul > li:nth-child(10)')?.after($(PrintRecieptButton));
+const injectAlways = () => {
+    injectAlertModal();
 }
 
-export const InjectRecordStatus = () => {
-    SetRecordStatus(Status.Loading);
-    
-    const localData = ExpressConfig.GetConfiguration();
-    if (localData)
-        SetRecordStatus(Status.InProgress, localData.Record)
-    else {
-        ShowLoader();
-        fetch(Url.PeekRecord)
-            .then(HandleJsonResponse)
-            .then(data => SetRecordStatus(Status.Queued, data))
-            .catch((err) => err.code === 204 ? SetRecordStatus(Status.None) : AlertError(err))
-            .finally(() => {
-                document.body.dispatchEvent(new CustomEvent(Events.RecordLoaded));
-                HideLoader()
-            });
-    }
+const injectPostLogin = () => {
+    replaceLink();
+    addLinks();
+    hideLinks();
+    hookCommonFunctions();
 }
 
-const InjectAlways = () => {
-    InjectCSS();
-    InjectAlertModal();
-}
+export const executeScript = async () => {
+    injectAlways();
 
-const InjectPostLogin = async () => {
-    ReplaceLink();
-    AddLinks();
-    HideLinks();
-    HookCommonFunctions();
-    ExpressConfig.DispatchActionByStage();
-    InjectRecordStatus();
-}
+    const urlSegments = window.location.href.split('/');
+    if (urlSegments.includes('Traders')) injectPostLogin();
 
-export const RunInitialServices = async () => {
-    InjectAlways();
+    const route = urlSegments.pop().split('?')[0];
+    if (!Object.keys(RouteMap).includes(route)) throw new Error('Injection not valid for this page!');
 
-    if (window.location.href.includes('Traders'))
-        await InjectPostLogin();
+    $(RouteMap[route].Div).first().append($('<div>').addClass('custom-modal-container').html(Modals[route]));
+    window.formContext = RouteMap[route].Script;
+    await window.formContext.initializeForm();
 }

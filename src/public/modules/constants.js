@@ -13,7 +13,7 @@ const CommonDiv = '#content > div > div';
 const PrintDiv = '#content';
 const LoginDiv = '.box-login';
 
-const baseUrl = "https://nextcloud.azure-api.net/emandi/api";
+const baseUrl = "https://unity-hub.onrender.com/api";
 //const baseUrl = "http://localhost:8080/api";
 const homeUrl = "https://nextcloud.azure-api.net/api";
 
@@ -44,10 +44,10 @@ export const FetchParams = {
 }
 
 export const Url = {
-    UpdateRecord: getUrl('update'),
-    SetRate: getUrl('rate'),
-    PeekRecord: getUrl('peek'),
-    PopRecord: getUrl('pop'),
+    UpdateRecord: getUrl('emandi/update'),
+    SetRate: getUrl('emandi/rate'),
+    PeekRecord: getUrl('emandi/peek'),
+    PopRecord: getUrl('emandi/pop'),
     PrintPdf: `${homeUrl}/files/html`,
     LogTransaction: `${homeUrl}/transaction/gatepass`,
     SplitwiseExpense: `${homeUrl}/splitwise/transactions`
@@ -100,11 +100,13 @@ export const Stages = {
 }
 
 export const Status = {
+    New: 'New',
     Init: 'Init',
     InProgress: 'InProgress',
     None: 'None',
     Queued: 'Queued',
-    Loading: 'Loading'
+    Loading: 'Loading',
+    Error: 'Error'
 }
 
 export const Events = {

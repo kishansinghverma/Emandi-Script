@@ -1,49 +1,34 @@
+import { MessageType } from "../constants.js";
+import { resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { Form } from "../services/form.js";
-import { FetchParams, Url, Stages, Status, StageMap } from "../constants.js";
-import { Capitalize, ComplexPromise, AlertError, HandleResponse } from "../services/utils.js";
-import { ResolveCaptcha, SetResolvedCaptcha, ValidateCaptcha } from "../services/captcha.js";
-import { ExpressConfig } from "../services/express.js";
-
+import { recordService } from "../services/record.js";
+import { ComplexPromise, alertError, capitalize, showAlert } from "../services/utils.js";
 class AddSixR extends Form {
-    constructor() {
-        super();
-        this.LicenceFetcher = new ComplexPromise();
-        this.RateFetcher = new ComplexPromise();
+    initializeForm = async () => {
+        await this.initForm();
+        this.attachListener();
+        this.executeInitialActions();
     }
 
-    InitializeForm() {
-        this.AttachListener();
-        this.FetchRecord();
-        this.ExecuteInitialActions();
+    attachListener = () => {
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.postAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
+        $('#in-captcha').on('change', ({ target }) => this.allowUpdate(target.value));
     }
 
-    AttachListener() {
-        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.PostAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
-        $('#in-captcha').on('change', ({ target }) => this.AllowUpdate(target.value));
-    }
-
-    ExecuteInitialActions() {
+    executeInitialActions = () => {
         $('#img-captcha').append($('#dntCaptchaImg'));
-        this.CaptchaResolver = ResolveCaptcha('dntCaptchaImg');
-        this.CaptchaResolver.then(value => SetResolvedCaptcha(value, 'in-captcha')).catch(AlertError);
-        ExpressConfig.ExecuteViaExpress(() => this.RunHeadless());
+        this.captchaResolver = resolveCaptcha('dntCaptchaImg');
+        this.captchaResolver.then(value => setResolvedCaptcha(value, 'in-captcha')).catch(alertError);
     }
 
-    SelectEntry() {
-        $('#sname').val(this.Record.Seller);
-        $('#quantity').val(this.Record.Weight);
-        $('#licence').val(this.Record.PartyLicence ?? '');
-    };
-
-    UpdateForm() {
-        $('#vikreta_details').val(Capitalize($('#sname').val()));
+    updateForm = () => {
+        $('#vikreta_details').val(capitalize($('#sname').val()));
         $('#vikreta_mobile').val('7037433280');
         if ($('#licence').val()) {
             $('#trader_type').prop('checked', true).trigger('change');
             $('#kreta_license_number').val($('#licence').val()).trigger('change');
         }
-        else
-            $('#ForSelf').prop('checked', true).trigger('change');
+        else $('#ForSelf').prop('checked', true).trigger('change');
         $('#crop_code').val('58').trigger('change');
         $('#crop_type').val('Regular');
         $('#crop_weight').val(parseFloat($('#quantity').val()).toFixed(3));
@@ -51,59 +36,49 @@ class AddSixR extends Form {
         $('#previewBtn').removeAttr('disabled');
     }
 
-    PreviewForm = () => preview_data();
+    submitForm = () => {
+        this.licenceFetcher = new ComplexPromise();
+        this.rateFetcher = new ComplexPromise();
+        this.updateForm();
+        Promise.allSettled([this.rateFetcher.operator, this.licenceFetcher.operator]).then(() => {
+            if ($('#form1').valid()) this.record ? $("#form1").submit() : preview_data();
+            else alertError('Check the required fields!');
+        });
+    }
 
-    OnComplete() {
-        if (this.Configuration) {
-            ExpressConfig.SetConfiguration({
-                ...this.Configuration,
-                Stage: Stages.Payment,
-                Status: Status.Init
-            });
-        }
-
+    onComplete = () => {
+        if (this.record) recordService.setRecord({ ...this.record, rate: $('#crop_rate').val() });
+        showAlert(MessageType.Success, '6R created successfully.<br>Redirecting...')
         window.location.href = StageMap[Stages.Payment].Url;
     }
 
-    PostAjaxCall(url, response) {
+    postAjaxCall = (url, response) => {
         if (Array.isArray(response) && response.length > 0) {
             // Resolves the Promise waiting for fetching Rate.
             if (url.includes('/Traders/get_crop_fees')) {
                 $('#crop_rate').val(response[0].min_rate).trigger('change');
-                this.RateFetcher.Resolve();
+                this.rateFetcher.resolve();
             }
             // Resolves the Promise waiting for Kreta Details. 
             else if (url.includes('/Traders/get_license_detail')) {
-                this.LicenceFetcher.Resolve();
+                this.licenceFetcher.resolve();
             }
             else if (url.includes('Traders/add_six_r')) {
                 // Validate Captcha is correctly parsed.
-                ValidateCaptcha(response);
-                
-                //Handles form submission
-                if (response[0].status > 0) {
-                    if (this.Record) {
-                        const requestParams = { ...FetchParams.Post, body: JSON.stringify({ Rate: $('#crop_rate').val() }) };
-                        fetch(Url.UpdateRecord, requestParams)
-                            .then(HandleResponse)
-                            .catch(AlertError)
-                            .finally(() => this.OnComplete());
-                    }
-                    else this.OnComplete();
-                }
+                validateCaptcha(response);
+
+                // Handles Form Submission
+                if (response[0].status > 0) this.onComplete();
             }
         }
     }
 
-    RunHeadless() {
-        this.CaptchaResolver.then(() => {
-            this.SetInProgress();
-            this.SelectEntry();
-            this.UpdateForm();
-            Promise.all([this.RateFetcher.Operator, this.LicenceFetcher.Operator]).then(() => {
-                $("#form1").submit();
-            })
-        })
+    clearRecord = () => {
+        $('.record').fadeOut(400, () => {
+            recordService.removeRecord();
+            location.reload();
+        });
+
     }
 }
 
