@@ -8,7 +8,8 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/app.js",
-    "build": "webpack --config webpack.config.cjs"
+    "build": "webpack --config webpack.config.cjs && npm run copy-files",
+    "copy-files": "cp ./src/public/assets/style.css ./dist/assets/style.css && cp ./other/scriptloader.js ./dist/scriptloader.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -19,7 +20,6 @@
   },
   "devDependencies": {
     "webpack": "^5.80.0",
-    "webpack-cli": "^4.7.2",
-    "copy-webpack-plugin": "^12.0.2"
+    "webpack-cli": "^4.7.2"
   }
 }
