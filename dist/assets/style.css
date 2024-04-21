@@ -90,6 +90,7 @@
     border-radius: .28571429rem;
     transition: box-shadow .1s ease, border-color .1s ease;
     box-shadow: none;
+    -webkit-appearance: none;
 }
 
 .custom-modal .record {
