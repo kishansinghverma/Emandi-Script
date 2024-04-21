@@ -22,8 +22,8 @@ window.addEventListener('load', async () => {
     window.isPrepaid = false;
 
     // To Inject On Emandi
-    // const url = 'https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist';
-    const url = 'http://localhost:3001/public';
+    const url = 'https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist';
+    // const url = 'http://localhost:3001/public';
 
     $('<link>').attr('rel', 'stylesheet').attr('href', `${url}/assets/style.css`)
         .on('load', async () => { await import(`${url}/index.js`) })
