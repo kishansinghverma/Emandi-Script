@@ -14,7 +14,6 @@ const PrintDiv = '#content';
 const LoginDiv = '.box-login';
 
 const baseUrl = "https://unity-hub.onrender.com/api";
-//const baseUrl = "http://localhost:8080/api";
 const homeUrl = "https://nextcloud.azure-api.net/api";
 
 const getUrl = (path) => (`${baseUrl}/${path}`);

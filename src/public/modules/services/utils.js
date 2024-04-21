@@ -1,4 +1,3 @@
-import { LoadingIcon } from "../../assets/loader.js";
 import { HttpMessages, Icon, MessageType, Status } from "../constants.js";
 
 export class ComplexPromise {
@@ -9,6 +8,8 @@ export class ComplexPromise {
         })
     }
 }
+
+export const getNestedValue = (path, record) => (path.split('.').reduce((o, k) => o && o[k], record) ?? '');
 
 export const alertError = (err) => err.message ? showAlert(MessageType.Error, err.message, 5) : showAlert(MessageType.Error, err, 5);
 
@@ -63,45 +64,18 @@ export const fetchLastRecord = async (url) => {
     const response = await fetch(url, {
         method: 'POST',
         headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-        body: `draw=0&order[0][column]=1&order[0][dir]=desc&start=0&length=1&fromDate=01/01/2023&toDate=${toDate}`
+        body: `draw=0&order[0][column]=1&order[0][dir]=desc&start=0&length=1&fromDate=01/01/2024&toDate=${toDate}`
     });
 
     const data = await response.json();
     return data.data[0];
 }
 
-export const fetchLastRecordId = async (url) => {
-    const data = await FetchLastRecord(url);
-    return data?.id;
-}
+export const fetchLastRecordId = async (url) => ((await fetchLastRecord(url))?.id);
 
 export const showAlert = (type, message, hideAfter = 0) => {
-    $('#notification-container').removeClass().addClass(type).show();
-    $('#icon').html(Icon[type]);
-    $('#message').html(message);
-    if (hideAfter > 0) setTimeout(() => $('#notification-container').fadeOut(200), hideAfter * 1000);
-}
-
-export const setRecordStatus = (status, data) => {
-    const container = $('div.navbar-collapse.nav-responsive-disabled > ul:nth-child(1) > li:nth-child(1)');
-    container.parent().find('li').slice(1).remove();
-
-    switch (status) {
-        case Status.Loading:
-            container.after($(`<li><a href="#">${LoadingIcon}</a></li>`));
-            break;
-
-        case Status.InProgress:
-            container.after($(`<li><a href="#"><b>In Progress : </b>${data?.Party}</a></li>`));
-            break;
-
-        case Status.Queued:
-            window.queuedRecord = data;
-            container.after($(`<li><a href="#" onclick="window.commonContext.StartExpress()"><b>Queued : </b>${data?.Party}</a></li>`));
-            break;
-
-        case Status.None:
-            container.after($(`<li><a href="#"><b>No Queued Request</b></a></li>`));
-            break;
-    }
+    $('.notification-container').removeClass(Object.values(MessageType).join(' ')).addClass(type).show();
+    $('.notification-container .icon').html(Icon[type]);
+    $('.notification-container .message').html(message);
+    if (hideAfter > 0) setTimeout(() => $('.notification-container').fadeOut(200), hideAfter * 1000);
 }

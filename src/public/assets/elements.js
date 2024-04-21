@@ -14,11 +14,17 @@ export const PrintRecieptButton = `
         </a>
     </li>`;
 
-export const NotificationContainer = `
-    <div id="notification-container">
-        <div id="notification-content" style="display: flex;">
-            <div id="icon" style="height: 24px; width: 24px;"></div>&nbsp;&nbsp;
-            <div id="message"></div>&emsp;
-            <div class="link" onclick="$('#notification-container').fadeOut(200)">&#x2715;</div>
+export const notificationComponent = `
+    <div class="notification-container">
+        <div class="notification-body">
+            <div class="icon"></div>
+            <div class="message"></div>&emsp;
+            <div class="link">&#x2715;</div>
         </div>
-    </div>`;
+    </div >`;
+
+export const recordComponent = (record) => (`
+    <div class="info-heading wrap-text">${record.seller}</div>
+    <div class="info-sub-heading">${record.date}</div>
+    <div class="info-text wrap-text">${record.party.name}, ${record.party.mandi}</div>
+`);

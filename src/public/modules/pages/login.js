@@ -1,9 +1,8 @@
 import { MessageType } from "../constants.js";
-import { Form } from "../services/form.js";
 import { setResolvedCaptcha, validateCaptcha, resolveCaptcha } from "../services/captcha.js";
 import { ComplexPromise, showAlert, alertError } from "../services/utils.js";
 
-class LoginForm extends Form {
+class LoginForm {
     initializeForm = () => {
         this.loginPromise = new ComplexPromise();
         this.registerListeners();

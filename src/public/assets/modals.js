@@ -1,94 +1,72 @@
-import { LoadingIcon } from "./loader.js";
-
 const BlankModal = `<div />`;
 
 const header = `
 <div class="custom-modal-header">
 	<div>E-Mandi Assistant</div>
-	<div class="link" onclick="$('#custom-modal').hide()">&#x2715;</div>
+	<div class="link">&#x2715;</div>
 </div>`;
 
 const add_six_r = `
-<div id="custom-modal">
+<div class="custom-modal">
 	${header}
-	<div id="custom-modal-content">
+	<div class="custom-modal-content">
 		<div class="record"></div>
 		<input type="text" id="sname" placeholder="Seller Name" data-property="seller" />
 		<input type="text" id="quantity" placeholder="Quantity (In Quintals)" data-property="weight"/>
 		<input type="text" id="licence" placeholder="Party Licence" data-property="party.licenceNumber"/>
 		<div id="img-captcha"></div>
-		<input type="text" placeholder="Captcha Code" id="in-captcha" oninput="window.formContext.allowUpdate(this.value)"/>
+		<input type="text" placeholder="Captcha Code" id="in-captcha" />
         <div class="btn-group">
-			<button class="button info" onclick="window.formContext.clearRecord()">Refresh</button>
-			<button class="button success" onclick="window.formContext.submitForm()" disabled id="submit-btn">Submit</button>
+			<button class="button info" id="clear-btn">Refresh</button>
+			<button class="button success" disabled id="submit-btn">Submit</button>
         </div>
 	</div>
 </div>
-`
+`;
+
 const NineR = `
-<div id="customModal" class="custom-modal">
-	<div class="head">
-		<div style="color: #e7e9eb">Provide The Information</div>
-		<div class="btn-close" onclick="$('#customModal').hide()"></div>
-	</div>
-	<div id="modalContent" class="custom-modal-content">
-		<div id="record">
-        ${LoadingIcon}
-        </div>
-		<hr class="hr">
-		<input type="text" id="bname" placeholder="Buyer Name" />
-		<hr>
-        <div class="buttons">
-            <button class="btn btn-info" onclick="window.formContext.UpdateForm()">Update</button>
-		    <button class="btn btn-success" onclick="window.formContext.Next()" disabled id="nextBtn">Next</button>
-        </div>
+<div class="custom-modal">
+	${header}
+	<div class="custom-modal-content">
+		<div class="record"></div>
+		<input type="text" id="bname" placeholder="Buyer Name" data-property="party.name,party.mandi,party.state" />
+		<div class="checkbox-wrapper">
+			<input type="checkbox" id="is-licenced"/>
+			<label for="is-licenced">Party Is Licenced</label>
+		</div>
+		<button class="button success" disabled id="next-btn">Next</button>
 	</div>
 </div>
-`
+`;
+
 const NineRSubmit = `
-<div id="customModal" class="custom-modal">
-	<div class="head">
-		<div style="color: #e7e9eb">Provide The Information</div>
-		<div class="btn-close" onclick="$('#customModal').hide()"></div>
-	</div>
-	<div id="modalContent" class="custom-modal-content">
-		<div id="record-weight"></div><br />
+<div class="custom-modal">
+	${header}
+	<div class="custom-modal-content">
+		<div class="record"></div>
+		<input type="text" id="weight" placeholder="Weight" data-property="weight" />
         <div id="img-captcha"></div>
-        <hr>
-        <input type="text" placeholder="Captcha Code" id="in-captcha" oninput="window.formContext.AllowUpdate(this.value)"/>
-        <hr>
-        <div class="buttons">
-            <button class="btn btn-info" onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
-		    <button class="btn btn-success" onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
-        </div>
+        <input type="text" placeholder="Captcha Code" id="in-captcha"/>
+        <button class="button success" disabled id="submit-btn">Submit</button>
 	</div>
 </div>
-`
+`;
+
 const add_gatepass = `
-<div id="customModal" class="custom-modal">
-	<div class="head">
-		<div style="color: #e7e9eb">Provide The Information</div>
-		<div class="btn-close" onclick="$('#customModal').hide()"></div>
-	</div>
-	<div id="modalContent" class="custom-modal-content">
-		<div id="record">
-        ${LoadingIcon}
-        </div>
-		<hr class="hr">
-		<input type="text" id="destination" placeholder="Destined Market" />
-		<hr>
-		<select id="carrier" placeholder="Select Vehicle" style="width: 100%; height:27px;">
+<div class="custom-modal">
+	${header}
+	<div class="custom-modal-content">
+		<div class="record"></div>
+		<input type="text" id="destination" placeholder="Destined Market" data-property="party.name" />
+		<select id="carrier" placeholder="Select Vehicle" data-property="vehicleType">
 			<option selected disabled>Select Vehicle</option>
 			<option value="1">Truck</option>
 			<option value="2">Pick-Up</option>
 			<option value="4">DCM</option>
 		</select>
-		<hr>
-		<input type="text" id="carrier-no" placeholder="Vehicle Number" />
-		<hr>
-		<input type="text" id="packets" placeholder="Packets" />
-		<hr>
-		<select type="text" id="statename" style="width: 100%; height:27px;">
+		<input type="text" id="carrier-no" placeholder="Vehicle Number" data-property="vehicleNumber" />
+		<input type="text" id="packets" placeholder="Packets" data-property="bags" />
+		<select type="text" id="statename" data-property="party.stateCode">
 			<option selected disabled>Select State</option>
 			<option value="1">उत्तर प्रदेश</option>
 			<option value="2">उत्तराखंड</option>
@@ -128,19 +106,11 @@ const add_gatepass = `
 			<option value="36">तेलंगाना</option>
 			<option value="37">नेपाल</option>
 		</select>
-		<hr>
-        <input type="text" placeholder="Mandi" id="mandiname" />
-		<hr>
-        <input type="text" placeholder="Distance" id="space" />
-		<hr>
+        <input type="text" placeholder="Mandi" id="mandiname" data-property="party.mandi" />
+        <input type="text" placeholder="Distance" id="space" data-property="party.distance" />
 		<div id="img-captcha"></div>
-		<hr>
 		<input type="text" placeholder="Captcha Code" id="in-captcha"/>
-		<hr>
-        <div class="buttons">
-            <button class="btn btn-info" onclick="window.formContext.UpdateForm()" disabled id="updateBtn">Update</button>
-		    <button class="btn btn-success" onclick="window.formContext.PreviewForm()" disabled id="previewBtn">Preview</button>
-        </div>
+        <button class="button success" disabled id="submit-btn">Submit</button>
 	</div>
 </div>
 `

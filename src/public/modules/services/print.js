@@ -1,20 +1,20 @@
 import { FetchParams, MessageType, Url } from "../constants.js";
 import { alertError, download, fetchLastRecordId, handleByStatusCode, hideLoader, showAlert, showLoader } from "./utils.js";
 
-export const PrintLastReciepts = async (print, extraRecipient) => {
+export const printLastReciepts = async (print, extraRecipient) => {
     try {
-        const niner = await FetchElement('/Traders/SP_Get_9R_List', '/Receipt/print_9rs');
-        if (niner) await PrintNiner(print, false, niner, extraRecipient);
-        const gatepass = await FetchElement('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps');
-        if (gatepass) await PrintGatepass(print, false, gatepass, extraRecipient);
+        const niner = await fetchElement('/Traders/SP_Get_9R_List', '/Receipt/print_9rs');
+        if (niner) await printNiner(print, false, niner, extraRecipient);
+        const gatepass = await fetchElement('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps');
+        if (gatepass) await printGatepass(print, false, gatepass, extraRecipient);
     }
-    catch (err) { AlertError(err) }
-    finally { HideLoader() };
+    catch (err) { alertError(err) }
+    finally { hideLoader() };
 }
 
-const FetchElement = async (getList, getRecord) => {
+const fetchElement = async (getList, getRecord) => {
     showLoader('Searching Record...');
-    const recordId = await FetchLastRecordId(getList);
+    const recordId = await fetchLastRecordId(getList);
     if (!recordId) {
         showAlert(MessageType.Info, 'No Reciept Found.', 5);
         return;
@@ -28,7 +28,7 @@ const FetchElement = async (getList, getRecord) => {
     return node;
 }
 
-export const PrintNiner = async (print, download, element, extraRecipient) => {
+export const printNiner = async (print, download, element, extraRecipient) => {
     const contents = element.querySelector('body > div.row > #content');
 
     const requestParams = {
@@ -48,10 +48,10 @@ export const PrintNiner = async (print, download, element, extraRecipient) => {
     };
 
     showLoader('Processing Niner...');
-    await SendToPrint(requestParams);
+    await sendToPrint(requestParams);
 }
 
-export const PrintGatepass = async (print, download, element, extraRecipient) => {
+export const printGatepass = async (print, download, element, extraRecipient) => {
     const contents = element.querySelector('body > div.row > #content');
 
     const requestParams = {
@@ -73,13 +73,13 @@ export const PrintGatepass = async (print, download, element, extraRecipient) =>
     };
 
     showLoader('Processing Gatepass...');
-    await SendToPrint(requestParams);
+    await sendToPrint(requestParams);
 }
 
-const SendToPrint = async (requestParams) => {
+const sendToPrint = async (requestParams) => {
     const response = await fetch(Url.PrintPdf, requestParams);
-    HandleByStatusCode(response);
+    handleByStatusCode(response);
     if (response.status === 201) showAlert(MessageType.Success, 'PDF Sent Via WhatsApp.', 3)
     if (response.status === 202) showAlert(MessageType.Success, 'Print Job Sent.', 3);
-    if (response.status === 200) await Download(response);
+    if (response.status === 200) await download(response);
 }

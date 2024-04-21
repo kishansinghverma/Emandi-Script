@@ -37,7 +37,7 @@ export const resolveCaptcha = async (source) => {
     return parsedText;
 }
 
-export const setResolvedCaptcha = (value, target) => $(`#${target}`).val(value).trigger('change');
+export const setResolvedCaptcha = (value, target) => $(`#${target}`).val(value).trigger('input');
    
 export const parseCaptcha = (source, target) => {
     resolveCaptcha(source).then(value => {
@@ -56,3 +56,5 @@ export const validateCaptcha = (response, isLogin) => {
     if (isLogin) { if (!response.succeeded) invalidate() }
     else { if (response[0].status === 0 && response[0].msg?.includes('Captcha')) invalidate() }
 }
+
+export const onResolved = (str) => str.length === 4 ? $('#submit-btn').removeAttr('disabled') : $('#submit-btn').attr('disabled', true);

@@ -1,24 +1,32 @@
-import { MessageType } from "../constants.js";
-import { resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
-import { Form } from "../services/form.js";
-import { recordService } from "../services/record.js";
+import { MessageType, StageMap, Stages } from "../constants.js";
+import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
+import { RecordHandler } from "../services/record.js";
 import { ComplexPromise, alertError, capitalize, showAlert } from "../services/utils.js";
-class AddSixR extends Form {
+class AddSixR extends RecordHandler {
     initializeForm = async () => {
-        await this.initForm();
         this.attachListener();
         this.executeInitialActions();
     }
 
     attachListener = () => {
         $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.postAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
-        $('#in-captcha').on('change', ({ target }) => this.allowUpdate(target.value));
+        $('#in-captcha').on('input', ({ target }) => onResolved(target.value));
+        $('#clear-btn').click(this.clearForm);
+        $('#submit-btn').click(this.submitForm);
     }
 
-    executeInitialActions = () => {
+    executeInitialActions = async () => {
         $('#img-captcha').append($('#dntCaptchaImg'));
         this.captchaResolver = resolveCaptcha('dntCaptchaImg');
         this.captchaResolver.then(value => setResolvedCaptcha(value, 'in-captcha')).catch(alertError);
+        this.renderRecord();
+    }
+
+    clearForm = () => {
+        $('.record').fadeOut(400, () => {
+            this.removeRecord();
+            location.reload();
+        });
     }
 
     updateForm = () => {
@@ -47,8 +55,7 @@ class AddSixR extends Form {
     }
 
     onComplete = () => {
-        if (this.record) recordService.setRecord({ ...this.record, rate: $('#crop_rate').val() });
-        showAlert(MessageType.Success, '6R created successfully.<br>Redirecting...')
+        showAlert(MessageType.Success, '6R Created Successfully.<br>Heading To Payment')
         window.location.href = StageMap[Stages.Payment].Url;
     }
 
@@ -66,19 +73,10 @@ class AddSixR extends Form {
             else if (url.includes('Traders/add_six_r')) {
                 // Validate Captcha is correctly parsed.
                 validateCaptcha(response);
-
                 // Handles Form Submission
                 if (response[0].status > 0) this.onComplete();
             }
         }
-    }
-
-    clearRecord = () => {
-        $('.record').fadeOut(400, () => {
-            recordService.removeRecord();
-            location.reload();
-        });
-
     }
 }
 

@@ -1,66 +1,42 @@
-// import { FetchParams, MessageType, Stages, Status, Url } from "../constants.js";
-import { Form } from "../services/form.js";
-// import { showAlert, AlertError, FetchLastRecord, showLoader } from "../services/utils.js";
-// import { ExpressConfig } from "../services/record.js";
+import { MessageType } from "../constants.js";
+import { RecordHandler } from "../services/record.js";
+import { showAlert } from "../services/utils.js";
 
 class DigitalPayment {
-    InitializeForm() {
-        this.AttachListener();
+    initializeForm = () => {
+        this.attachListener();
+        this.checkPendingPayments();
     }
 
-    AttachListener() {
-        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.PostAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
+    attachListener = () => $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.postAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
+
+    checkPendingPayments = () => {
+        const columnCount = $('#datatable1 tbody tr td').length;
+        if (columnCount === 1) this.notifyEmptyResponse();
+        else if (columnCount > 1 && $('.chk').length > 0) this.submitForm();
     }
 
-    PostAjaxCall(url, response) {
-        if (url.includes('/Traders/Get6RListForPayment')) {
-            if (Array.isArray(response)) {
-                if (response.length < 1)
-                    showAlert(MessageType.Info, 'No Payments Pending!', 3);
-                else {
-                    $('.chk')[0].click();
-                    $('#proceddnow').click();
-                }
-            }
+    submitForm = () => {
+        $('.chk')[0].click();
+        $('#proceddnow').click();
+    }
+
+    postAjaxCall = (url, response) => {
+        if (url.includes('/Traders/Get6RListForPayment') && Array.isArray(response)) {
+            if (response.length < 1) this.notifyEmptyResponse();
+            else this.submitForm();
         }
     }
+
+    notifyEmptyResponse = () => showAlert(MessageType.Info, 'No Payments Pending!', 5);
 }
 
 class GeneratedDigitalPayment {
-    InitializeForm = () => document.getElementById('Pay').click();
+    initializeForm = () => $('#Pay').click();
 }
 
-class PostSuccess extends Form {
-    InitializeForm = async () => {
-        this.FetchRecord();
-
-        try {
-            showLoader('Fetching Details');
-            const record = await FetchLastRecord('/Traders/GetDigitalPaymentList');
-            const txnData = {
-                cost: `${record.totalAmount}`,
-                description: `7R/${record.sbirefno}`,
-                details: this.Record ? `${this.Record.Party}, ${this.Record.Mandi}, ${this.Record.State}` : 'Manual'
-            };
-            showLoader('Saving Transaction')
-            await fetch(Url.LogTransaction, { ...FetchParams.Post, body: JSON.stringify(txnData) });
-        }
-        catch (err) { AlertError(err) }
-        finally {
-            this.OnComplete();
-            $('a.btn.btn-success')[0].click();
-        }
-    }
-
-    OnComplete() {
-        if (this.Configuration) {
-            ExpressConfig.SetConfiguration({
-                ...this.Configuration,
-                Stage: Stages.NineR,
-                Status: Status.Init
-            });
-        }
-    }
+class PostSuccess {
+    initializeForm = () => $('a.btn.btn-success')[0].click();
 }
 
 export const Digital_Payment = new DigitalPayment();
