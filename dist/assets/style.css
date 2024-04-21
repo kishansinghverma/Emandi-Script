@@ -22,6 +22,15 @@
     width: 48px;
 }
 
+#carrier-no,
+#carrier,
+#packets,
+#space,
+#mandiname,
+#statename {
+    width: 48%;
+}
+
 .custom-modal-container {
     width: 100%;
     display: flex;
@@ -33,9 +42,9 @@
 }
 
 .custom-modal {
-    max-width: 80%;
+    max-width: 90%;
     position: fixed;
-    width: 290px;
+    width: 330px;
     background: #fff;
     border-radius: .28571429rem;
     font-family: "Lato", 'Helvetica Neue', Arial, Helvetica, sans-serif;
@@ -119,6 +128,11 @@
 .custom-modal .info-text {
     clear: both;
     color: rgba(0, 0, 0, .68);
+}
+
+.custom-modal .input-group {
+    display: flex;
+    justify-content: space-between;
 }
 
 .custom-modal .btn-group {
