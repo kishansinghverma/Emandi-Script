@@ -58,56 +58,62 @@ const add_gatepass = `
 	<div class="custom-modal-content">
 		<div class="record"></div>
 		<input type="text" id="destination" placeholder="Destined Market" data-property="party.name" />
-		<select id="carrier" placeholder="Select Vehicle" data-property="vehicleType">
-			<option selected disabled>Select Vehicle</option>
-			<option value="1">Truck</option>
-			<option value="2">Pick-Up</option>
-			<option value="4">DCM</option>
-		</select>
-		<input type="text" id="carrier-no" placeholder="Vehicle Number" data-property="vehicleNumber" />
-		<input type="text" id="packets" placeholder="Packets" data-property="bags" />
-		<select type="text" id="statename" data-property="party.stateCode">
-			<option selected disabled>Select State</option>
-			<option value="1">उत्तर प्रदेश</option>
-			<option value="2">उत्तराखंड</option>
-			<option value="3">हरियाणा</option>
-			<option value="4">झारखंड</option>
-			<option value="5">राजस्थान</option>
-			<option value="6">महाराष्ट्र</option>
-			<option value="7">मध्य प्रदेश</option>
-			<option value="8">छत्तीसगढ़</option>
-			<option value="9">बिहार</option>
-			<option value="10">आंध्र प्रदेश</option>
-			<option value="11">अरुणाचल प्रदेश</option>
-			<option value="12">असम</option>
-			<option value="13">चंडीगढ़</option>
-			<option value="14">दादरा और नागर ​​हवेली</option>
-			<option value="15">दमन और दीव</option>
-			<option value="16">दिल्ली</option>
-			<option value="17">गोवा</option>
-			<option value="18">गुजरात</option>
-			<option value="19">हिमाचल प्रदेश</option>
-			<option value="20">जम्मू कश्मीर</option>
-			<option value="21">कर्नाटक</option>
-			<option value="22">केरल</option>
-			<option value="23">लक्षद्वीप</option>
-			<option value="24">मणिपुर</option>
-			<option value="25">मेघालय</option>
-			<option value="26">मिजोरम</option>
-			<option value="27">नागालैंड</option>
-			<option value="28">उड़ीसा</option>
-			<option value="29">पुडुचेरी</option>
-			<option value="30">पंजाब</option>
-			<option value="31">सिक्किम</option>
-			<option value="32">तमिलनाडु</option>
-			<option value="33">त्रिपुरा</option>
-			<option value="34">पश्चिम बंगाल</option>
-			<option value="35">अंडमान और निकोबार द्वीप</option>
-			<option value="36">तेलंगाना</option>
-			<option value="37">नेपाल</option>
-		</select>
-        <input type="text" placeholder="Mandi" id="mandiname" data-property="party.mandi" />
-        <input type="text" placeholder="Distance" id="space" data-property="party.distance" />
+		<div class="input-group">
+			<select id="carrier" placeholder="Select Vehicle" data-property="vehicleType">
+				<option selected disabled>Select Vehicle</option>
+				<option value="1">Truck</option>
+				<option value="2">Pick-Up</option>
+				<option value="4">DCM</option>
+			</select>
+			<input type="text" id="carrier-no" placeholder="Vehicle Number" data-property="vehicleNumber" />
+		</div>
+		<div class="input-group">
+			<input type="text" placeholder="Mandi" id="mandiname" data-property="party.mandi" />
+			<select type="text" id="statename" data-property="party.stateCode">
+				<option selected disabled>Select State</option>
+				<option value="1">उत्तर प्रदेश</option>
+				<option value="2">उत्तराखंड</option>
+				<option value="3">हरियाणा</option>
+				<option value="4">झारखंड</option>
+				<option value="5">राजस्थान</option>
+				<option value="6">महाराष्ट्र</option>
+				<option value="7">मध्य प्रदेश</option>
+				<option value="8">छत्तीसगढ़</option>
+				<option value="9">बिहार</option>
+				<option value="10">आंध्र प्रदेश</option>
+				<option value="11">अरुणाचल प्रदेश</option>
+				<option value="12">असम</option>
+				<option value="13">चंडीगढ़</option>
+				<option value="14">दादरा और नागर ​​हवेली</option>
+				<option value="15">दमन और दीव</option>
+				<option value="16">दिल्ली</option>
+				<option value="17">गोवा</option>
+				<option value="18">गुजरात</option>
+				<option value="19">हिमाचल प्रदेश</option>
+				<option value="20">जम्मू कश्मीर</option>
+				<option value="21">कर्नाटक</option>
+				<option value="22">केरल</option>
+				<option value="23">लक्षद्वीप</option>
+				<option value="24">मणिपुर</option>
+				<option value="25">मेघालय</option>
+				<option value="26">मिजोरम</option>
+				<option value="27">नागालैंड</option>
+				<option value="28">उड़ीसा</option>
+				<option value="29">पुडुचेरी</option>
+				<option value="30">पंजाब</option>
+				<option value="31">सिक्किम</option>
+				<option value="32">तमिलनाडु</option>
+				<option value="33">त्रिपुरा</option>
+				<option value="34">पश्चिम बंगाल</option>
+				<option value="35">अंडमान और निकोबार द्वीप</option>
+				<option value="36">तेलंगाना</option>
+				<option value="37">नेपाल</option>
+			</select>
+		</div>
+		<div class="input-group">
+			<input type="text" id="packets" placeholder="Packets" data-property="bags" />
+        	<input type="text" placeholder="Distance" id="space" data-property="party.distance" />
+		</div>
 		<div id="img-captcha"></div>
 		<input type="text" placeholder="Captcha Code" id="in-captcha"/>
         <button class="button success" disabled id="submit-btn">Submit</button>

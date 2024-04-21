@@ -13,8 +13,9 @@ This project provides the assets (JS, JSON and Static Assets) via the RawGithub 
 - Do latest commit -> Push.
 - Navigate to JSDelivr and Purge the old cache :
     ```
+    https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/scriptloader.js
     https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/index.js
-    https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/other/ScriptInjection.js
+    https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/style.css
     ```
-- Copy and paste the content of `ScriptInjection.js` in TamperMonkey / Stay.
+- Copy and paste the content of `scriptloader.js` in TamperMonkey / UserScript.
 - Make sure JsDelivr server is uncommented.
