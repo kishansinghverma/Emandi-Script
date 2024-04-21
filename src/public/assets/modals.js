@@ -29,7 +29,7 @@ const NineR = `
 	${header}
 	<div class="custom-modal-content">
 		<div class="record"></div>
-		<input type="text" id="bname" placeholder="Buyer Name" data-property="party.name,party.mandi,party.state" />
+		<textarea id="bname" placeholder="Buyer Name" data-property="party.name,party.mandi,party.state"></textarea>
 		<div class="checkbox-wrapper">
 			<input type="checkbox" id="is-licenced"/>
 			<label for="is-licenced">Party Is Licenced</label>

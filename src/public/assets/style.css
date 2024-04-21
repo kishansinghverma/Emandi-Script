@@ -74,8 +74,9 @@
     margin-right: 1rem;
 }
 
+.custom-modal textarea,
 .custom-modal select,
-.custom-modal input {
+.custom-modal input:not(input[type='checkbox']) {
     width: 100%;
     margin-bottom: 1rem;
     max-width: 100%;
