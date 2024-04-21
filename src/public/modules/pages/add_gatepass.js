@@ -10,7 +10,7 @@ class AddGatepass extends RecordHandler {
     }
 
     initializeForm = async () => {
-        // console.log((await fetchLastRecord('/Traders/GetDigitalPaymentList')));
+        console.log((await fetchLastRecord('/Traders/GetDigitalPaymentList')));
         this.attachListener();
         this.executeInitialActions();
     }
