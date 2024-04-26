@@ -16,7 +16,7 @@ export class RecordHandler {
     }
 
     #autoFillForm = (record) => {
-        const inputs = $('.custom-modal-content input[data-property], .custom-modal-content select[data-property], .custom-modal-content textarea');
+        const inputs = $('.custom-modal-content input[data-property], .custom-modal-content select[data-property]');
         inputs.each((_, input) => {
             if ($(input).data('property')) {
                 const tokens = $(input).data('property').split(',').map(item => getNestedValue(item, record));

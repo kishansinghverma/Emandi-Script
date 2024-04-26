@@ -17,6 +17,7 @@ class DigitalPayment {
     }
 
     submitForm = () => {
+        //Implement a check if there are two entries
         $('.chk')[0].click();
         $('#proceddnow').click();
     }

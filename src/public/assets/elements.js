@@ -1,6 +1,6 @@
 export const SendRecieptButton = `
     <li>
-        <a href="#" onclick="{ window.commonContext.PrintLastRecords(false); }">
+        <a href="#">
             <i class="fa fa-envelope-o"></i>
             <span> Send Last Reciepts </span>
         </a>
@@ -8,7 +8,7 @@ export const SendRecieptButton = `
 
 export const PrintRecieptButton = `
     <li>
-        <a href="#" onclick="{ if(confirm('Are You Sure To Print?')) window.commonContext.PrintLastRecords(true); }">
+        <a href="#">
             <i class="fa fa-print"></i>
             <span> Print Last Reciepts </span>
         </a>
@@ -24,7 +24,13 @@ export const notificationComponent = `
     </div >`;
 
 export const recordComponent = (record) => (`
-    <div class="info-heading wrap-text">${record.seller}</div>
-    <div class="info-sub-heading">${record.date}</div>
-    <div class="info-text wrap-text">${record.party.name}, ${record.party.mandi}</div>
+    <div class="info-heading">
+        <div class="info-name wrap-text">${record.seller}</div>
+        <div class="info-date wrap-text">${record.date}</div>
+    </div>
+    <div class="input-group">
+        <div class="info-vehicle f-icon">${record.vehicleNumber}</div>
+        <div class="info-weight f-icon">${record.weight} Qtl.</div>
+    </div>
+    <div class="info-party f-icon">${record.party.name}, ${record.party.mandi}, ${record.party.state}</div>
 `);

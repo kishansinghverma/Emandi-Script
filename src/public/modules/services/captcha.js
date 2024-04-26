@@ -1,5 +1,5 @@
 import Tesseract from "../../assets/tesseract.js"
-import { MessageType, Status } from "../constants.js";
+import { MessageType } from "../constants.js";
 import { showAlert } from "./utils.js";
 
 const tryResolve = async (source) => {
@@ -38,18 +38,16 @@ export const resolveCaptcha = async (source) => {
 }
 
 export const setResolvedCaptcha = (value, target) => $(`#${target}`).val(value).trigger('input');
-   
+
 export const parseCaptcha = (source, target) => {
-    resolveCaptcha(source).then(value => {
-        setResolvedCaptcha(value, target);
-    }).catch(AlertError);
+    resolveCaptcha(source)
+        .then(value => setResolvedCaptcha(value, target))
+        .catch(AlertError);
 }
 
 export const validateCaptcha = (response, isLogin) => {
     function invalidate() {
         showAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
-        // const configuration = ExpressConfig.GetConfiguration();
-        // if (configuration) ExpressConfig.SetConfiguration({ ...configuration, Status: Status.Init });
         setTimeout(() => location.reload(), 1000);
     }
 

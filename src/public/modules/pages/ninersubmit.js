@@ -46,10 +46,9 @@ class NinerSubmit extends RecordHandler {
         }
 
         $('#tblData1 > tbody:nth-child(2) > tr').not(':last').each((index, row) => {
-            $(row).find('.chk').prop('checked', true);
             const weight = parseFloat($(row).find('.Currentweights').val());
-
             if (requiredWeight <= weight) {
+                $(row).find('.chk').click();
                 $(row).find('.weights').val(requiredWeight).trigger('change');
                 return false;
             }
@@ -62,7 +61,6 @@ class NinerSubmit extends RecordHandler {
         if (parseFloat($('#weight').val()) === parseFloat($('#takenQty').text()))
             showAlert(MessageType.Success, `Quantity Selected : ${$('#takenQty').text()} Quintal.`)
         else {
-            $('.chk').click();
             alertError('Quantity Unavailable!<br>Select Manually...');
             throw new Error('Select Manually...');
         }
@@ -88,8 +86,6 @@ class NinerSubmit extends RecordHandler {
         showAlert(MessageType.Success, "Niner Created Successfully.", 5);
         if (this.record) this.setRecord({
             ...this.record,
-            amount: parseInt($('#takenQty').html()) * $('#rate').val() * 1.5 / 100,
-            sixrList: $('.chk:checked').parent().parent().find('.instrumentNumber').map((index, item) => item.value).toArray(),
             rate: $('#rate').val()
         });
         window.location.href = StageMap[Stages.Gatepass].Url;

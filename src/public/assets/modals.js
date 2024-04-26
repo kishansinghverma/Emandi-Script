@@ -21,23 +21,21 @@ const add_six_r = `
 			<button class="button success" disabled id="submit-btn">Submit</button>
         </div>
 	</div>
-</div>
-`;
+</div>`;
 
 const NineR = `
 <div class="custom-modal">
 	${header}
 	<div class="custom-modal-content">
 		<div class="record"></div>
-		<textarea id="bname" placeholder="Buyer Name" data-property="party.name,party.mandi,party.state"></textarea>
+		<input type="text" id="bname" placeholder="Buyer Name" data-property="party.name,party.mandi,party.state"/>
 		<div class="checkbox-wrapper">
 			<input type="checkbox" id="is-licenced"/>
 			<label for="is-licenced">Party Is Licenced</label>
 		</div>
 		<button class="button success" disabled id="next-btn">Next</button>
 	</div>
-</div>
-`;
+</div>`;
 
 const NineRSubmit = `
 <div class="custom-modal">
@@ -49,8 +47,7 @@ const NineRSubmit = `
         <input type="text" placeholder="Captcha Code" id="in-captcha"/>
         <button class="button success" disabled id="submit-btn">Submit</button>
 	</div>
-</div>
-`;
+</div>`;
 
 const add_gatepass = `
 <div class="custom-modal">
@@ -118,30 +115,23 @@ const add_gatepass = `
 		<input type="text" placeholder="Captcha Code" id="in-captcha"/>
         <button class="button success" disabled id="submit-btn">Submit</button>
 	</div>
-</div>
-`
+</div>`;
+
 const Print = `
-<div id="customModal" class="custom-modal">
-	<div class="head">
-		<div style="color: #e7e9eb">Provide The Information</div>
-		<div class="btn-close" onclick="$('#customModal').hide()"></div>
+<div class="custom-modal">
+	${header}
+	<div class="custom-modal-content">
+		<div class="left-aligned">
+			<input type="radio" id="print" name="printtype" />
+			<label for="print">Print Document On Paper.</label>
+		</div>
+		<div class="left-aligned mb-1">
+			<input type="radio" id="forcedownload" name="printtype" />
+			<label for="forcedownload">Force Download.</label>
+		</div>
+        <button class="button success" id="print-btn">Send PDF</button>
 	</div>
-	<div id="modalContent" class="custom-modal-content">
-        <div style="display: flex; flex-direction: column" id="msgholder">
-			<label for="print">
-            	<input type="radio" id="print" name="printtype" /> 
-				Print Document On Paper.
-			</label>
-			<label for="forcedownload">
-				<input type="radio" id="forcedownload" name="printtype" /> 
-				Force Download.
-			</label>
-        </div>
-        <hr>
-        <button class="btn btn-success" onclick="window.formContext.Print()">Print Document</button>
-	</div>
-</div>
-`
+</div>`;
 
 export const Modals = {
 	Account: BlankModal,

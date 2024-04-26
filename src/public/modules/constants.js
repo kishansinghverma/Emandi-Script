@@ -14,7 +14,7 @@ const PrintDiv = '#content';
 const LoginDiv = '.box-login';
 
 const baseUrl = "https://unity-hub.onrender.com/api";
-const homeUrl = "https://nextcloud.azure-api.net/api";
+// const baseUrl = "http://localhost:8080/api";
 
 const getUrl = (path) => (`${baseUrl}/${path}`);
 
@@ -30,6 +30,7 @@ export const RouteMap = {
     generated_9R: { Script: List_Entries, Div: CommonDiv },
     DigitalPaymentList: { Script: List_Entries, Div: CommonDiv },
     generated_gatepass: { Script: List_Entries, Div: CommonDiv },
+    generated_6R: { Script: List_Entries, Div: CommonDiv },
     index: { Script: Login, Div: LoginDiv },
     Account: { Script: Login, Div: LoginDiv },
     Success: { Script: Success, Div: CommonDiv }
@@ -37,19 +38,27 @@ export const RouteMap = {
 
 export const FetchParams = {
     Post: {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' }
+    },
+    Patch: {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' }
+    },
+    PostUrlEncoded: {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' }
     }
 }
 
 export const Url = {
-    UpdateRecord: getUrl('emandi/update'),
+    UpdateRecord: getUrl('emandi/entry'),
     SetRate: getUrl('emandi/rate'),
     PeekRecord: getUrl('emandi/peek'),
     PopRecord: getUrl('emandi/pop'),
-    PrintPdf: `${homeUrl}/files/html`,
-    LogTransaction: `${homeUrl}/transaction/gatepass`,
-    SplitwiseExpense: `${homeUrl}/splitwise/transactions`
+    PrintPdf: getUrl('files/html'),
+    // LogTransaction: `${homeUrl}/transaction/gatepass`,
+    // SplitwiseExpense: `${homeUrl}/splitwise/transactions`
 }
 
 export const HttpMessages = {
@@ -74,20 +83,16 @@ export const MessageType = {
 
 export const StageMap = {
     SixR: {
-        Url: '/Traders/add_six_r',
-        Redirect: true
+        Url: '/Traders/add_six_r'
     },
     Payment: {
         Url: '/Traders/DigitalPayment',
-        Redirect: false
     },
     NineR: {
         Url: '/Traders/NineR',
-        Redirect: true
     },
     Gatepass: {
         Url: '/Traders/add_gatepass',
-        Redirect: true
     }
 }
 
@@ -98,22 +103,8 @@ export const Stages = {
     Gatepass: 'Gatepass'
 }
 
-export const Status = {
-    New: 'New',
-    Init: 'Init',
-    InProgress: 'InProgress',
-    None: 'None',
-    Queued: 'Queued',
-    Loading: 'Loading',
-    Error: 'Error'
-}
-
-export const Events = {
-    RecordLoaded: 'RecordLoaded'
-}
-
 export const SplitwiseGroupId = {
-    "Prepaid Gatepass": 52740365 
+    "Prepaid Gatepass": 52740365
 }
 
 export const ItemsToHide = [

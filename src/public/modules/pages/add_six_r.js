@@ -55,7 +55,8 @@ class AddSixR extends RecordHandler {
     }
 
     onComplete = () => {
-        showAlert(MessageType.Success, '6R Created Successfully.<br>Heading To Payment')
+        if (this.record) this.setRecord(this.record);
+        showAlert(MessageType.Success, '6R Created Successfully.<br>Heading To Payment');
         window.location.href = StageMap[Stages.Payment].Url;
     }
 

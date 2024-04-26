@@ -1,7 +1,8 @@
-import { MessageType } from "../constants.js";
+import { FetchParams, MessageType, Url } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
-import { ComplexPromise, alertError, capitalize, fetchLastRecord, showAlert } from "../services/utils.js";
+import { ComplexPromise, alertError, capitalize, hideLoader, hideModal, showAlert, showLoader, validateResponse } from "../services/utils.js";
+import { printLastReciepts } from "../services/print.js"
 
 class AddGatepass extends RecordHandler {
     constructor() {
@@ -10,7 +11,6 @@ class AddGatepass extends RecordHandler {
     }
 
     initializeForm = async () => {
-        console.log((await fetchLastRecord('/Traders/GetDigitalPaymentList')));
         this.attachListener();
         this.executeInitialActions();
     }
@@ -48,34 +48,23 @@ class AddGatepass extends RecordHandler {
 
     submitForm = () => {
         this.updateForm();
-        if ($('#form1').valid()) this.record ? preview_data() : $("#form1").submit();
+        if ($('#form1').valid()) this.record ? $("#form1").submit() : preview_data();
         else alertError('Check the required fields!');
     }
 
-    onComplete = () => {
+    showCompleted = () => showAlert(MessageType.Success, "Process Completed&emsp;🎉");
+
+    onComplete = async () => {
+        hideModal();
         showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
-        // PrintLastReciepts(false, extraRecipient).catch(AlertError).finally(() => {
-        //     ExpressConfig.RemoveConfiguration();
-        //     window.location.href = '/Traders/Dashboard';
-        // })
-
-        //     const record = await FetchLastRecord('/Traders/GetDigitalPaymentList');
-        //     cost: `${record.totalAmount}`,
-        //     description: `7R/${record.sbirefno}`,
-
-        // setTimeout(() => {
-        //     $('.swal-overlay').hide();
-        //     $('#customModal').hide();
-        //     showLoader('Finalizing Record...');
-
-        //     if (this.Record) {
-        //         fetch(Url.PopRecord)
-        //             .then(HandleResponse)
-        //             .catch(err => { if (err.code !== 204) AlertError(err) })
-        //             .finally(() => this.OnComplete(this.Record.Recipient));
-        //     }
-        //     else this.OnComplete();
-        // }, 100);
+        await printLastReciepts(false, false, this.record?.driverMobile);
+        if (this.record) {
+            showLoader('Finalizing Record...');
+            await fetch(Url.UpdateRecord, {
+                ...FetchParams.Patch,
+                body: JSON.stringify({ rate: this.record.rate ?? 0, finalize: true })
+            }).then(validateResponse).then(this.removeRecord).then(this.showCompleted).catch(alertError).finally(hideLoader);
+        } else this.showCompleted();
     }
 
     handleAjaxResponse(option, response) {

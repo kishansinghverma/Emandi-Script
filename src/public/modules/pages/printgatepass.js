@@ -1,16 +1,16 @@
-// import { PrintGatepass as PrintRecord } from "../services/print.js";
-// import { AlertError, HideLoader } from "../services/utils.js";
+import { printGatepass } from "../services/print.js";
+import { alertError, hideLoader, hideModal } from "../services/utils.js";
 
 class PrintGatepass {
-    InitializeForm() {}
+    initializeForm = () => $('#print-btn').click(this.print);
 
-    Print() {
+    print() {
         const download = $('#forcedownload').is(':checked');
         const print = $('#print').is(':checked');
-        $('#customModal').hide();
-        PrintRecord(print, download, document)
-            .catch(AlertError)
-            .finally(HideLoader);
+        printGatepass(document, print, download)
+            .then(hideModal)
+            .catch(alertError)
+            .finally(hideLoader);
     }
 }
 
