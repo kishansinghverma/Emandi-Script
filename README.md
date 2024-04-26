@@ -15,7 +15,7 @@ This project provides the assets (JS, JSON and Static Assets) via the RawGithub 
     ```
     https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/scriptloader.js
     https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/index.js
-    https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/style.css
+    https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/assets/style.css
     ```
 - Copy and paste the content of `scriptloader.js` in TamperMonkey / UserScript.
 - Make sure JsDelivr server is uncommented.
