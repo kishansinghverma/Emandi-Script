@@ -47,8 +47,8 @@ class NinerSubmit extends RecordHandler {
 
         $('#tblData1 > tbody:nth-child(2) > tr').not(':last').each((index, row) => {
             const weight = parseFloat($(row).find('.Currentweights').val());
+            $(row).find('.chk').click();
             if (requiredWeight <= weight) {
-                $(row).find('.chk').click();
                 $(row).find('.weights').val(requiredWeight).trigger('change');
                 return false;
             }
@@ -98,6 +98,7 @@ class NinerSubmit extends RecordHandler {
                 validateCaptcha(response);
                 //Handles form sumission.
                 if (response[0].status > 0) this.onComplete();
+                else alertError(response[0].msg);
             }
         }
     }

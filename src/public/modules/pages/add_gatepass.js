@@ -56,6 +56,7 @@ class AddGatepass extends RecordHandler {
 
     onComplete = async () => {
         hideModal();
+        setTimeout(() => $('.swal-overlay').hide(), 400);
         showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
         await printLastReciepts(false, false, this.record?.driverMobile);
         if (this.record) {
