@@ -1,7 +1,7 @@
 import { MessageType, StageMap, Stages } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
-import { ComplexPromise, alertError, capitalize, showAlert } from "../services/utils.js";
+import { ComplexPromise, alertError, capitalize, hideModal, showAlert } from "../services/utils.js";
 class AddSixR extends RecordHandler {
     initializeForm = async () => {
         this.attachListener();
@@ -11,7 +11,7 @@ class AddSixR extends RecordHandler {
     attachListener = () => {
         $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.postAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
         $('#in-captcha').on('input', ({ target }) => onResolved(target.value));
-        $('#clear-btn').click(this.clearForm);
+        $('#refresh-btn').click(this.refreshForm);
         $('#submit-btn').click(this.submitForm);
     }
 
@@ -22,8 +22,9 @@ class AddSixR extends RecordHandler {
         this.renderRecord();
     }
 
-    clearForm = () => {
+    refreshForm = () => {
         $('.record').fadeOut(400, () => {
+            hideModal();
             this.removeRecord();
             location.reload();
         });

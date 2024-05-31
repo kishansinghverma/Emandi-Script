@@ -17,7 +17,7 @@ const add_six_r = `
 		<div id="img-captcha"></div>
 		<input type="text" placeholder="Captcha Code" id="in-captcha" />
         <div class="btn-group">
-			<button class="button info" id="clear-btn">Refresh</button>
+			<button class="button info" id="refresh-btn">Refresh</button>
 			<button class="button success" disabled id="submit-btn">Submit</button>
         </div>
 	</div>

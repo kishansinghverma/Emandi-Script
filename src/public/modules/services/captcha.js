@@ -1,6 +1,6 @@
 import Tesseract from "../../assets/tesseract.js"
 import { MessageType } from "../constants.js";
-import { showAlert } from "./utils.js";
+import { alertError, showAlert } from "./utils.js";
 
 const tryResolve = async (source) => {
     const canvas = document.createElement("canvas");
@@ -42,7 +42,7 @@ export const setResolvedCaptcha = (value, target) => $(`#${target}`).val(value).
 export const parseCaptcha = (source, target) => {
     resolveCaptcha(source)
         .then(value => setResolvedCaptcha(value, target))
-        .catch(AlertError);
+        .catch(alertError);
 }
 
 export const validateCaptcha = (response, isLogin) => {

@@ -56,3 +56,11 @@ export const showAlert = (type, message, hideAfter = 0) => {
     $('.notification-container .message').html(message);
     if (hideAfter > 0) setTimeout(() => $('.notification-container').fadeOut(200), hideAfter * 1000);
 }
+
+export const getDate = () => {
+    const currentDate = new Date()
+    const day = currentDate.getDate()
+    const month = currentDate.getMonth() + 1
+    const year = currentDate.getFullYear()
+    return `${day}-${month}-${year}`;
+}

@@ -1,3 +1,5 @@
+import { getDate } from "../modules/services/utils.js";
+
 export const SendRecieptButton = `
     <li>
         <a href="#">
@@ -26,7 +28,7 @@ export const notificationComponent = `
 export const recordComponent = (record) => (`
     <div class="info-heading">
         <div class="info-name wrap-text">${record.seller}</div>
-        <div class="info-date wrap-text">${record.date}</div>
+        <div class="info-date wrap-text ${getDate() === record.date && 'valid'}">${record.date}</div>
     </div>
     <div class="input-group">
         <div class="info-vehicle f-icon">${record.vehicleNumber}</div>

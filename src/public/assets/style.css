@@ -147,8 +147,13 @@
 
 .custom-modal .info-heading .info-date {
     font-size: 1em;
-    color: rgba(0, 0, 0, .4);
+    font-weight: 600;
+    color: #db2828;
     max-width: 36%;
+}
+
+.info-date.valid {
+    color: #77a611 !important;
 }
 
 .f-icon::before {

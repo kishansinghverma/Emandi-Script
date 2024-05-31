@@ -17,6 +17,8 @@ class AddGatepass extends RecordHandler {
 
     attachListener = () => {
         $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.handleAjaxResponse(ajaxOptions, jqXHR?.responseJSON));
+        //this.formReady.operator.then(()=>)
+        $('#in-captcha').on('input', ({ target }) => onResolved(target.value));
         $('#submit-btn').click(this.submitForm);
     }
 
@@ -52,11 +54,14 @@ class AddGatepass extends RecordHandler {
         else alertError('Check the required fields!');
     }
 
-    showCompleted = () => showAlert(MessageType.Success, "Process Completed&emsp;🎉");
+    postComplete = () => {
+        showAlert(MessageType.Success, "Process Completed&emsp;🎉");
+        location.href = "/Traders/Dashboard";
+    }
 
     onComplete = async () => {
         hideModal();
-        setTimeout(() => $('.swal-overlay').hide(), 400);
+        setTimeout(() => $('.swal-overlay').hide(), 200);
         showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
         await printLastReciepts(false, false, this.record?.driverMobile);
         if (this.record) {
@@ -64,8 +69,12 @@ class AddGatepass extends RecordHandler {
             await fetch(Url.UpdateRecord, {
                 ...FetchParams.Patch,
                 body: JSON.stringify({ rate: this.record.rate ?? 0, finalize: true })
-            }).then(validateResponse).then(this.removeRecord).then(this.showCompleted).catch(alertError).finally(hideLoader);
-        } else this.showCompleted();
+            }).then(validateResponse)
+                .then(this.removeRecord)
+                .then(this.postComplete)
+                .catch(alertError)
+                .finally(hideLoader);
+        } else this.postComplete();
     }
 
     handleAjaxResponse(option, response) {
