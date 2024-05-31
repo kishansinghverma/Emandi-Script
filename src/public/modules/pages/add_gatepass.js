@@ -17,17 +17,17 @@ class AddGatepass extends RecordHandler {
 
     attachListener = () => {
         $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.handleAjaxResponse(ajaxOptions, jqXHR?.responseJSON));
-        //this.formReady.operator.then(()=>)
-        $('#in-captcha').on('input', ({ target }) => onResolved(target.value));
+        this.formReady.operator.then(() => {
+            if ($('#in-captcha').val().length === 4) onResolved($('#in-captcha').val());
+            else $('#in-captcha').on('input', ({ target }) => onResolved(target.value));
+        });
         $('#submit-btn').click(this.submitForm);
     }
 
     executeInitialActions = () => {
         this.checkPaidType();
         $('#img-captcha').append($('#dntCaptchaImg'));
-        this.captchaResolver = resolveCaptcha('dntCaptchaImg');
-        this.captchaResolver.then(value => setResolvedCaptcha(value, 'in-captcha')).catch(alertError);
-        Promise.all([this.captchaResolver, this.formReady.operator]).then(() => onResolved($('#in-captcha').val()));
+        resolveCaptcha('dntCaptchaImg').then(value => setResolvedCaptcha(value, 'in-captcha')).catch(alertError);
         this.renderRecord();
     }
 
