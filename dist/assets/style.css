@@ -290,17 +290,17 @@
 }
 
 .spinner-container {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgb(0 0 0 / 75%);
-	opacity: 0;
-	display: none;
-	justify-content: center;
-	align-items: center;
-	z-index: 10000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0 0 0 / 75%);
+    opacity: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
 }
 
 .spinner-message {
@@ -313,6 +313,78 @@
     font-family: "Lato", 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
-.spinner-container > div {
-    transform: translate(0 , -80%);
+.spinner-container>div {
+    transform: translate(0, -80%);
+}
+
+#datatable-gp {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#datatable-gp tr:hover {
+    background-color: #dddddd45;
+}
+
+#datatable-gp td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#datatable-gp th {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    text-align: left;
+    background-color: #fffcb94f;
+    color: #9d7554;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+#datatable-gp a {
+    cursor: pointer;
+    color: brown;
+    font-weight: 500;
+}
+
+#datatable-gp tfoot td {
+    text-align: center;
+    font-weight: 600;
+}
+
+#datatable-gp>tbody>tr>td.niner,
+#datatable-gp>thead>tr>th:nth-child(3) {
+    width: unset !important;
+}
+
+table.break-up tr:hover {
+    background-color: unset !important;
+}
+
+table.break-up td,
+table.break-up th {
+    border: 1px solid #ccc !important;
+    padding: 4px 8px !important;
+    background-color: unset !important;
+}
+
+table.break-up td.amount {
+    font-weight: 500;
+    color: #7aa55a;
+}
+
+table.break-up th a.sixr-id {
+    font-weight: 500;
+}
+
+input[type="checkbox"]#admin-check {
+    transform: scale(1.2);
+    margin-right: 12px;
+}
+
+.admin-label {
+    font-weight: 600;
+    color: #62549a;
+    font-size: 16px;
 }
