@@ -2,7 +2,7 @@ import * as Loader from "../assets/loader.js";
 import { Add_Gatepass } from "./pages/add_gatepass.js";
 import { Add_Six_R } from "./pages/add_six_r.js";
 import { Digital_Payment, Success, Generated_Digital_Payment } from "./pages/payment.js";
-import { List_Entries } from "./pages/listentries.js";
+import { List_Entries, List_Gatepasses } from "./pages/listentries.js";
 import { Login } from "./pages/login.js";
 import { NineR } from "./pages/niner.js";
 import { NineRSubmit } from "./pages/ninersubmit.js";
@@ -29,7 +29,7 @@ export const RouteMap = {
     GeneratedDigitalPayment: { Script: Generated_Digital_Payment, Div: CommonDiv },
     generated_9R: { Script: List_Entries, Div: CommonDiv },
     DigitalPaymentList: { Script: List_Entries, Div: CommonDiv },
-    generated_gatepass: { Script: List_Entries, Div: CommonDiv },
+    generated_gatepass: { Script: List_Gatepasses, Div: CommonDiv },
     generated_6R: { Script: List_Entries, Div: CommonDiv },
     index: { Script: Login, Div: LoginDiv },
     Account: { Script: Login, Div: LoginDiv },
@@ -56,9 +56,7 @@ export const Url = {
     SetRate: getUrl('emandi/rate'),
     PeekRecord: getUrl('emandi/peek'),
     PopRecord: getUrl('emandi/pop'),
-    PrintPdf: getUrl('files/html'),
-    // LogTransaction: `${homeUrl}/transaction/gatepass`,
-    // SplitwiseExpense: `${homeUrl}/splitwise/transactions`
+    PrintPdf: getUrl('files/html')
 }
 
 export const HttpMessages = {

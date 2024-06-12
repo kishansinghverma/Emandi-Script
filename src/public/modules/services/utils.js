@@ -58,9 +58,40 @@ export const showAlert = (type, message, hideAfter = 0) => {
 }
 
 export const getDate = () => {
-    const currentDate = new Date()
+    const currentDate = new Date();
     const day = currentDate.getDate()
     const month = currentDate.getMonth() + 1
     const year = currentDate.getFullYear()
     return `${day}-${month}-${year}`;
 }
+
+const formatDate = (currentDate = new Date()) => {
+    const day = currentDate.getDate()
+    const month = currentDate.getMonth() + 1
+    const year = currentDate.getFullYear()
+    return `${day}/${month}/${year}`;
+}
+
+const getRecordById = (url, recordId) => {
+    const date = new Date();
+    date.setFullYear(date.getFullYear(), date.getMonth() - 18);
+
+    const formData = new FormData();
+    formData.append('draw', 1);
+    formData.append('order[0][column]', 1);
+    formData.append('order[0][dir]', 'desc');
+    formData.append('start', 0);
+    formData.append('length', 1);
+    formData.append('search[value]', recordId);
+    formData.append('fromDate', formatDate(date));
+    formData.append('toDate', formatDate());
+
+    return fetch(url, { method: 'POST', body: formData })
+        .then(handleJsonResponse).then(response => (response.data[0]));
+}
+
+export const getSixrById = (sixrId) => getRecordById('/Traders/SP_Get_6R_List', sixrId);
+
+export const getNinerById = (ninerId) => getRecordById('/Traders/SP_Get_9R_List', ninerId);
+
+export const getGatepassById = (gatepassId) => getRecordById('/Traders/SP_Get_Gatepass_List', gatepassId);

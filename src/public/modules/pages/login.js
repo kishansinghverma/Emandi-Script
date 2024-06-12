@@ -29,7 +29,7 @@ class LoginForm {
 
     login() {
         $('#userid').val("Kishanverma.guest@gmail.com");
-        $('#pwd').val("Kishan@123");
+        $('#pwd').val("Kishan@1230");
 
         resolveCaptcha('dntCaptchaImg')
             .then(text => {
