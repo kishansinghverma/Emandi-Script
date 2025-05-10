@@ -50,9 +50,8 @@ class AddSixR extends RecordHandler {
     submitForm = () => {
         this.updateForm();
         Promise.allSettled([this.rateFetcher.operator, this.licenceFetcher.operator, this.cropTypeFetcher.operator]).then(() => {
-            // if ($('#form1').valid()) this.record ? $("#form1").submit() : preview_data();
-            // else alertError('Check the required fields!');
-            preview_data();
+            if ($('#form1').valid()) this.record ? $("#form1").submit() : preview_data();
+            else alertError('Check the required fields!');
         });
     }
 
