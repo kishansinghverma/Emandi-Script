@@ -26,7 +26,7 @@ class LoginForm {
     }
 
     executeInitialActions() {
-        showAlert(MessageType.Info, 'Script Ready 🤗<br>Resolving Captcha...')
+        showAlert(MessageType.Info, 'Script Ready 🤗<br>Resolving Captcha... Test')
         $('#dntCaptchaRefreshButton').click();
         this.loginPromise.resolve();
     }
