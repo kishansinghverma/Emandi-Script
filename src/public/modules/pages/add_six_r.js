@@ -4,6 +4,9 @@ import { RecordHandler } from "../services/record.js";
 import { ComplexPromise, alertError, capitalize, hideModal, showAlert } from "../services/utils.js";
 class AddSixR extends RecordHandler {
     initializeForm = async () => {
+        this.licenceFetcher = new ComplexPromise();
+        this.rateFetcher = new ComplexPromise();
+        this.cropTypeFetcher = new ComplexPromise();
         this.attachListener();
         this.executeInitialActions();
     }
@@ -39,19 +42,17 @@ class AddSixR extends RecordHandler {
         }
         else $('#ForSelf').prop('checked', true).trigger('change');
         $('#crop_code').val('58').trigger('change');
-        $('#crop_type').val('Regular');
         $('#crop_weight').val(parseFloat($('#quantity').val()).toFixed(3));
         $('#DNTCaptchaInputText').val($('#in-captcha').val());
         $('#previewBtn').removeAttr('disabled');
     }
 
     submitForm = () => {
-        this.licenceFetcher = new ComplexPromise();
-        this.rateFetcher = new ComplexPromise();
         this.updateForm();
-        Promise.allSettled([this.rateFetcher.operator, this.licenceFetcher.operator]).then(() => {
-            if ($('#form1').valid()) this.record ? $("#form1").submit() : preview_data();
-            else alertError('Check the required fields!');
+        Promise.allSettled([this.rateFetcher.operator, this.licenceFetcher.operator, this.cropTypeFetcher.operator]).then(() => {
+            // if ($('#form1').valid()) this.record ? $("#form1").submit() : preview_data();
+            // else alertError('Check the required fields!');
+            preview_data();
         });
     }
 
@@ -62,6 +63,7 @@ class AddSixR extends RecordHandler {
     }
 
     postAjaxCall = (url, response) => {
+        console.log(response);
         if (Array.isArray(response) && response.length > 0) {
             // Resolves the Promise waiting for fetching Rate.
             if (url.includes('/Traders/get_crop_fees')) {
@@ -71,6 +73,11 @@ class AddSixR extends RecordHandler {
             // Resolves the Promise waiting for Kreta Details. 
             else if (url.includes('/Traders/get_license_detail')) {
                 this.licenceFetcher.resolve();
+            }
+            // Resolves the Promise waiting for Crop Type
+            else if (url.includes('/Traders/BindCropTypeDropDown')) {
+                $('#crop_type_code').val(response[0].VarietyCode).trigger('change');
+                this.cropTypeFetcher.resolve();
             }
             else if (url.includes('Traders/add_six_r')) {
                 // Validate Captcha is correctly parsed.

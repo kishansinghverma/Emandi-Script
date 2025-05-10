@@ -15,28 +15,20 @@ class LoginForm {
         const observer = new MutationObserver((mutationList, observer) => {
             for (const mutation of mutationList)
                 if (mutation.addedNodes.length > 0)
-                    $('#dntCaptchaImg').on('load', () => this.loginPromise.operator.then(() => this.login()));
+                    $('#dntCaptchaImg').on('load', () => this.loginPromise.operator.then(() => {
+                        resolveCaptcha('dntCaptchaImg')
+                            .then(text => setResolvedCaptcha(text, 'DNTCaptchaInputText'))
+                            .catch(alertError);
+                    }));
         });
 
         observer.observe($('form > div:nth-child(3) .col-sm-10')[0], { childList: true });
     }
 
     executeInitialActions() {
-        showAlert(MessageType.Info, 'Logging In<br>Please Wait...')
+        showAlert(MessageType.Info, 'Script Ready 🤗<br>Resolving Captcha...')
         $('#dntCaptchaRefreshButton').click();
         this.loginPromise.resolve();
-    }
-
-    login() {
-        $('#userid').val("Kishanverma.guest@gmail.com");
-        $('#pwd').val("Kishan@145789");
-
-        resolveCaptcha('dntCaptchaImg')
-            .then(text => {
-                setResolvedCaptcha(text, 'DNTCaptchaInputText');
-                $('#btnsubmit').click();
-            })
-            .catch(alertError);
     }
 
     handleAjaxResponse(ajaxOptions, jqXHR) {
