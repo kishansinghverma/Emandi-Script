@@ -37,7 +37,7 @@ jobs:
           curl -X POST https://purge.jsdelivr.net/ \
           -H "Content-Type: application/json" \
           -d '[
-            "https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/scriptloader.js"
-            "https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/index.js"
+            "https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/scriptloader.js",
+            "https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/index.js",
             "https://cdn.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/assets/style.css"
           ]'
