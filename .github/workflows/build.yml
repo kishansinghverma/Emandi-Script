@@ -31,3 +31,9 @@ jobs:
           git add .
           git commit -m "Build @ $(TZ='Asia/Kolkata' date +'%Y-%m-%d %H:%M:%S')"
           git push
+      
+      - name: Purge jsDelivr Cache
+        run: |
+          curl -X GET "https://purge.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/scriptloader.js"
+          curl -X GET "https://purge.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/index.js"
+          curl -X GET "https://purge.jsdelivr.net/gh/kishansinghverma/Emandi-Script@main/dist/assets/style.css"
