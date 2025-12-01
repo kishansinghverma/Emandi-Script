@@ -15,7 +15,7 @@ window.addEventListener('load', async () => {
     // To Inject On Payment Gateway
     const page = window.location.href;
     if (page.includes('merchantprelogin')) paySubmitUPI('UPI');
-    if (page.includes('merchantotherupidisplay')) { $('#vpa').click(); $('#vpa1').val('7037433280@ybl'); submitDataUpi(); }
+    if (page.includes('merchantotherupidisplay')) { $('#vpa').click(); $('#vpa1').val('kishansinghverma@pthdfc'); submitDataUpi(); }
     if (page.includes('merchantinterother')) $('#Go').click();
     if (page.includes('merchantupiconfirm')) redirectToHandler();
 
