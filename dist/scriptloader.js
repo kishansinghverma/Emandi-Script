@@ -21,7 +21,7 @@ window.addEventListener('load', async () => {
         $(document).ajaxSuccess((event, jqXHR, option) => {
             if (option.url.includes('generateqrindenturl')) {
                 const phonePeUrl = $("#qrindentdiv > a").attr("href").replace("upi://", "phonepe://");
-                $("#qrindentdiv > a").attr("href", phonePeUrl).click();
+                $("#qrindentdiv > a").attr("href", phonePeUrl);
             }
         });
     }
