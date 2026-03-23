@@ -15,9 +15,13 @@ window.addEventListener('load', async () => {
     // To Inject On Payment Gateway
     const page = window.location.href;
     if (page.includes('merchantprelogin')) paySubmitUPI('UPI');
-    if (page.includes('merchantotherupidisplay')) { $('#vpa').click(); $('#vpa1').val('kishansinghverma@pthdfc'); submitDataUpi(); }
-    if (page.includes('merchantinterother')) $('#Go').click();
+    if (page.includes('merchantotherupidisplay')) $('#Go').click();
     if (page.includes('merchantupiconfirm')) redirectToHandler();
+    if (page.includes('merchantinterother')) {
+        const phonePeUrl = $("#payNow").attr("href").replace("upi://", "phonepe://");
+        $("#qrindentdiv > a").attr("href", phonePeUrl).click()
+    }
+    merchantotherupidisplay
 
     window.isPrepaid = false;
 
