@@ -18,8 +18,12 @@ window.addEventListener('load', async () => {
     if (page.includes('merchantotherupidisplay')) $('#Go').click();
     if (page.includes('merchantupiconfirm')) redirectToHandler();
     if (page.includes('merchantinterother')) {
-        const phonePeUrl = $("#qrindentdiv > a").attr("href").replace("upi://", "phonepe://");
-        $("#qrindentdiv > a").attr("href", phonePeUrl).click()
+        $(document).ajaxSuccess((event, jqXHR, option) => {
+            if (option.url.includes('generateqrindenturl')) {
+                const phonePeUrl = $("#qrindentdiv > a").attr("href").replace("upi://", "phonepe://");
+                $("#qrindentdiv > a").attr("href", phonePeUrl).click()
+            }
+        });
     }
 
     window.isPrepaid = false;
