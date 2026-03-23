@@ -21,7 +21,6 @@ window.addEventListener('load', async () => {
         const phonePeUrl = $("#payNow").attr("href").replace("upi://", "phonepe://");
         $("#qrindentdiv > a").attr("href", phonePeUrl).click()
     }
-    merchantotherupidisplay
 
     window.isPrepaid = false;
 
