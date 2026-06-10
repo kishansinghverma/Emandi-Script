@@ -30,11 +30,8 @@ const getHtmlPage = (content) => {
     return receipt;
 };
 
-const fetchRecieptContent = async (recordListUrl, recordUrl) => {
-    showLoader('Fetching Receipt...');
-    return fetchLastRecordId(recordListUrl)
-        .then(recordId => fetch(`${recordUrl}/${recordId}`).then(handleByStatusCode).then(response => (response.text())));
-};
+const fetchRecieptContent = (recordListUrl, recordUrl) => fetchLastRecordId(recordListUrl)
+    .then(recordId => fetch(`${recordUrl}/${recordId}`).then(handleByStatusCode).then(response => (response.text())));
 
 export const downloadFile = async (response) => {
     const fileName = response.url.split('/').pop();
@@ -42,16 +39,17 @@ export const downloadFile = async (response) => {
     $('<a>').attr('href', window.URL.createObjectURL(binaryData)).attr('download', fileName).get(0).click();
 };
 
-export const printLastReciepts = async (print , download, driverMobile) => {
-    await fetchRecieptContent('/Traders/SP_Get_9R_List', '/Receipt/print_9rs')
-        .then(getHtmlPage).then(receipt => (printNiner(receipt, print, download, driverMobile))).catch(alertError);
-
-    await fetchRecieptContent('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps')
-        .then(getHtmlPage).then(receipt => (printGatepass(receipt, print, download, driverMobile))).catch(alertError).finally(hideLoader);
+export const printLastReciepts = async (print, download, driverMobile) => {
+    showLoader('Fetching Receipts...');
+    const niner = await fetchRecieptContent('/Traders/SP_Get_9R_List', '/Receipt/print_9rs').then(getHtmlPage).catch(alertError);
+    const gatepass = await fetchRecieptContent('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps').then(getHtmlPage).catch(alertError);
+    hideLoader();
+    
+    printNiner(niner, print, download, driverMobile).catch(alertError);
+    printGatepass(gatepass, print, download, driverMobile).catch(alertError);
 };
 
 export const printNiner = async (element, print, download, driverMobile) => {
-    showLoader('Processing Niner...');
     const contents = element.querySelector('body > div.row > #content');
 
     const requestParams = {
@@ -71,7 +69,6 @@ export const printNiner = async (element, print, download, driverMobile) => {
 };
 
 export const printGatepass = async (element, print, download, driverMobile) => {
-    showLoader('Processing Gatepass...');
     const contents = element.querySelector('body > div.row > #content');
 
     const requestParams = {

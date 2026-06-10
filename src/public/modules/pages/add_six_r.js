@@ -42,6 +42,7 @@ class AddSixR extends RecordHandler {
         }
         else $('#ForSelf').prop('checked', true).trigger('change');
         $('#crop_code').val('58').trigger('change');
+        $('#grade').val('9').trigger('change');
         $('#crop_weight').val(parseFloat($('#quantity').val()).toFixed(3));
         $('#DNTCaptchaInputText').val($('#in-captcha').val());
         $('#previewBtn').removeAttr('disabled');

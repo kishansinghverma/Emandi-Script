@@ -1,5 +1,5 @@
 import { printNiner } from "../services/print.js";
-import { alertError, hideLoader, hideModal } from "../services/utils.js";
+import { alertError, hideLoader, hideModal, showLoader } from "../services/utils.js";
 
 class PrintNiner {
     initializeForm = () => $('#print-btn').click(this.print);
@@ -7,6 +7,8 @@ class PrintNiner {
     print = () => {
         const download = $('#forcedownload').is(':checked');
         const print = $('#print').is(':checked');
+        
+        showLoader('Processing Niner...');
         printNiner(document, print, download)
             .then(hideModal)
             .catch(alertError)
