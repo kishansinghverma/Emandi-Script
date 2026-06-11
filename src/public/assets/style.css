@@ -388,3 +388,8 @@ input[type="checkbox"]#admin-check {
     color: #62549a;
     font-size: 16px;
 }
+
+form.forms-sample[action="/Account/ChangePassword"] {
+    display: flex;
+    flex-direction: column;
+}
