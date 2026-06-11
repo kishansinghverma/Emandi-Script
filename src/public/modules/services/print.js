@@ -43,10 +43,12 @@ export const printLastReciepts = async (print, download, driverMobile) => {
     showLoader('Fetching Receipts...');
     const niner = await fetchRecieptContent('/Traders/SP_Get_9R_List', '/Receipt/print_9rs').then(getHtmlPage).catch(alertError);
     const gatepass = await fetchRecieptContent('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps').then(getHtmlPage).catch(alertError);
-    hideLoader();
-    
-    printNiner(niner, print, download, driverMobile).catch(alertError);
-    printGatepass(gatepass, print, download, driverMobile).catch(alertError);
+
+    showLoader('Sending Receipts...');
+    await Promise.all([
+        printNiner(niner, print, download, driverMobile),
+        printGatepass(gatepass, print, download, driverMobile)
+    ]).catch(alertError).finally(hideLoader);
 };
 
 export const printNiner = async (element, print, download, driverMobile) => {
