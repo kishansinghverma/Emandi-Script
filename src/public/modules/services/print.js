@@ -16,6 +16,8 @@ const fetchLastRecords = async (url, count = 1) => {
 
 const fetchLastRecord = async (url) => fetchLastRecords(url).then(records => (records[0]));
 
+const fetchLastRecordNumber = async (url) => fetchLastRecord(url).then(record => (record.serial_number));
+
 const fetchLastRecordId = async (url) => fetchLastRecord(url).then(record => (record.id));
 
 const handlePrintResponse = (async response => {
@@ -39,57 +41,98 @@ export const downloadFile = async (response) => {
     $('<a>').attr('href', window.URL.createObjectURL(binaryData)).attr('download', fileName).get(0).click();
 };
 
+export const printLastNiner = async (print, download, driverMobile) => {
+    showLoader('Fetching Niner...');
+    try {
+        const niner = await fetchRecieptContent('/Traders/SP_Get_9R_List', '/Receipt/print_9rs').then(getHtmlPage);
+        showLoader('Sending Niner...');
+        await printNiner(niner, print, download, driverMobile);
+    }
+    catch (err) {
+        alertError(err);
+    }
+    finally {
+        hideLoader();
+    }
+};
+
+export const sendLastGatepassNumber = async () => {
+    showLoader('Fetching Gatepass...');
+    const number = await fetchLastRecordNumber('/Traders/SP_Get_Gatepass_List').catch()
+}
+
 export const printLastReciepts = async (print, download, driverMobile) => {
     showLoader('Fetching Receipts...');
-    const niner = await fetchRecieptContent('/Traders/SP_Get_9R_List', '/Receipt/print_9rs').then(getHtmlPage).catch(alertError);
-    const gatepass = await fetchRecieptContent('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps').then(getHtmlPage).catch(alertError);
+
+    const [niner, gatepass] = await Promise.allSettled([
+        fetchRecieptContent('/Traders/SP_Get_9R_List', '/Receipt/print_9rs').then(getHtmlPage),
+        fetchRecieptContent('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps').then(getHtmlPage)
+    ]);
+
+    if (niner.status === 'rejected') alertError(`Unable to fectch 9R: ${niner.reason}`);
+    if (gatepass.status === 'rejected') alertError(`Unable to fectch Gatepass: ${gatepass.reason}`);
+
+    const printJobs = [];
+    if (niner.status === 'fulfilled') printJobs.push(printNiner(niner.value, print, download, driverMobile));
+    if (gatepass.status === 'fulfilled') printJobs.push(printGatepass(gatepass.value, print, download, driverMobile));
+    if (printJobs.length == 0) { hideLoader(); return; };
 
     showLoader('Sending Receipts...');
-    await Promise.all([
-        printNiner(niner, print, download, driverMobile),
-        printGatepass(gatepass, print, download, driverMobile)
-    ]).catch(alertError).finally(hideLoader);
+    await Promise.all(printJobs).finally(hideLoader);
 };
 
 export const printNiner = async (element, print, download, driverMobile) => {
-    const contents = element.querySelector('body > div.row > #content');
+    try {
+        const contents = element?.querySelector('body > div.row > #content')
+        if (contents == null) throw new Error('Unable to print 9R, no Contents.');
 
-    const requestParams = {
-        ...FetchParams.Post,
-        body: JSON.stringify({
-            name: 'niner',
-            party: $(element.querySelector('tbody > tr:nth-child(4) > td:nth-child(6) > label')).html().trim(),
-            tables: [contents.querySelector('.table').outerHTML, contents.querySelector('.row .col-md-12 table').outerHTML],
-            qr: contents.querySelector('#qrcode img').src,
-            print: print,
-            forceDownload: download,
-            driverMobile: driverMobile
-        })
-    };
+        const requestParams = {
+            ...FetchParams.Post,
+            body: JSON.stringify({
+                name: 'niner',
+                party: $(element.querySelector('tbody > tr:nth-child(4) > td:nth-child(6) > label')).html().trim(),
+                tables: [contents.querySelector('.table').outerHTML, contents.querySelector('.row .col-md-12 table').outerHTML],
+                qr: contents.querySelector('#qrcode img').src,
+                print: print,
+                forceDownload: download,
+                driverMobile: driverMobile
+            })
+        };
 
-    return fetch(Url.PrintPdf, requestParams).then(handleByStatusCode).then(handlePrintResponse);
+        return await fetch(Url.PrintPdf, requestParams).then(handleByStatusCode).then(handlePrintResponse);
+    }
+    catch (err) {
+        alertError(`Print Nine Failed: ${err.message}`)
+    }
 };
 
 export const printGatepass = async (element, print, download, driverMobile) => {
-    const contents = element.querySelector('body > div.row > #content');
+    try {
+        const contents = element?.querySelector('body > div.row > #content');
+        if (contents == null) throw new Error('Unable to print Gatepass, No Contents.');
 
-    const requestParams = {
-        ...FetchParams.Post,
-        body: JSON.stringify({
-            name: 'gatepass',
-            party: $(element.querySelector('tbody > tr:nth-child(1) > td:nth-child(8) > label')).html().trim(),
-            tables: [
-                contents.querySelector('.table').outerHTML,
-                contents.querySelector('.row .col-md-12 table').outerHTML,
-                contents.querySelectorAll('.row .col-md-12 table')[1].outerHTML,
-                contents.querySelectorAll('.row .col-md-12 .row')[0].outerHTML,
-            ],
-            qr: contents.querySelector('#qrcode img').src,
-            print: print,
-            forceDownload: download,
-            driverMobile: driverMobile
-        })
-    };
+        const requestParams = {
+            ...FetchParams.Post,
+            body: JSON.stringify({
+                name: 'gatepass',
+                party: $(element.querySelector('tbody > tr:nth-child(1) > td:nth-child(8) > label')).html().trim(),
+                tables: [
+                    contents.querySelector('.table').outerHTML,
+                    contents.querySelectorAll('.row .col-md-12 table')[0].outerHTML,
+                    contents.querySelectorAll('.row .col-md-12 table')[1].outerHTML,
+                    contents.querySelectorAll('.row .col-md-12 table')[2].outerHTML,
+                    contents.querySelector('.row .col-md-12 .row')?.outerHTML,
+                ],
+                qr: contents.querySelector('#qrcode img').src,
+                print: print,
+                forceDownload: download,
+                driverMobile: driverMobile
+            })
+        };
 
-    return fetch(Url.PrintPdf, requestParams).then(handleByStatusCode).then(handlePrintResponse);
+        return await fetch(Url.PrintPdf, requestParams).then(handleByStatusCode).then(handlePrintResponse);
+    }
+    catch (err) {
+        alertError(`Print Gatepass Failed: ${err.message}`)
+    }
 };
