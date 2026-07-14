@@ -1,18 +1,18 @@
 import { getDate } from "../modules/services/utils.js";
 
-export const SendRecieptButton = `
+export const SendReceiptButton = `
     <li>
         <a href="#">
             <i class="fa fa-envelope-o"></i>
-            <span> Send Last Reciepts </span>
+            <span> Send Last Receipts </span>
         </a>
     </li>`;
 
-export const PrintRecieptButton = `
+export const PrintReceiptButton = `
     <li>
         <a href="#">
             <i class="fa fa-print"></i>
-            <span> Print Last Reciepts </span>
+            <span> Print Last Receipts </span>
         </a>
     </li>`;
 
