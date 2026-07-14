@@ -1,17 +1,5 @@
 # Refactor TODO
 
-## 2. Isolate Host-Site Coupling
-- [ ] Move DOM selectors, route names, and hard-coded field mappings into page-specific config modules.
-- [ ] Create a selector layer for each Emandi page (`login`, `add_six_r`, `NineR`, `NineRSubmit`, `add_gatepass`) so markup changes are localized.
-- [ ] Centralize route detection and supported-route handling instead of scattering route assumptions across modules.
-- [ ] Add explicit guards for required DOM elements before attempting autofill or submission.
-
-## 3. Normalize Workflow State
-- [ ] Replace the implicit `localStorage` record handoff with a small workflow-state service.
-- [ ] Define the record shape used across 6R -> payment -> 9R -> gatepass so pages do not rely on ad hoc nested reads.
-- [ ] Separate “queued remote record” state from “in-progress local workflow” state.
-- [ ] Add expiry/versioning for stored records to avoid stale data surviving site changes.
-
 ## 4. Clean Up Network Boundaries
 - [ ] Split Emandi-site requests from external backend requests into separate service modules.
 - [ ] Wrap `fetch` calls in a single HTTP helper with consistent error handling, status validation, and response parsing.

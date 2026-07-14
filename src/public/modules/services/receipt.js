@@ -11,8 +11,10 @@ const fetchLastRecords = async (url, count = 1) => {
     const payload = `draw=0&order[0][column]=1&order[0][dir]=desc&start=0&length=${count}&fromDate=${fromDate}&toDate=${toDate}`;
 
     return fetch(url, { ...FetchParams.PostUrlEncoded, body: payload }).then(handleJsonResponse)
-        .then(({ data }) => { if (data.length < 1) throw new Error('No Record Found...'); return data; });
+        .then(({ data }) => { if (data.length < 1) throw new Error('No Record Found!'); return data; });
 };
+
+const getHtmlPage = (content) => $('<html>').html(content)[0];
 
 export const fetchLastRecord = async (url) => fetchLastRecords(url).then(records => (records[0]));
 
@@ -20,15 +22,10 @@ export const fetchLastRecordNumber = async (url) => fetchLastRecord(url).then(re
 
 export const fetchLastRecordId = async (url) => fetchLastRecord(url).then(record => (record.id));
 
-const getHtmlPage = (content) => {
-    const receipt = document.createElement('html');
-    receipt.innerHTML = content;
-    return receipt;
-};
-
-export const fetchReceiptDocument = (recordListUrl, recordUrl) => fetchLastRecordId(recordListUrl)
-    .then(recordId => fetch(`${recordUrl}/${recordId}`).then(handleByStatusCode).then(response => (response.text())))
-    .then(getHtmlPage);
+export const fetchReceiptDocument = (recordListUrl, recordUrl) =>
+    fetchLastRecordId(recordListUrl)
+        .then(recordId => fetch(`${recordUrl}/${recordId}`).then(handleByStatusCode).then(response => (response.text())))
+        .then(getHtmlPage);
 
 export const parseNinerReceipt = (element) => {
     const $element = $(element);
