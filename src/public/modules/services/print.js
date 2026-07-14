@@ -73,7 +73,9 @@ const fetchRecieptContent = (recordListUrl, recordUrl) => fetchLastRecordId(reco
 export const downloadFile = async (response) => {
     const fileName = response.url.split('/').pop();
     const binaryData = await response.blob();
-    $('<a>').attr('href', window.URL.createObjectURL(binaryData)).attr('download', fileName).get(0).click();
+    const objectUrl = window.URL.createObjectURL(binaryData);
+    $('<a>').attr('href', objectUrl).attr('download', fileName).get(0).click();
+    setTimeout(() => window.URL.revokeObjectURL(objectUrl), 0);
 };
 
 export const printLastNiner = async (print, download, driverMobile) => {
