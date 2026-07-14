@@ -94,8 +94,26 @@ export const printLastNiner = async (print, download, driverMobile) => {
 };
 
 export const sendLastGatepassNumber = async () => {
-    showLoader('Fetching Gatepass...');
-    const number = await fetchLastRecordNumber('/Traders/SP_Get_Gatepass_List').catch()
+    showLoader('Fetching Gatepass Number...');
+
+    try {
+        const gatepassNumber = await fetchLastRecordNumber('/Traders/SP_Get_Gatepass_List');
+        const message = `Gatepass Number: ${gatepassNumber}`;
+
+        showLoader('Sending Gatepass Number...');
+        await fetch(Url.SendText, {
+            ...FetchParams.Post,
+            body: JSON.stringify({ message })
+        }).then(handleByStatusCode);
+
+        showAlert(MessageType.Success, 'Gatepass Number Sent.', 3);
+    }
+    catch (err) {
+        alertError(err, true);
+    }
+    finally {
+        hideLoader();
+    }
 }
 
 export const printLastReciepts = async (print, download, driverMobile) => {

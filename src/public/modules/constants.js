@@ -56,7 +56,8 @@ export const Url = {
     SetRate: getUrl('emandi/rate'),
     PeekRecord: getUrl('emandi/peek'),
     PopRecord: getUrl('emandi/pop'),
-    PrintPdf: getUrl('files/html')
+    PrintPdf: getUrl('files/html'),
+    SendText: getUrl('whatsapp/sendtext/unityhub')
 }
 
 export const HttpMessages = {
