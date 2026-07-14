@@ -22,8 +22,9 @@ const fetchLastRecordId = async (url) => fetchLastRecord(url).then(record => (re
 
 const handlePrintResponse = (async response => {
     if (response.status === 201) showAlert(MessageType.Success, 'PDF Sent Via WhatsApp.', 3)
-    if (response.status === 202) showAlert(MessageType.Success, 'Print Job Sent.', 3);
-    if (response.status === 200) await downloadFile(response);
+    else if (response.status === 202) showAlert(MessageType.Success, 'Print Job Sent.', 3);
+    else if (response.status === 200) await downloadFile(response);
+    else throw new Error(`Unsupported print response status: ${response.status}`);
 });
 
 const getHtmlPage = (content) => {
