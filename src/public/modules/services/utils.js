@@ -13,7 +13,11 @@ export const hideModal = () => $('.custom-modal-container').hide();
 
 export const getNestedValue = (path, record) => (path.split('.').reduce((o, k) => o && o[k], record) ?? '');
 
-export const alertError = (err) => err.message ? showAlert(MessageType.Error, err.message, 5) : showAlert(MessageType.Error, err, 5);
+export const alertError = (err, shouldThrow = false) => {
+    const error = err instanceof Error ? err : new Error(err?.message ?? err);
+    showAlert(MessageType.Error, error.message, 5);
+    if (shouldThrow) throw error;
+};
 
 export const logError = (err) => console.log(err.message);
 

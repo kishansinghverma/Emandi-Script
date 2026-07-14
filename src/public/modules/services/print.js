@@ -32,6 +32,40 @@ const getHtmlPage = (content) => {
     return receipt;
 };
 
+const parseNinerReceipt = (element) => {
+    const contents = element?.querySelector('#content');
+    const qr = contents?.querySelector('#qrcode img')?.src;
+    const party = $(element?.querySelector('tbody > tr:nth-child(4) > td:nth-child(6) > label'))?.text()?.trim();
+    const tables = [
+        contents?.querySelector('.table')?.outerHTML,
+        contents?.querySelector('.row .col-md-12 table')?.outerHTML
+    ];
+
+    if (!party || !qr || tables.some(item => !item))
+        throw new Error('Parsing Error');
+
+    return { party, tables, qr };
+};
+
+const parseGatepassReceipt = (element) => {
+    const contents = element?.querySelector('#content');
+    const qr = contents?.querySelector('#qrcode img')?.src;
+    const party = $(element?.querySelector('tbody > tr:nth-child(1) > td:nth-child(8) > label'))?.text()?.trim();
+    const tables = [
+        contents?.querySelector('.table')?.outerHTML,
+        contents?.querySelectorAll('.row .col-md-12 table')?.[0]?.outerHTML,
+        contents?.querySelectorAll('.row .col-md-12 table')?.[1]?.outerHTML,
+        contents?.querySelectorAll('.row .col-md-12 table')?.[2]?.outerHTML,
+        contents?.querySelector('.row .col-md-12 .row')?.outerHTML,
+    ];
+
+    if (!party || !qr || tables.slice(0, 4).some(item => !item)) {
+        throw new Error('Parsing Error');
+    }
+
+    return { party, tables, qr };
+};
+
 const fetchRecieptContent = (recordListUrl, recordUrl) => fetchLastRecordId(recordListUrl)
     .then(recordId => fetch(`${recordUrl}/${recordId}`).then(handleByStatusCode).then(response => (response.text())));
 
@@ -83,16 +117,15 @@ export const printLastReciepts = async (print, download, driverMobile) => {
 
 export const printNiner = async (element, print, download, driverMobile) => {
     try {
-        const contents = element?.querySelector('body > div.row > #content')
-        if (contents == null) throw new Error('Unable to print 9R, no Contents.');
+        const receipt = parseNinerReceipt(element);
 
         const requestParams = {
             ...FetchParams.Post,
             body: JSON.stringify({
                 name: 'niner',
-                party: $(element.querySelector('tbody > tr:nth-child(4) > td:nth-child(6) > label')).html().trim(),
-                tables: [contents.querySelector('.table').outerHTML, contents.querySelector('.row .col-md-12 table').outerHTML],
-                qr: contents.querySelector('#qrcode img').src,
+                party: receipt.party,
+                tables: receipt.tables,
+                qr: receipt.qr,
                 print: print,
                 forceDownload: download,
                 driverMobile: driverMobile
@@ -102,28 +135,21 @@ export const printNiner = async (element, print, download, driverMobile) => {
         return await fetch(Url.PrintPdf, requestParams).then(handleByStatusCode).then(handlePrintResponse);
     }
     catch (err) {
-        alertError(`Print Nine Failed: ${err.message}`)
+        alertError(new Error(`Print Nine Failed: ${err.message ?? err}`), true);
     }
 };
 
 export const printGatepass = async (element, print, download, driverMobile) => {
     try {
-        const contents = element?.querySelector('body > div.row > #content');
-        if (contents == null) throw new Error('Unable to print Gatepass, No Contents.');
+        const receipt = parseGatepassReceipt(element);
 
         const requestParams = {
             ...FetchParams.Post,
             body: JSON.stringify({
                 name: 'gatepass',
-                party: $(element.querySelector('tbody > tr:nth-child(1) > td:nth-child(8) > label')).html().trim(),
-                tables: [
-                    contents.querySelector('.table').outerHTML,
-                    contents.querySelectorAll('.row .col-md-12 table')[0].outerHTML,
-                    contents.querySelectorAll('.row .col-md-12 table')[1].outerHTML,
-                    contents.querySelectorAll('.row .col-md-12 table')[2].outerHTML,
-                    contents.querySelector('.row .col-md-12 .row')?.outerHTML,
-                ],
-                qr: contents.querySelector('#qrcode img').src,
+                party: receipt.party,
+                tables: receipt.tables,
+                qr: receipt.qr,
                 print: print,
                 forceDownload: download,
                 driverMobile: driverMobile
@@ -133,6 +159,6 @@ export const printGatepass = async (element, print, download, driverMobile) => {
         return await fetch(Url.PrintPdf, requestParams).then(handleByStatusCode).then(handlePrintResponse);
     }
     catch (err) {
-        alertError(`Print Gatepass Failed: ${err.message}`)
+        alertError(new Error(`Print Gatepass Failed: ${err.message ?? err}`), true);
     }
 };
