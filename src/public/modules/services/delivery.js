@@ -6,7 +6,7 @@ export const downloadFile = async (response) => {
     const binaryData = await response.blob();
     const objectUrl = window.URL.createObjectURL(binaryData);
     $('<a>').attr('href', objectUrl).attr('download', fileName).get(0).click();
-    setTimeout(() => window.URL.revokeObjectURL(objectUrl), 0);
+    setTimeout(() => window.URL.revokeObjectURL(objectUrl), 100);
 };
 
 export const handleDeliveryResponse = async (response) => {
