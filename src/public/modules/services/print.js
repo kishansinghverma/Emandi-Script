@@ -42,7 +42,7 @@ const parseNinerReceipt = (element) => {
     ];
 
     if (!party || !qr || tables.some(item => !item))
-        throw new Error('Parsing Error');
+        throw new Error('Unable to parse 9R receipt.');
 
     return { party, tables, qr };
 };
@@ -60,7 +60,7 @@ const parseGatepassReceipt = (element) => {
     ];
 
     if (!party || !qr || tables.slice(0, 4).some(item => !item)) {
-        throw new Error('Parsing Error');
+        throw new Error('Unable to parse Gatepass receipt.');
     }
 
     return { party, tables, qr };
@@ -135,7 +135,7 @@ export const printNiner = async (element, print, download, driverMobile) => {
         return await fetch(Url.PrintPdf, requestParams).then(handleByStatusCode).then(handlePrintResponse);
     }
     catch (err) {
-        alertError(new Error(`Print Nine Failed: ${err.message ?? err}`), true);
+        alertError(new Error(`Failed: ${err.message ?? err}`), true);
     }
 };
 
@@ -159,6 +159,6 @@ export const printGatepass = async (element, print, download, driverMobile) => {
         return await fetch(Url.PrintPdf, requestParams).then(handleByStatusCode).then(handlePrintResponse);
     }
     catch (err) {
-        alertError(new Error(`Print Gatepass Failed: ${err.message ?? err}`), true);
+        alertError(new Error(`Failed: ${err.message ?? err}`), true);
     }
 };
