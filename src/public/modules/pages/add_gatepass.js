@@ -64,20 +64,24 @@ class AddGatepass extends RecordHandler {
         setTimeout(() => $('.swal-overlay').hide(), 200);
         showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
         
-        if (this.record) {
-            showLoader('Finalizing Record...');
-            await fetch(Url.UpdateRecord, {
-                ...FetchParams.Patch,
-                body: JSON.stringify({ rate: this.record.rate ?? 0, finalize: true })
-            }).then(validateResponse)
-                .then(this.removeRecord)
-                .catch(alertError)
-                .finally(hideLoader);
-        }
+        try {
+            if (this.record) {
+                showLoader('Finalizing Record...');
+                await fetch(Url.UpdateRecord, {
+                    ...FetchParams.Patch,
+                    body: JSON.stringify({ rate: this.record.rate ?? 0, finalize: true })
+                }).then(validateResponse).then(this.removeRecord);
+                hideLoader();
+            }
 
-        await printLastNiner(false, false, this.record?.driverMobile);
-        await sendLastGatepassNumber();
-        this.postComplete();
+            await printLastNiner(false, false, this.record?.driverMobile);
+            await sendLastGatepassNumber();
+            
+            this.postComplete();
+        } catch (err) {
+            alertError(err);
+            hideLoader();
+        }
     }
 
     handleAjaxResponse(option, response) {

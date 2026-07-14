@@ -1,11 +1,5 @@
 # Refactor TODO
 
-## 1. Stabilize Current Behavior
-- [ ] Fix the `printLastNiner` / `printLastReciepts` mismatch in [src/public/modules/pages/add_gatepass.js](/Users/kishansinghverma/Extras/Repos/Emandi-Script/src/public/modules/pages/add_gatepass.js:1).
-- [ ] Remove unsupported-page hard failures in [src/public/modules/services/initialization.js](/Users/kishansinghverma/Extras/Repos/Emandi-Script/src/public/modules/services/initialization.js:46) and fail quietly on routes the script does not own.
-- [ ] Replace blocking `async: false` AJAX in [src/public/modules/pages/ninersubmit.js](/Users/kishansinghverma/Extras/Repos/Emandi-Script/src/public/modules/pages/ninersubmit.js:74) with promise-based submission.
-- [ ] Make print and finalize flows stop on failed network requests instead of alerting and continuing.
-
 ## 2. Isolate Host-Site Coupling
 - [ ] Move DOM selectors, route names, and hard-coded field mappings into page-specific config modules.
 - [ ] Create a selector layer for each Emandi page (`login`, `add_six_r`, `NineR`, `NineRSubmit`, `add_gatepass`) so markup changes are localized.
@@ -65,39 +59,3 @@
 3. Refactor page controllers around a common lifecycle.
 4. Isolate selectors and hard-coded field mappings.
 5. Rework printing and build/delivery after behavior is under control.
-
-
-1. printLastNiner() reports “Sending Niner...” even when fetch failed, then still calls printNiner(undefined, ...).
-     At src/public/modules/services/print.js:44, the fetch path does .catch(alertError), which converts the rejection into a resolved undefined. Execution then continues to src/public/
-     modules/services/print.js:48. That gives you a second misleading error path and hides the real control-flow failure.
-
-  2. printNiner() and printGatepass() swallow failures instead of rejecting.
-     Both catch blocks at src/public/modules/services/print.js:97 and src/public/modules/services/print.js:128 only alert and return. Callers cannot tell the operation failed, so upstream
-     flows can continue as if printing succeeded.
-
-  3. Receipt parsing is extremely DOM-fragile.
-     The selectors at src/public/modules/services/print.js:79, src/public/modules/services/print.js:86, src/public/modules/services/print.js:87, src/public/modules/services/print.js:104,
-     and src/public/modules/services/print.js:111 assume exact table positions and row structure. Any markup change in the receipt pages will break PDF generation.
-
-  4. Several required nodes are dereferenced without validation.
-     Examples: .html().trim() at src/public/modules/services/print.js:86 and src/public/modules/services/print.js:111, #qrcode img.src at src/public/modules/services/print.js:88 and src/
-     public/modules/services/print.js:119, and indexed table access at src/public/modules/services/print.js:114. Missing nodes become runtime exceptions.
-
-  5. handlePrintResponse() ignores unexpected success/failure shapes.
-     At src/public/modules/services/print.js:23, only 200, 201, and 202 are handled. Other successful statuses produce no user feedback, and there is no default branch for an unsupported
-     but non-error response contract.
-
-  6. downloadFile() leaks object URLs.
-     At src/public/modules/services/print.js:38, it creates a blob URL and never revokes it. That is minor for occasional use, but it is still a resource leak.
-
-  7. There is dead/incomplete code.
-     sendLastGatepassNumber() at src/public/modules/services/print.js:52 fetches a number, does nothing with it, and never hides the loader. That is either abandoned work or a latent bug
-     if called later.
-
-  8. Naming and spelling are inconsistent enough to raise maintenance risk.
-     fetchRecieptContent() and printLastReciepts() at src/public/modules/services/print.js:35 and src/public/modules/services/print.js:57 are misspelled, and the file mixes “print”,
-     “send”, “download”, and “receipt” responsibilities in one module. That makes the API harder to reason about.
-
-  9. Date scoping for “last record” is hard-coded and undocumented.
-     fetchLastRecords() only looks back 5 days at src/public/modules/services/print.js:4. If the last relevant record is older, the print flow silently becomes “No Record Found...” with
-     no explanation of why the search window exists.

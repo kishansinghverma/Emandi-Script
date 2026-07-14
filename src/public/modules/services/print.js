@@ -58,7 +58,7 @@ export const printLastReceipts = async (print, download, driverMobile) => {
     try {
         await Promise.all(printJobs);
     } catch (err) {
-        console.error("One or more print jobs failed:", err);
+        throw err;
     } finally {
         hideLoader();
     }
