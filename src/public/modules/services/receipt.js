@@ -11,7 +11,7 @@ const fetchLastRecords = async (url, count = 1) => {
     const payload = `draw=0&order[0][column]=1&order[0][dir]=desc&start=0&length=${count}&fromDate=${fromDate}&toDate=${toDate}`;
 
     return fetch(url, { ...FetchParams.PostUrlEncoded, body: payload }).then(handleJsonResponse)
-        .then(({ data }) => { if (data.length < 1) throw Error('No Record Found...'); return data; });
+        .then(({ data }) => { if (data.length < 1) throw new Error('No Record Found...'); return data; });
 };
 
 export const fetchLastRecord = async (url) => fetchLastRecords(url).then(records => (records[0]));
@@ -31,12 +31,13 @@ export const fetchReceiptDocument = (recordListUrl, recordUrl) => fetchLastRecor
     .then(getHtmlPage);
 
 export const parseNinerReceipt = (element) => {
-    const contents = element?.querySelector('#content');
-    const qr = contents?.querySelector('#qrcode img')?.src;
-    const party = $(element?.querySelector('tbody > tr:nth-child(4) > td:nth-child(6) > label'))?.text()?.trim();
+    const $element = $(element);
+    const $contents = $element.find('#content');
+    const qr = $contents.find('#qrcode img').attr('src');
+    const party = $element.find('tbody > tr:nth-child(4) > td:nth-child(6) > label').text().trim();
     const tables = [
-        contents?.querySelector('.table')?.outerHTML,
-        contents?.querySelector('.row .col-md-12 table')?.outerHTML
+        $contents.find('.table')[0]?.outerHTML,
+        $contents.find('.row .col-md-12 table')[0]?.outerHTML
     ];
 
     if (!party || !qr || tables.some(item => !item))
@@ -46,15 +47,16 @@ export const parseNinerReceipt = (element) => {
 };
 
 export const parseGatepassReceipt = (element) => {
-    const contents = element?.querySelector('#content');
-    const qr = contents?.querySelector('#qrcode img')?.src;
-    const party = $(element?.querySelector('tbody > tr:nth-child(1) > td:nth-child(8) > label'))?.text()?.trim();
+    const $element = $(element);
+    const $contents = $element.find('#content');
+    const qr = $contents.find('#qrcode img').attr('src');
+    const party = $element.find('tbody > tr:nth-child(1) > td:nth-child(8) > label').text().trim();
     const tables = [
-        contents?.querySelector('.table')?.outerHTML,
-        contents?.querySelectorAll('.row .col-md-12 table')?.[0]?.outerHTML,
-        contents?.querySelectorAll('.row .col-md-12 table')?.[1]?.outerHTML,
-        contents?.querySelectorAll('.row .col-md-12 table')?.[2]?.outerHTML,
-        contents?.querySelector('.row .col-md-12 .row')?.outerHTML,
+        $contents.find('.table')[0]?.outerHTML,
+        $contents.find('.row .col-md-12 table')[0]?.outerHTML,
+        $contents.find('.row .col-md-12 table')[1]?.outerHTML,
+        $contents.find('.row .col-md-12 table')[2]?.outerHTML,
+        $contents.find('.row .col-md-12 .row')[0]?.outerHTML,
     ];
 
     if (!party || !qr || tables.slice(0, 4).some(item => !item)) {

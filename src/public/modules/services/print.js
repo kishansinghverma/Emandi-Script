@@ -46,16 +46,22 @@ export const printLastReceipts = async (print, download, driverMobile) => {
         fetchReceiptDocument('/Traders/SP_Get_Gatepass_List', '/Receipt/print_gps')
     ]);
 
-    if (niner.status === 'rejected') alertError(`Unable to fectch 9R: ${niner.reason}`);
-    if (gatepass.status === 'rejected') alertError(`Unable to fectch Gatepass: ${gatepass.reason}`);
+    if (niner.status === 'rejected') alertError(`Unable to fetch 9R: ${niner.reason}`);
+    if (gatepass.status === 'rejected') alertError(`Unable to fetch Gatepass: ${gatepass.reason}`);
 
     const printJobs = [];
     if (niner.status === 'fulfilled') printJobs.push(printNiner(niner.value, print, download, driverMobile));
     if (gatepass.status === 'fulfilled') printJobs.push(printGatepass(gatepass.value, print, download, driverMobile));
-    if (printJobs.length == 0) { hideLoader(); return; };
+    if (printJobs.length === 0) { hideLoader(); return; };
 
     showLoader('Sending Receipts...');
-    await Promise.all(printJobs).finally(hideLoader);
+    try {
+        await Promise.all(printJobs);
+    } catch (err) {
+        console.error("One or more print jobs failed:", err);
+    } finally {
+        hideLoader();
+    }
 };
 
 export const printNiner = async (element, print, download, driverMobile) => {
