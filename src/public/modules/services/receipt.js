@@ -31,7 +31,7 @@ export const parseNinerReceipt = (element) => {
     const $element = $(element);
     const $contents = $element.find('#content');
     const qr = $contents.find('#qrcode img').attr('src');
-    const party = $element.find('tbody > tr:nth-child(4) > td:nth-child(6) > label').text().trim();
+    const party = $element.find('tbody > tr:nth-child(4) > td:nth-child(6) > label').first().text().trim();
     const tables = [
         $contents.find('.table')[0]?.outerHTML,
         $contents.find('.row .col-md-12 table')[0]?.outerHTML
@@ -47,7 +47,7 @@ export const parseGatepassReceipt = (element) => {
     const $element = $(element);
     const $contents = $element.find('#content');
     const qr = $contents.find('#qrcode img').attr('src');
-    const party = $element.find('tbody > tr:nth-child(1) > td:nth-child(8) > label').text().trim();
+    const party = $element.find('tbody > tr:nth-child(1) > td:nth-child(8) > label').first().text().trim();
     const tables = [
         $contents.find('.table')[0]?.outerHTML,
         $contents.find('.row .col-md-12 table')[0]?.outerHTML,
