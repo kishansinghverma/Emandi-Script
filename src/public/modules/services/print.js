@@ -3,12 +3,12 @@ import { sendReceiptPdf, sendTextMessage } from "./delivery.js";
 import { fetchLastRecordNumber, fetchReceiptDocument, parseGatepassReceipt, parseNinerReceipt } from "./receipt.js";
 import { alertError, hideLoader, showAlert, showLoader } from "./utils.js";
 
-export const printLastNiner = (print, download, driverMobile) => {
+export const printLastNiner = (print, download) => {
     showLoader('Fetching Niner...');
     return fetchReceiptDocument('/Traders/SP_Get_9R_List', '/Receipt/print_9rs')
         .then(niner => {
             showLoader('Sending Niner...');
-            return printNiner(niner, print, download, driverMobile);
+            return printNiner(niner, print, download);
         })
         .catch(alertError)
         .finally(hideLoader);
@@ -27,7 +27,7 @@ export const sendLastGatepassNumber = () => {
         .finally(hideLoader);
 }
 
-export const printLastReceipts = (print, download, driverMobile) => {
+export const printLastReceipts = (print, download) => {
     showLoader('Fetching Receipts...');
 
     return Promise.allSettled([
@@ -38,8 +38,8 @@ export const printLastReceipts = (print, download, driverMobile) => {
         if (gatepass.status === 'rejected') alertError(`Unable to fetch Gatepass: ${gatepass.reason}`);
 
         const printJobs = [];
-        if (niner.status === 'fulfilled') printJobs.push(printNiner(niner.value, print, download, driverMobile));
-        if (gatepass.status === 'fulfilled') printJobs.push(printGatepass(gatepass.value, print, download, driverMobile));
+        if (niner.status === 'fulfilled') printJobs.push(printNiner(niner.value, print, download));
+        if (gatepass.status === 'fulfilled') printJobs.push(printGatepass(gatepass.value, print, download));
         if (printJobs.length === 0) { hideLoader(); return; }
 
         showLoader('Sending Receipts...');
@@ -47,7 +47,7 @@ export const printLastReceipts = (print, download, driverMobile) => {
     });
 };
 
-export const printNiner = (element, print, download, driverMobile) => {
+export const printNiner = (element, print, download) => {
     return Promise.resolve().then(() => {
         const receipt = parseNinerReceipt(element);
         return sendReceiptPdf({
@@ -56,15 +56,14 @@ export const printNiner = (element, print, download, driverMobile) => {
             tables: receipt.tables,
             qr: receipt.qr,
             print: print,
-            forceDownload: download,
-            driverMobile: driverMobile
+            forceDownload: download
         });
     }).catch(err => {
         alertError(new Error(`Failed: ${err.message ?? err}`), true);
     });
 };
 
-export const printGatepass = (element, print, download, driverMobile) => {
+export const printGatepass = (element, print, download) => {
     return Promise.resolve().then(() => {
         const receipt = parseGatepassReceipt(element);
         return sendReceiptPdf({
@@ -73,8 +72,7 @@ export const printGatepass = (element, print, download, driverMobile) => {
             tables: receipt.tables,
             qr: receipt.qr,
             print: print,
-            forceDownload: download,
-            driverMobile: driverMobile
+            forceDownload: download
         });
     }).catch(err => {
         alertError(new Error(`Failed: ${err.message ?? err}`), true);

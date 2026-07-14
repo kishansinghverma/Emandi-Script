@@ -74,7 +74,7 @@ class AddGatepass extends RecordHandler {
                 hideLoader();
             }
 
-            await printLastNiner(false, false, this.record?.driverMobile);
+            await printLastReceipts(false, false);
             await sendLastGatepassNumber();
             
             this.postComplete();
