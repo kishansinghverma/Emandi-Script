@@ -74,7 +74,7 @@ class AddGatepass extends RecordHandler {
                 hideLoader();
             }
 
-            await printLastReceipts(false, false);
+            await printLastNiner(false, false);
             await sendLastGatepassNumber();
             
             this.postComplete();
