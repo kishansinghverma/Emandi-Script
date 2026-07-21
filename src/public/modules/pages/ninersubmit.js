@@ -4,14 +4,14 @@ import { RecordHandler } from "../services/record.js";
 import { alertError, showAlert } from "../services/utils.js";
 
 class NinerSubmit extends RecordHandler {
-    initializeForm = () => {
+    async initializeForm() {
         this.validateExecution();
+        await this.executeInitialActions();
         this.attachListener();
-        this.executeInitialActions();
     }
 
     attachListener = () => {
-        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.postAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.handleAjaxResponse(ajaxOptions, jqXHR?.responseJSON));
         $('#in-captcha').on('input', ({ target }) => onResolved(target.value));
         $('#submit-btn').click(this.submitForm);
     }
@@ -91,7 +91,8 @@ class NinerSubmit extends RecordHandler {
         window.location.href = StageMap[Stages.Gatepass].Url;
     }
 
-    postAjaxCall(url, response) {
+    handleAjaxResponse(ajaxOptions, response) {
+        const url = ajaxOptions.url;
         if (Array.isArray(response) && response.length > 0) {
             if (url.includes('/Traders/NineRSubmit')) {
                 // Validate Captcha is correctly parsed.

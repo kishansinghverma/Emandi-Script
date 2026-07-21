@@ -2,7 +2,9 @@ import { recordComponent } from "../../assets/elements.js";
 import { MessageType, Url } from "../constants.js";
 import { alertError, getNestedValue, handleJsonResponse, hideLoader, showAlert, showLoader } from "./utils.js";
 
-export class RecordHandler {
+import { BaseController } from "../pages/base.js";
+
+export class RecordHandler extends BaseController {
     #storagePath = 'Record';
 
     #handlePayload = (record) => {

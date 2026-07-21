@@ -1,20 +1,31 @@
 import { getNinerById, getSixrById, handleJsonResponse, hideLoader, showLoader } from "../services/utils.js";
+import { BaseController } from "./base.js";
 
-class ListEntries {
-    initializeForm = () => {
-        document.getElementById('filter').click();
+class ListEntries extends BaseController {
+    async initializeForm() {
+        await this.executeInitialActions();
     }
+    attachListener() {}
+    async executeInitialActions() { document.getElementById('filter').click(); }
+    updateForm() {}
+    submitForm() {}
 }
 
-class ListGatepasses {
+class ListGatepasses extends BaseController {
     gatepassUrl = '/Receipt/print_gps';
     ninerUrl = '/Receipt/print_9rs';
     sixrUrl = '/Receipt/print_6rs';
 
-    initializeForm = async () => {
+    async initializeForm() {
+        await this.executeInitialActions();
+    }
+    attachListener() {}
+    async executeInitialActions() {
         this.injectSwitch();
         $('#filter').click();
     }
+    updateForm() {}
+    submitForm() {}
 
     injectSwitch = () => {
         const handleSwitch = ({ target }) => {

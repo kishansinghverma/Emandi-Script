@@ -1,15 +1,15 @@
 import { MessageType } from "../constants.js";
 import { setResolvedCaptcha, validateCaptcha, resolveCaptcha } from "../services/captcha.js";
 import { ComplexPromise, showAlert, alertError } from "../services/utils.js";
+import { BaseController } from "./base.js";
 
-class LoginForm {
-    initializeForm = () => {
+class LoginForm extends BaseController {
+    constructor() {
+        super();
         this.loginPromise = new ComplexPromise();
-        this.registerListeners();
-        this.executeInitialActions();
     }
 
-    registerListeners() {
+    attachListener() {
         $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.handleAjaxResponse(ajaxOptions, jqXHR));
 
         const observer = new MutationObserver((mutationList, observer) => {
@@ -25,10 +25,18 @@ class LoginForm {
         observer.observe($('form > div:nth-child(3) .col-sm-10')[0], { childList: true });
     }
 
-    executeInitialActions() {
+    async executeInitialActions() {
         showAlert(MessageType.Success, 'Script Ready...')
         $('#dntCaptchaRefreshButton').click();
         this.loginPromise.resolve();
+    }
+
+    updateForm() {
+        // Form update is handled directly via mutations in Login form
+    }
+
+    submitForm() {
+        // Submission handled by site UI usually, or triggers standard logic
     }
 
     handleAjaxResponse(ajaxOptions, jqXHR) {

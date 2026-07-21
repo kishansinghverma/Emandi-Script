@@ -1,10 +1,11 @@
 import { RecordHandler } from "../services/record.js";
 import { capitalize } from "../services/utils.js";
+import { DefaultValues } from "../constants.js";
 
 class Niner extends RecordHandler {
-    initializeForm = async () => {
+    async initializeForm() {
+        await this.executeInitialActions();
         this.attachListener();
-        this.executeInitialActions();
     }
 
     attachListener = () => {
@@ -16,7 +17,7 @@ class Niner extends RecordHandler {
         this.renderRecord().then(() => $('#is-licenced').prop('checked', Boolean(this.record?.party?.licenceNumber)));
     }
 
-    updateForm = () => {
+    updateForm() {
         if ($('#is-licenced').prop('checked')) {
             $('#uttar_pradesh').prop('checked', true).trigger('change');
             $('#br').prop('checked', true).trigger('change');
@@ -26,8 +27,8 @@ class Niner extends RecordHandler {
             $('#ForSelf').prop('checked', true).trigger('change');
             $('#kreta_details').val(capitalize($('#bname').val()));
         }
-        $('#crop_code').val('58').trigger('change');
-        $('#StockTypeCategory').val('1').trigger('change');
+        $('#crop_code').val(DefaultValues.CropCode).trigger('change');
+        $('#StockTypeCategory').val(DefaultValues.StockTypeCategory).trigger('change');
         $('input[name="PayType"][value="1"]').prop('checked', true).trigger('change');
     }
 
