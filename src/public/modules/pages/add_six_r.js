@@ -1,18 +1,33 @@
-import { MessageType, StageMap, Stages } from "../constants.js";
+import { MessageType, StageMap, Stages, DefaultValues } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
 import { ComplexPromise, alertError, capitalize, hideModal, showAlert } from "../services/utils.js";
+import { BaseController } from "./base.js";
+
+// We can mix in RecordHandler logic, but Javascript only allows extending one class.
+// Since RecordHandler doesn't seem to exist as a class with state logic that prevents manual composition,
+// we'll extend BaseController and instantiate RecordHandler features if needed,
+// OR we can keep extending RecordHandler and make RecordHandler extend BaseController.
+// Let's modify RecordHandler to extend BaseController instead if possible,
+// but since we want to modify add_six_r, we'll keep its inheritance hierarchy and just ensure it conforms
+// to BaseController methods since RecordHandler is presumably a base class already for records.
+// Wait, I should check record.js to see if I can make RecordHandler extend BaseController.
+
 class AddSixR extends RecordHandler {
-    initializeForm = async () => {
+    constructor() {
+        super();
         this.licenceFetcher = new ComplexPromise();
         this.rateFetcher = new ComplexPromise();
         this.cropTypeFetcher = new ComplexPromise();
+    }
+
+    async initializeForm() {
+        await this.executeInitialActions();
         this.attachListener();
-        this.executeInitialActions();
     }
 
     attachListener = () => {
-        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.postAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
+        $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.handleAjaxResponse(ajaxOptions, jqXHR?.responseJSON));
         $('#in-captcha').on('input', ({ target }) => onResolved(target.value));
         $('#refresh-btn').click(this.refreshForm);
         $('#submit-btn').click(this.submitForm);
@@ -33,16 +48,16 @@ class AddSixR extends RecordHandler {
         });
     }
 
-    updateForm = () => {
+    updateForm() {
         $('#vikreta_details').val(capitalize($('#sname').val()));
-        $('#vikreta_mobile').val('7037433280');
+        $('#vikreta_mobile').val(DefaultValues.MobileNumber);
         if ($('#licence').val()) {
             $('#trader_type').prop('checked', true).trigger('change');
             $('#kreta_license_number').val($('#licence').val()).trigger('change');
         }
         else $('#ForSelf').prop('checked', true).trigger('change');
-        $('#crop_code').val('58').trigger('change');
-        $('#grade').val('9').trigger('change');
+        $('#crop_code').val(DefaultValues.CropCode).trigger('change');
+        $('#grade').val(DefaultValues.Grade).trigger('change');
         $('#crop_weight').val(parseFloat($('#quantity').val()).toFixed(3));
         $('#DNTCaptchaInputText').val($('#in-captcha').val());
         $('#previewBtn').removeAttr('disabled');
@@ -62,7 +77,8 @@ class AddSixR extends RecordHandler {
         window.location.href = StageMap[Stages.Payment].Url;
     }
 
-    postAjaxCall = (url, response) => {
+    handleAjaxResponse(ajaxOptions, response) {
+        const url = ajaxOptions.url;
         console.log(response);
         if (Array.isArray(response) && response.length > 0) {
             // Resolves the Promise waiting for fetching Rate.

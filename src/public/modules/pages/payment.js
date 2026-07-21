@@ -1,19 +1,28 @@
 import { MessageType } from "../constants.js";
 import { RecordHandler } from "../services/record.js";
 import { showAlert } from "../services/utils.js";
+import { BaseController } from "./base.js";
 
-class DigitalPayment {
-    initializeForm = () => {
+class DigitalPayment extends BaseController {
+    async initializeForm() {
+        await this.executeInitialActions();
         this.attachListener();
-        this.checkPendingPayments();
     }
 
-    attachListener = () => $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.postAjaxCall(ajaxOptions.url, jqXHR?.responseJSON));
+    attachListener = () => $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.handleAjaxResponse(ajaxOptions, jqXHR?.responseJSON));
+
+    async executeInitialActions() {
+        this.checkPendingPayments();
+    }
 
     checkPendingPayments = () => {
         const columnCount = $('#datatable1 tbody tr td').length;
         if (columnCount === 1) this.notifyEmptyResponse();
         else if (columnCount > 1 && $('.chk').length > 0) this.submitForm();
+    }
+
+    updateForm() {
+        // Not used
     }
 
     submitForm = () => {
@@ -22,7 +31,8 @@ class DigitalPayment {
         $('#proceddnow').click();
     }
 
-    postAjaxCall = (url, response) => {
+    handleAjaxResponse(ajaxOptions, response) {
+        const url = ajaxOptions.url;
         if (url.includes('/Traders/Get6RListForPayment') && Array.isArray(response)) {
             if (response.length < 1) this.notifyEmptyResponse();
             else this.submitForm();
@@ -32,12 +42,24 @@ class DigitalPayment {
     notifyEmptyResponse = () => showAlert(MessageType.Info, 'No Payments Pending!', 5);
 }
 
-class GeneratedDigitalPayment {
-    initializeForm = () => $('#Pay').click();
+class GeneratedDigitalPayment extends BaseController {
+    async initializeForm() {
+        await this.executeInitialActions();
+    }
+    async executeInitialActions() { $('#Pay').click(); }
+    attachListener() {}
+    updateForm() {}
+    submitForm() {}
 }
 
-class PostSuccess {
-    initializeForm = () => $('a.btn.btn-success')[0].click();
+class PostSuccess extends BaseController {
+    async initializeForm() {
+        await this.executeInitialActions();
+    }
+    async executeInitialActions() { $('a.btn.btn-success')[0].click(); }
+    attachListener() {}
+    updateForm() {}
+    submitForm() {}
 }
 
 export const Digital_Payment = new DigitalPayment();

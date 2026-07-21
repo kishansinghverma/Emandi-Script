@@ -10,9 +10,9 @@ class AddGatepass extends RecordHandler {
         this.formReady = new ComplexPromise();
     }
 
-    initializeForm = async () => {
+    async initializeForm() {
+        await this.executeInitialActions();
         this.attachListener();
-        this.executeInitialActions();
     }
 
     attachListener = () => {

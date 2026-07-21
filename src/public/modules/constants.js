@@ -13,10 +13,12 @@ const CommonDiv = '#content > div > div';
 const PrintDiv = '#content';
 const LoginDiv = '.box-login';
 
-const baseUrl = "https://unity-hub.onrender.com/api";
-// const baseUrl = "http://localhost:8080/api";
+// Determine base URL dynamically based on environment or host
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+export const externalBaseUrl = isLocal ? "http://localhost:8080/api" : "https://unity-hub.onrender.com/api";
+export const baseUrl = ""; // Emandi-site requests are typically relative
 
-const getUrl = (path) => (`${baseUrl}/${path}`);
+const getUrl = (path) => (`${externalBaseUrl}/${path}`);
 
 export const RouteMap = {
     add_six_r: { Script: Add_Six_R, Div: CommonDiv },
@@ -104,6 +106,13 @@ export const Stages = {
 
 export const SplitwiseGroupId = {
     "Prepaid Gatepass": 52740365
+}
+
+export const DefaultValues = {
+    MobileNumber: '7037433280',
+    CropCode: '58',
+    Grade: '9',
+    StockTypeCategory: '1'
 }
 
 export const ItemsToHide = [

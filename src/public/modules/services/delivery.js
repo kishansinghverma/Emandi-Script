@@ -23,9 +23,9 @@ export const sendReceiptPdf = async (payload) => {
     }).then(handleByStatusCode).then(handleDeliveryResponse);
 };
 
-export const sendTextMessage = async (message) => {
+export const sendTextMessage = async (payload) => {
     return fetch(Url.SendText, {
         ...FetchParams.Post,
-        body: JSON.stringify({ message })
+        body: JSON.stringify(payload) // Should include { message: "...", sendWhatsApp: true }
     }).then(handleByStatusCode);
 };
