@@ -57,7 +57,8 @@ export const Url = {
     PeekRecord: getUrl('emandi/peek'),
     PopRecord: getUrl('emandi/pop'),
     PrintPdf: getUrl('files/html'),
-    SendText: getUrl('whatsapp/sendtext/emandi')
+    SendText: getUrl('whatsapp/sendtext/emandi'),
+    ResolveCaptcha: getUrl('emandi/captcha')
 }
 
 export const HttpMessages = {

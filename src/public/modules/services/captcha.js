@@ -1,21 +1,33 @@
-import Tesseract from "../../assets/tesseract.js"
-import { MessageType } from "../constants.js";
+import { MessageType, Url, FetchParams } from "../constants.js";
 import { alertError, showAlert } from "./utils.js";
 
 const tryResolve = async (source) => {
-    const img = document.getElementById(source);
-    const canvas = document.createElement("canvas");
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    canvas.getContext("2d").drawImage(img, 0, 0);
-    const image = document.createElement('img');
-    image.src = canvas.toDataURL();
-    const resolvedData = await Tesseract.recognize(image, 'eng', {
-        tessedit_char_whitelist: '0123456789',
-        tessedit_pageseg_mode: '8',
-    });
-    const parsedText = parseInt(resolvedData.data.text);
-    return parsedText;
+    try {
+        const img = document.getElementById(source);
+        if (!img) return NaN;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        canvas.getContext("2d").drawImage(img, 0, 0);
+
+        const response = await fetch(Url.ResolveCaptcha, {
+            ...FetchParams.Post,
+            body: JSON.stringify({ image: canvas.toDataURL() })
+        });
+
+        if (!response.ok) {
+            console.error('Captcha API Error:', response.status, response.statusText);
+            return NaN;
+        }
+
+        const data = await response.json();
+        const parsedText = parseInt(data.code, 10);
+        return parsedText;
+    } catch (error) {
+        console.error('Error resolving captcha via backend:', error);
+        return NaN;
+    }
 }
 
 export const resolveCaptcha = async (source) => {
