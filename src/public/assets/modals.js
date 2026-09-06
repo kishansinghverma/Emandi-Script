@@ -15,7 +15,9 @@ const add_six_r = `
 		<input type="text" id="quantity" placeholder="Quantity (In Quintals)" data-property="weight"/>
 		<input type="text" id="licence" placeholder="Party Licence" data-property="party.licenceNumber"/>
 		<div id="img-captcha"></div>
-		<input type="text" placeholder="Captcha Code" id="in-captcha" />
+		<div class="captcha-input-wrapper">
+			<input type="text" placeholder="Captcha Code" id="in-captcha" />
+		</div>
         <div class="btn-group">
 			<button class="button info" id="refresh-btn">Refresh</button>
 			<button class="button success" disabled id="submit-btn">Submit</button>
@@ -44,7 +46,9 @@ const NineRSubmit = `
 		<div class="record"></div>
 		<input type="text" id="weight" placeholder="Weight" data-property="weight" />
         <div id="img-captcha"></div>
-        <input type="text" placeholder="Captcha Code" id="in-captcha"/>
+        <div class="captcha-input-wrapper">
+            <input type="text" placeholder="Captcha Code" id="in-captcha"/>
+        </div>
         <button class="button success" disabled id="submit-btn">Submit</button>
 	</div>
 </div>`;
@@ -112,7 +116,9 @@ const add_gatepass = `
         	<input type="text" placeholder="Distance" id="space" data-property="party.distance" />
 		</div>
 		<div id="img-captcha"></div>
-		<input type="text" placeholder="Captcha Code" id="in-captcha"/>
+		<div class="captcha-input-wrapper">
+			<input type="text" placeholder="Captcha Code" id="in-captcha"/>
+		</div>
         <button class="button success" disabled id="submit-btn">Submit</button>
 	</div>
 </div>`;

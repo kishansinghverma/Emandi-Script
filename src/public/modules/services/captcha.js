@@ -1,5 +1,28 @@
 import { MessageType, Url, FetchParams } from "../constants.js";
 import { alertError, showAlert } from "./utils.js";
+import { CaptchaLoader } from "../../assets/loader.js";
+
+export const showCaptchaLoader = () => {
+    const $input = $('#in-captcha').length ? $('#in-captcha') : $('#DNTCaptchaInputText');
+    if ($input.length) {
+        if (!$input.parent().hasClass('captcha-input-wrapper')) {
+            $input.wrap('<div class="captcha-input-wrapper"></div>');
+        }
+        if (!$input.siblings('.captcha-input-loader').length) {
+            $input.after(CaptchaLoader);
+        }
+        $input.parent().addClass('loading');
+        $input.attr('placeholder', 'Resolving Captcha...');
+    }
+};
+
+export const hideCaptchaLoader = () => {
+    const $input = $('#in-captcha').length ? $('#in-captcha') : $('#DNTCaptchaInputText');
+    if ($input.length) {
+        $input.parent().removeClass('loading');
+        $input.attr('placeholder', 'Captcha Code');
+    }
+};
 
 const tryResolve = async (source) => {
     try {
@@ -31,29 +54,44 @@ const tryResolve = async (source) => {
 }
 
 export const resolveCaptcha = async (source) => {
-    let isResolved = false;
-    let parsedText = await tryResolve(source);
-    let retryCount = 1;
+    showCaptchaLoader();
+    
+    try {
+        let isResolved = false;
+        let parsedText = await tryResolve(source);
+        let retryCount = 1;
 
-    while (!isResolved) {
-        if (isNaN(parsedText))
-            showAlert(MessageType.Error, "Captcha Error (NaN)! Retrying...", 1);
-        else {
-            if (parsedText < 1000 || parsedText > 9999)
-                showAlert(MessageType.Error, "Captcha Error (Range)! Retrying...", 1);
+        while (!isResolved) {
+            if (isNaN(parsedText))
+                showAlert(MessageType.Error, "Captcha Error (NaN)! Retrying...", 1);
             else {
-                isResolved = true;
-                break;
+                if (parsedText < 1000 || parsedText > 9999)
+                    showAlert(MessageType.Error, "Captcha Error (Range)! Retrying...", 1);
+                else {
+                    isResolved = true;
+                    break;
+                }
             }
+            if (retryCount >= 3) {
+                showAlert(MessageType.Error, "Auto-resolve failed. Please enter captcha manually.", 4);
+                const $input = $('#in-captcha').length ? $('#in-captcha') : $('#DNTCaptchaInputText');
+                $input.val('').focus();
+                return null;
+            }
+            parsedText = await tryResolve(source);
+            retryCount++;
         }
-        if (retryCount > 3) { location.reload(); return; }
-        parsedText = await tryResolve(source);
-        retryCount++;
+        return parsedText;
+    } finally {
+        hideCaptchaLoader();
     }
-    return parsedText;
 }
 
-export const setResolvedCaptcha = (value, target) => $(`#${target}`).val(value).trigger('input');
+export const setResolvedCaptcha = (value, target) => {
+    if (value && !isNaN(value)) {
+        $(`#${target}`).val(value).trigger('input');
+    }
+};
 
 export const parseCaptcha = (source, target) => {
     resolveCaptcha(source)

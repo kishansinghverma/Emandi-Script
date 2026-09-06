@@ -5,6 +5,72 @@
     margin-bottom: 0.6rem;
 }
 
+.captcha-input-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.captcha-input-wrapper input[type='text'] {
+    margin-bottom: 0 !important;
+    transition: padding-right 0.2s ease, border-color 0.2s ease;
+}
+
+.captcha-input-wrapper.loading input[type='text'] {
+    padding-right: 2.3em !important;
+}
+
+.captcha-input-loader {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.captcha-input-wrapper.loading .captcha-input-loader {
+    display: flex;
+}
+
+.captcha-spinner-svg {
+    animation: captcha-rotate 1.2s linear infinite;
+    width: 16px;
+    height: 16px;
+}
+
+.captcha-spinner-svg .path {
+    stroke: #767676;
+    stroke-linecap: round;
+    animation: captcha-dash 1.5s ease-in-out infinite;
+}
+
+@keyframes captcha-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes captcha-dash {
+    0% {
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
+}
+
+
 #processMessage {
     left: 50%;
     width: fit-content;
