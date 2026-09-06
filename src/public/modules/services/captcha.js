@@ -30,7 +30,7 @@ export const resolveCaptcha = async (source) => {
                 break;
             }
         }
-        if (retryCount > 2) location.reload();
+        if (retryCount > 3) { location.reload(); return; }
         parsedText = await tryResolve(source);
         retryCount++;
     }
