@@ -10,7 +10,10 @@ const tryResolve = async (source) => {
     canvas.getContext("2d").drawImage(img, 0, 0);
     const image = document.createElement('img');
     image.src = canvas.toDataURL();
-    const resolvedData = await Tesseract.recognize(image, 'eng', {});
+    const resolvedData = await Tesseract.recognize(image, 'eng', {
+        tessedit_char_whitelist: '0123456789',
+        tessedit_pageseg_mode: '8',
+    });
     const parsedText = parseInt(resolvedData.data.text);
     return parsedText;
 }
