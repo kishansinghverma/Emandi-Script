@@ -13,7 +13,7 @@ const tryResolve = async (source) => {
 
         const response = await fetch(Url.ResolveCaptcha, {
             ...FetchParams.Post,
-            body: JSON.stringify({ image: canvas.toDataURL() })
+            body: JSON.stringify({ base64string: canvas.toDataURL() })
         });
 
         if (!response.ok) {
