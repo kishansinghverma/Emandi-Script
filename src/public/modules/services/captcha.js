@@ -3,10 +3,11 @@ import { MessageType } from "../constants.js";
 import { alertError, showAlert } from "./utils.js";
 
 const tryResolve = async (source) => {
+    const img = document.getElementById(source);
     const canvas = document.createElement("canvas");
-    canvas.width = 70;
-    canvas.height = 40;
-    canvas.getContext("2d").drawImage(document.getElementById(source), 0, 0);
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    canvas.getContext("2d").drawImage(img, 0, 0);
     const image = document.createElement('img');
     image.src = canvas.toDataURL();
     const resolvedData = await Tesseract.recognize(image, 'eng', {});
