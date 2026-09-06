@@ -55,4 +55,4 @@ export const validateCaptcha = (response, isLogin) => {
     else { if (response[0].status === 0 && response[0].msg?.includes('Captcha')) invalidate() }
 }
 
-export const onResolved = (str) => str.length === 4 ? $('#submit-btn').removeAttr('disabled') : $('#submit-btn').attr('disabled', true);
+export const onResolved = (str) => String(str).length === 4 ? $('#submit-btn').removeAttr('disabled') : $('#submit-btn').attr('disabled', true);
