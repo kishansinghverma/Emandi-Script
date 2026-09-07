@@ -369,12 +369,22 @@
 
 .notification-container .notification-body {
     display: flex;
+    align-items: center;
     padding: .75rem 1.25rem;
 }
 
 .notification-container .icon {
     margin-right: 1.2rem;
     height: 24px;
+    flex-shrink: 0;
+}
+
+.notification-container .message {
+    flex: 1;
+}
+
+.notification-container .link {
+    flex-shrink: 0;
 }
 
 .notification-container.success {
@@ -408,6 +418,31 @@
     100% {
         transform: translate(-50%, -50%);
         opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    0% {
+        transform: translateX(110%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media (min-width: 768px) {
+    .notification-container {
+        top: 24px;
+        right: 24px;
+        left: auto;
+        transform: none;
+        max-width: 420px;
+        white-space: normal;
+        text-align: left;
+        animation-name: slideInRight;
     }
 }
 
