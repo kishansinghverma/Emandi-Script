@@ -1,7 +1,7 @@
 import { MessageType, StageMap, Stages } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
-import { alertError, showAlert } from "../services/utils.js";
+import { alertError, showAlert, ComplexPromise } from "../services/utils.js";
 
 class NinerSubmit extends RecordHandler {
     initializeForm = () => {
@@ -67,19 +67,26 @@ class NinerSubmit extends RecordHandler {
     }
 
     submitForm = () => {
+        this.submissionPromise = new ComplexPromise();
+        withButtonLoader('#submit-btn', this.submissionPromise.operator);
+
         this.updateForm();
-        this.record ? this.executeRequest() : preview_data();
+        if (this.record) {
+            this.executeRequest();
+        }
+        else {
+            preview_data();
+            this.submissionPromise.resolve();
+        }
     }
 
     executeRequest = () => {
-        $('#loader').show();
         $.ajax({
             url: $("#form1").attr("action"),
             method: "post",
             data: $('#form1').serialize(),
             async: false
         });
-        $('#loader').hide();
     }
 
     onComplete = () => {
@@ -92,12 +99,12 @@ class NinerSubmit extends RecordHandler {
     }
 
     postAjaxCall(url, response) {
-        if (Array.isArray(response) && response.length > 0) {
-            if (url.includes('/Traders/NineRSubmit')) {
-                // Validate Captcha is correctly parsed.
-                validateCaptcha(response);
-                //Handles form sumission.
-                if (response[0].status > 0) this.onComplete();
+        if (url.includes('/Traders/NineRSubmit')) {
+            this.submissionPromise.resolve();
+
+            if (Array.isArray(response) && response.length > 0) {
+                validateCaptcha(response); // Validate Captcha is correctly parsed.
+                if (response[0].status > 0) this.onComplete(); //Handles form sumission.
                 else alertError(response[0].msg);
             }
         }
