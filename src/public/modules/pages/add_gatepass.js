@@ -1,7 +1,7 @@
 import { FetchParams, MessageType, Url } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
-import { ComplexPromise, alertError, capitalize, hideLoader, hideModal, showAlert, showLoader, validateResponse } from "../services/utils.js";
+import { ComplexPromise, alertError, capitalize, hideLoader, hideModal, showAlert, showLoader, validateResponse, withButtonLoader } from "../services/utils.js";
 import { printLastNiner, sendLastGatepassNumber } from "../services/print.js"
 
 class AddGatepass extends RecordHandler {
@@ -49,9 +49,22 @@ class AddGatepass extends RecordHandler {
     }
 
     submitForm = () => {
+        this.submissionPromise = new ComplexPromise();
+        withButtonLoader('#submit-btn', this.submissionPromise.operator);
+
         this.updateForm();
-        if ($('#form1').valid()) this.record ? $("#form1").submit() : preview_data();
-        else alertError('Check the required fields!');
+        if ($('#form1').valid()) {
+            if (this.record) {
+                $("#form1").submit()
+            } else {
+                preview_data();
+                this.submissionPromise.resolve();
+            }
+        }
+        else {
+            alertError('Check the required fields!');
+            this.submissionPromise.reject();
+        }
     }
 
     postComplete = () => {
@@ -59,28 +72,31 @@ class AddGatepass extends RecordHandler {
         location.href = "/Traders/Dashboard";
     }
 
-    onComplete = async () => {
-        hideModal();
-        setTimeout(() => $('.swal-overlay').hide(), 200);
-        showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
-        
-        try {
-            if (this.record) {
-                showLoader('Finalizing Record...');
-                await fetch(Url.UpdateRecord, {
-                    ...FetchParams.Patch,
-                    body: JSON.stringify({ rate: this.record.rate ?? 0, finalize: true })
-                }).then(validateResponse).then(this.removeRecord);
+    onComplete = async (response) => {
+        this.submissionPromise.resolve();
+
+        if (response[0].status > 0) {
+            hideModal();
+            showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
+
+            try {
+                if (this.record) {
+                    showLoader('Finalizing Record...');
+                    await fetch(Url.UpdateRecord, {
+                        ...FetchParams.Patch,
+                        body: JSON.stringify({ rate: this.record.rate ?? 0, finalize: true })
+                    }).then(validateResponse).then(this.removeRecord);
+                    hideLoader();
+                }
+
+                await printLastNiner(false, false);
+                await sendLastGatepassNumber();
+
+                this.postComplete();
+            } catch (err) {
+                alertError(err);
                 hideLoader();
             }
-
-            await printLastNiner(false, false);
-            await sendLastGatepassNumber();
-            
-            this.postComplete();
-        } catch (err) {
-            alertError(err);
-            hideLoader();
         }
     }
 
@@ -99,7 +115,7 @@ class AddGatepass extends RecordHandler {
                 // Validate Captcha is correctly parsed.
                 validateCaptcha(response);
                 // Handles Form Submission
-                if (response[0].status > 0) this.onComplete();
+                this.onComplete(response);
             }
         }
     }

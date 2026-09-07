@@ -1,7 +1,7 @@
 import { MessageType, StageMap, Stages } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
-import { alertError, showAlert, ComplexPromise } from "../services/utils.js";
+import { alertError, showAlert, ComplexPromise, withButtonLoader } from "../services/utils.js";
 
 class NinerSubmit extends RecordHandler {
     initializeForm = () => {
@@ -41,6 +41,7 @@ class NinerSubmit extends RecordHandler {
     selectEntries() {
         let requiredWeight = parseFloat($('#weight').val());
         if (isNaN(requiredWeight) || !(requiredWeight > 0)) {
+            this.submissionPromise.reject();
             alertError('Weight Not Provided!');
             throw new Error('Weight Not Provided!');
         }
@@ -61,6 +62,7 @@ class NinerSubmit extends RecordHandler {
         if (parseFloat($('#weight').val()) === parseFloat($('#takenQty').text()))
             showAlert(MessageType.Success, `Quantity Selected : ${$('#takenQty').text()} Quintal.`)
         else {
+            this.submissionPromise.reject();
             alertError('Quantity Unavailable!<br>Select Manually...');
             throw new Error('Select Manually...');
         }

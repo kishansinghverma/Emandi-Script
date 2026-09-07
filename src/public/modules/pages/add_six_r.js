@@ -67,7 +67,7 @@ class AddSixR extends RecordHandler {
             }
             else {
                 alertError('Check the required fields!');
-                this.submissionPromise.resolve();
+                this.submissionPromise.reject();
             }
         });
     }
