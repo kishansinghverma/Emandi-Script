@@ -38,7 +38,9 @@ export const withButtonLoader = (element, promise) => {
 
     $btn.addClass('loading').prop('disabled', true);
 
-    return promise.finally(() => {
+    return promise
+        .catch(() => { })
+        .finally(() => {
         $btn.removeClass('loading').prop('disabled', false);
     });
 };

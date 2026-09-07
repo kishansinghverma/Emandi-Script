@@ -72,35 +72,33 @@ class AddGatepass extends RecordHandler {
         location.href = "/Traders/Dashboard";
     }
 
-    onComplete = async (response) => {
-        this.submissionPromise.resolve();
+    onComplete = async () => {
+        hideModal();
+        showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
 
-        if (response[0].status > 0) {
-            hideModal();
-            showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
-
-            try {
-                if (this.record) {
-                    showLoader('Finalizing Record...');
-                    await fetch(Url.UpdateRecord, {
-                        ...FetchParams.Patch,
-                        body: JSON.stringify({ rate: this.record.rate ?? 0, finalize: true })
-                    }).then(validateResponse).then(this.removeRecord);
-                    hideLoader();
-                }
-
-                await printLastNiner(false, false);
-                await sendLastGatepassNumber();
-
-                this.postComplete();
-            } catch (err) {
-                alertError(err);
+        try {
+            if (this.record) {
+                showLoader('Finalizing Record...');
+                await fetch(Url.UpdateRecord, {
+                    ...FetchParams.Patch,
+                    body: JSON.stringify({ rate: this.record.rate ?? 0, finalize: true })
+                }).then(validateResponse).then(this.removeRecord);
                 hideLoader();
             }
+
+            await printLastNiner(false, false);
+            await sendLastGatepassNumber();
+
+            this.postComplete();
+        } catch (err) {
+            alertError(err);
+            hideLoader();
         }
     }
 
     handleAjaxResponse(option, response) {
+        if (option.url.includes('/Traders/add_gatepass')) this.submissionPromise.resolve();
+
         if (Array.isArray(response)) {
             if (option.url.includes('/Traders/BindStateList'))
                 this.formReady.resolve();
@@ -115,7 +113,7 @@ class AddGatepass extends RecordHandler {
                 // Validate Captcha is correctly parsed.
                 validateCaptcha(response);
                 // Handles Form Submission
-                this.onComplete(response);
+                if (response[0].status > 0) this.onComplete();
             }
         }
     }

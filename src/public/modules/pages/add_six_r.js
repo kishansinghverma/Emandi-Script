@@ -98,7 +98,7 @@ class AddSixR extends RecordHandler {
             }
             else if (url.includes('Traders/add_six_r')) {
                 validateCaptcha(response); // Validate Captcha is correctly parsed.
-                if (response[0].status > 0) this.onComplete(response); // Handles Form Submission
+                if (response[0].status > 0) this.onComplete(); // Handles Form Submission
             }
         }
     }
