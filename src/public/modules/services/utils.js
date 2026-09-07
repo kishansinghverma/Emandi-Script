@@ -33,6 +33,16 @@ export const hideLoader = () => {
     })
 }
 
+export const withButtonLoader = (element, promise) => {
+    const $btn = $(element);
+
+    $btn.addClass('loading').prop('disabled', true);
+
+    return promise.finally(() => {
+        $btn.removeClass('loading').prop('disabled', false);
+    });
+};
+
 export const validateResponse = (response) => {
     if (!response.ok)
         throw { message: HttpMessages[response.status], code: response.status }

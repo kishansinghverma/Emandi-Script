@@ -1,7 +1,7 @@
 import { MessageType, StageMap, Stages } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
-import { ComplexPromise, alertError, capitalize, hideModal, showAlert } from "../services/utils.js";
+import { ComplexPromise, alertError, capitalize, hideModal, showAlert, withButtonLoader } from "../services/utils.js";
 class AddSixR extends RecordHandler {
     initializeForm = async () => {
         this.licenceFetcher = new ComplexPromise();
@@ -34,6 +34,8 @@ class AddSixR extends RecordHandler {
     }
 
     updateForm = () => {
+        this.rateFetcher.operator.then(val => $('#crop_rate').val(val).trigger('change'));
+        
         $('#vikreta_details').val(capitalize($('#sname').val()));
         $('#vikreta_mobile').val('7037433280');
         if ($('#licence').val()) {
@@ -41,7 +43,7 @@ class AddSixR extends RecordHandler {
             $('#kreta_license_number').val($('#licence').val()).trigger('change');
         }
         else $('#ForSelf').prop('checked', true).trigger('change');
-        $('#crop_code').val('58').trigger('change');
+        if($('#crop_code').val() !== '58') $('#crop_code').val('58').trigger('change');
         $('#grade').val('9').trigger('change');
         $('#crop_weight').val(parseFloat($('#quantity').val()).toFixed(3));
         $('#DNTCaptchaInputText').val($('#in-captcha').val());
@@ -49,26 +51,43 @@ class AddSixR extends RecordHandler {
     }
 
     submitForm = () => {
+        this.submissionPromise = new ComplexPromise();
+        withButtonLoader('#submit-btn', this.submissionPromise.operator);
+
         this.updateForm();
         Promise.allSettled([this.rateFetcher.operator, this.licenceFetcher.operator, this.cropTypeFetcher.operator]).then(() => {
-            if ($('#form1').valid()) this.record ? $("#form1").submit() : preview_data();
-            else alertError('Check the required fields!');
+            if ($('#form1').valid()) {
+                if (this.record != null) {
+                    $("#form1").submit()
+                }
+                else {
+                    preview_data();
+                    this.submissionPromise.resolve();
+                }
+            }
+            else {
+                alertError('Check the required fields!');
+                this.submissionPromise.resolve();
+            }
         });
     }
 
-    onComplete = () => {
-        if (this.record) this.setRecord(this.record);
-        showAlert(MessageType.Success, '6R Created Successfully.<br>Heading To Payment');
-        window.location.href = StageMap[Stages.Payment].Url;
+    onComplete = (response) => {
+        this.submissionPromise.resolve();
+
+        if (response[0].status > 0) {
+            if (this.record) this.setRecord(this.record);
+            showAlert(MessageType.Success, '6R Created Successfully.<br>Heading To Payment');
+            window.location.href = StageMap[Stages.Payment].Url;
+        }
     }
 
     postAjaxCall = (url, response) => {
-        console.log(response);
         if (Array.isArray(response) && response.length > 0) {
             // Resolves the Promise waiting for fetching Rate.
             if (url.includes('/Traders/get_crop_fees')) {
                 $('#crop_rate').val(response[0].min_rate).trigger('change');
-                this.rateFetcher.resolve();
+                this.rateFetcher.resolve(response[0].min_rate);
             }
             // Resolves the Promise waiting for Kreta Details. 
             else if (url.includes('/Traders/get_license_detail')) {
@@ -80,10 +99,8 @@ class AddSixR extends RecordHandler {
                 this.cropTypeFetcher.resolve();
             }
             else if (url.includes('Traders/add_six_r')) {
-                // Validate Captcha is correctly parsed.
-                validateCaptcha(response);
-                // Handles Form Submission
-                if (response[0].status > 0) this.onComplete();
+                validateCaptcha(response); // Validate Captcha is correctly parsed.
+                this.onComplete(response); // Handles Form Submission
             }
         }
     }

@@ -49,6 +49,20 @@
     animation: captcha-dash 1.5s ease-in-out infinite;
 }
 
+.btn-spinner-svg {
+    animation: captcha-rotate 1.2s linear infinite;
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.btn-spinner-svg .path {
+    stroke: #ffffff;
+    stroke-linecap: round;
+    animation: captcha-dash 1.5s ease-in-out infinite;
+}
+
 @keyframes captcha-rotate {
     100% {
         transform: rotate(360deg);
@@ -277,6 +291,48 @@
     cursor: not-allowed;
     opacity: .45;
     box-shadow: none;
+}
+
+.custom-modal .button.loading {
+    cursor: wait !important;
+    opacity: 0.85 !important;
+    pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: .78571429em 0.5em;
+}
+
+.custom-modal .button.success.loading {
+    background-color: #21ba45 !important;
+    color: #fff !important;
+}
+
+.custom-modal .button.info.loading {
+    background-color: #fbbd08 !important;
+    color: #fff !important;
+}
+
+.custom-modal .button.loading::before {
+    content: "";
+    box-sizing: border-box;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: btn-spinner 0.65s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes btn-spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .custom-modal .info:not(:disabled) {
