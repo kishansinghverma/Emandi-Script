@@ -35,7 +35,7 @@ class AddSixR extends RecordHandler {
 
     updateForm = () => {
         this.rateFetcher.operator.then(val => $('#crop_rate').val(val).trigger('change'));
-        
+
         $('#vikreta_details').val(capitalize($('#sname').val()));
         $('#vikreta_mobile').val('7037433280');
         if ($('#licence').val()) {
@@ -43,7 +43,7 @@ class AddSixR extends RecordHandler {
             $('#kreta_license_number').val($('#licence').val()).trigger('change');
         }
         else $('#ForSelf').prop('checked', true).trigger('change');
-        if($('#crop_code').val() !== '58') $('#crop_code').val('58').trigger('change');
+        if ($('#crop_code').val() !== '58') $('#crop_code').val('58').trigger('change');
         $('#grade').val('9').trigger('change');
         $('#crop_weight').val(parseFloat($('#quantity').val()).toFixed(3));
         $('#DNTCaptchaInputText').val($('#in-captcha').val());
@@ -72,17 +72,15 @@ class AddSixR extends RecordHandler {
         });
     }
 
-    onComplete = (response) => {
-        this.submissionPromise.resolve();
-
-        if (response[0].status > 0) {
-            if (this.record) this.setRecord(this.record);
-            showAlert(MessageType.Success, '6R Created Successfully.<br>Heading To Payment');
-            window.location.href = StageMap[Stages.Payment].Url;
-        }
+    onComplete = () => {
+        if (this.record) this.setRecord(this.record);
+        showAlert(MessageType.Success, '6R Created Successfully.<br>Heading To Payment');
+        window.location.href = StageMap[Stages.Payment].Url;
     }
 
     postAjaxCall = (url, response) => {
+        if (url.includes('Traders/add_six_r')) this.submissionPromise.resolve();
+
         if (Array.isArray(response) && response.length > 0) {
             // Resolves the Promise waiting for fetching Rate.
             if (url.includes('/Traders/get_crop_fees')) {
@@ -100,7 +98,7 @@ class AddSixR extends RecordHandler {
             }
             else if (url.includes('Traders/add_six_r')) {
                 validateCaptcha(response); // Validate Captcha is correctly parsed.
-                this.onComplete(response); // Handles Form Submission
+                if (response[0].status > 0) this.onComplete(response); // Handles Form Submission
             }
         }
     }
