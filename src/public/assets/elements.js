@@ -17,11 +17,15 @@ export const PrintReceiptButton = `
     </li>`;
 
 export const notificationComponent = `
-    <div class="notification-container">
+    <div class="notification-container" role="status" aria-live="polite" aria-atomic="true">
         <div class="notification-body">
-            <div class="icon"></div>
-            <div class="message"></div>&emsp;
-            <div class="link">&#x2715;</div>
+            <div class="icon" aria-hidden="true"></div>
+            <div class="message"></div>
+            <button type="button" class="link" aria-label="Close notification">
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M4 4l8 8M12 4l-8 8"></path>
+                </svg>
+            </button>
         </div>
     </div >`;
 

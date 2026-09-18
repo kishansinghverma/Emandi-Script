@@ -1,8 +1,61 @@
-import { getNinerById, getSixrById, handleJsonResponse, hideLoader, showLoader } from "../services/utils.js";
+import { MessageType } from "../constants.js";
+import { getNinerById, getSixrById, handleJsonResponse, hideLoader, showAlert, showLoader } from "../services/utils.js";
 
 class ListEntries {
     initializeForm = () => {
         document.getElementById('filter').click();
+    }
+}
+
+class GeneratedNineR {
+    viewReciept = (e => {
+        const row = $(e.currentTarget).closest('tr');
+        const data = $('#datatable1').DataTable().row(row).data();
+        const recordId = data?.id;
+
+        if (recordId != null) window.open(`/Receipt/print_9rs/${recordId}`, '_blank', 'noopener, noreferrer');
+        else showAlert(MessageType.Error, 'Record Id Not Available!', 5);
+    });
+
+    updateColumns = () => {
+        $('#datatable1').addClass('niner-table');
+        $('#datatable1 thead tr th:last').text('कार्रवाई');
+    }
+
+    injectActions = () => {
+        if($('#datatable1').DataTable()?.rows()?.data()?.length === 0) return;
+
+        const getButton = (icon, color, title, handler) => $('<button>', {
+            title,
+            type: 'button',
+            class: `btn btn-sm ${color}`
+        }).append($('<i>').addClass(`fa ${icon}`)).click(handler);
+
+        $('#datatable1 tbody tr').each((_, row) => {
+            const column = $(row).find('td:last');
+            if (column.find('.button-wrapper').length) return;
+            
+            const buttonWrapper = $('<div>').addClass('button-wrapper').appendTo(column);
+            buttonWrapper.append(getButton('fa-eye', 'btn-warning', 'View', this.viewReciept));
+            buttonWrapper.append(getButton('fa-whatsapp', 'btn-success', 'Send', this.viewReciept));
+            buttonWrapper.append(getButton('fa-print', 'btn-primary', 'Print', this.viewReciept));
+            buttonWrapper.append(getButton('fa-download', 'btn-info', 'Download', this.viewReciept));
+        });
+    };
+
+    attachObserver = () => {
+        const tbody = document.querySelector('#datatable1 tbody');
+        if (!tbody) return;
+
+        const tableObserver = new MutationObserver(() => this.injectActions());
+        tableObserver.observe(tbody, { childList: true });
+    }
+
+    initializeForm = () => {
+        this.attachObserver();
+        this.updateColumns();
+        this.injectActions();
+        $('#filter').click();
     }
 }
 
@@ -107,5 +160,5 @@ class ListGatepasses {
 }
 
 export const List_Entries = new ListEntries();
-
+export const Generated_NineR = new GeneratedNineR();
 export const List_Gatepasses = new ListGatepasses();

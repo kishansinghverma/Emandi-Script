@@ -1,5 +1,7 @@
 import { HttpMessages, Icon, MessageType } from "../constants.js";
 
+let notificationTimeoutId;
+
 export class ComplexPromise {
     constructor() {
         this.operator = new Promise((resolve, reject) => {
@@ -66,11 +68,19 @@ export const capitalize = (str) => {
     return result.trim();
 }
 
+export const hideAlert = (duration = 200) => {
+    clearTimeout(notificationTimeoutId);
+    notificationTimeoutId = undefined;
+    $('.notification-container').stop(true, false).fadeOut(duration);
+}
+
 export const showAlert = (type, message, hideAfter = 0) => {
-    $('.notification-container').removeClass(Object.values(MessageType).join(' ')).addClass(type).show();
+    clearTimeout(notificationTimeoutId);
+    notificationTimeoutId = undefined;
+    $('.notification-container').stop(true, false).removeClass(Object.values(MessageType).join(' ')).addClass(type).show();
     $('.notification-container .icon').html(Icon[type]);
     $('.notification-container .message').html(message);
-    if (hideAfter > 0) setTimeout(() => $('.notification-container').fadeOut(200), hideAfter * 1000);
+    if (hideAfter > 0) notificationTimeoutId = setTimeout(() => hideAlert(), hideAfter * 1000);
 }
 
 export const getDate = () => {

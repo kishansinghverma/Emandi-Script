@@ -73,7 +73,7 @@ export const resolveCaptcha = async (source) => {
                 }
             }
             if (retryCount >= 3) {
-                showAlert(MessageType.Error, "Auto-resolve failed. Please enter captcha manually.", 4);
+                showAlert(MessageType.Error, "Captcha resolution failed, Enter manually!", 4);
                 const $input = $('#in-captcha').length ? $('#in-captcha') : $('#DNTCaptchaInputText');
                 $input.val('').focus();
                 return null;

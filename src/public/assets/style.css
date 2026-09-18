@@ -74,10 +74,12 @@
         stroke-dasharray: 1, 150;
         stroke-dashoffset: 0;
     }
+
     50% {
         stroke-dasharray: 90, 150;
         stroke-dashoffset: -35;
     }
+
     100% {
         stroke-dasharray: 90, 150;
         stroke-dashoffset: -124;
@@ -330,6 +332,7 @@
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -351,68 +354,153 @@
 }
 
 .notification-container {
+    --toast-text: #172033;
+    --toast-text-secondary: #526071;
+    --toast-muted: #7A8493;
+    --toast-border: rgba(23, 32, 51, 0.08);
+    --toast-shadow: 0 12px 35px rgba(23, 32, 51, 0.10);
+    --toast-success: #35B779;
+    --toast-success-bg: #F0FAF5;
+    --toast-success-border: #BFE8D2;
+    --toast-info: #3478E5;
+    --toast-info-bg: #F1F6FE;
+    --toast-info-border: #C7DBF8;
+    --toast-warning: #E9A820;
+    --toast-warning-bg: #FFF9ED;
+    --toast-warning-border: #F4D99B;
+    --toast-error: #E5484D;
+    --toast-error-bg: #FFF3F3;
+    --toast-error-border: #F3C4C6;
+    --toast-accent: #7652D6;
+    --toast-accent-bg: #F7F4FE;
+    --toast-accent-border: #D8CDF5;
+    --toast-status: var(--toast-accent);
+    --toast-surface: var(--toast-accent-bg);
+    --toast-ink: var(--toast-text);
+    box-sizing: border-box;
     display: none;
     position: fixed;
     top: 12%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 20000;
-    max-width: 90%;
-    border-radius: .25rem;
-    text-align: center;
+    width: max-content;
+    max-width: calc(100vw - 32px);
+    border: 1px solid var(--toast-border);
+    border-radius: 35px;
+    background: var(--toast-surface);
+    color: var(--toast-ink);
+    box-shadow: var(--toast-shadow);
+    text-align: left;
     animation-name: slideInFade;
-    animation-duration: 0.5s;
-    white-space: nowrap;
+    animation-duration: .28s;
+    animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+    animation-fill-mode: both;
     font-family: "Lato", 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-size: 1rem;
     font-weight: 600;
 }
 
 .notification-container .notification-body {
-    display: flex;
+    display: grid;
+    grid-template-columns: 29px minmax(0, 1fr) 26px;
     align-items: center;
-    padding: .75rem 1.25rem;
+    gap: 10px;
+    padding: 14px 14px;
+    box-sizing: border-box;
 }
 
 .notification-container .icon {
-    margin-right: 1.2rem;
-    height: 24px;
+    display: grid;
+    place-items: center;
+    width: 29px;
+    height: 29px;
+    border-radius: 50%;
+    background: var(--toast-status);
+    color: #fff;
     flex-shrink: 0;
+}
+
+.notification-container .icon svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    color: #fff;
 }
 
 .notification-container .message {
-    flex: 1;
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    color: var(--toast-status);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.65;
+    letter-spacing: -.012em;
 }
 
 .notification-container .link {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 29px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--toast-status);
+    cursor: pointer;
     flex-shrink: 0;
+    opacity: .7;
+    transition: background 150ms, opacity 150ms;
+}
+
+.notification-container .link svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.notification-container .link:hover {
+    opacity: 1;
+    background: #ffffff80;
+}
+
+.notification-container .link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+    opacity: 1;
 }
 
 .notification-container.success {
-    background-color: #fbfdef;
-    color: #8abc1e;
-    box-shadow: 0 0 0 1px #8abc1e inset, 2px 2px 20px 2px rgba(0, 0, 0, 0.3);
+    --toast-status: var(--toast-success);
+    --toast-surface: var(--toast-success-bg);
+    --toast-border: var(--toast-success-border);
 }
 
 .notification-container.error {
-    background-color: #ffe8e6;
-    color: #db2828;
-    box-shadow: 0 0 0 1px #db2828 inset, 2px 2px 20px 2px rgba(0, 0, 0, 0.3);
+    --toast-status: var(--toast-error);
+    --toast-surface: var(--toast-error-bg);
+    --toast-border: var(--toast-error-border);
 }
 
 .notification-container.info {
-    background-color: #dff0ff;
-    color: #2185d0;
-    box-shadow: 0 0 0 1px #2185d0 inset, 2px 2px 20px 2px rgba(0, 0, 0, 0.3);
+    --toast-status: var(--toast-info);
+    --toast-surface: var(--toast-info-bg);
+    --toast-border: var(--toast-info-border);
 }
+
 
 @keyframes slideInFade {
     0% {
-        transform: translate(-50%, -100%);
+        transform: translate(-50%, -65%);
         opacity: 0;
-    }
-
-    50% {
-        opacity: 0.3;
     }
 
     100% {
@@ -423,7 +511,7 @@
 
 @keyframes slideInRight {
     0% {
-        transform: translateX(110%);
+        transform: translateX(24px);
         opacity: 0;
     }
 
@@ -433,13 +521,46 @@
     }
 }
 
+@media (max-width: 480px) {
+    .notification-container {
+        border-radius: 22px;
+    }
+
+    .notification-container .notification-body {
+        grid-template-columns: 24px minmax(0, 1fr) 22px;
+        gap: 7px;
+        padding: 14px 10px;
+    }
+
+    .notification-container .icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .notification-container .link {
+        width: 22px;
+        height: 27px;
+    }
+
+    .notification-container .message {
+        font-size: 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .notification-container {
+        animation: none;
+    }
+}
+
 @media (min-width: 768px) {
     .notification-container {
         top: 24px;
         right: 24px;
         left: auto;
         transform: none;
-        max-width: 420px;
+        width: max-content;
+        max-width: 380px;
         white-space: normal;
         text-align: left;
         animation-name: slideInRight;
@@ -549,4 +670,19 @@ input[type="checkbox"]#admin-check {
 form.forms-sample[action="/Account/ChangePassword"] {
     display: flex;
     flex-direction: column;
+}
+
+#datatable1.niner-table th:nth-child(4),
+#datatable1.niner-table td:nth-child(4),
+#datatable1.niner-table th:nth-child(6),
+#datatable1.niner-table td:nth-child(6),
+#datatable1.niner-table th:nth-child(9),
+#datatable1.niner-table td:nth-child(9),
+#datatable1.niner-table td a#view {
+    display: none !important;
+}
+
+#datatable1.niner-table .button-wrapper {
+    display: flex;
+    gap: 6px;
 }

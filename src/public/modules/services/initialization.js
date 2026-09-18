@@ -2,7 +2,7 @@ import { ItemsToHide, RouteMap } from '../constants.js';
 import { Modals } from '../../assets/modals.js';
 import { PrintReceiptButton, SendReceiptButton, notificationComponent } from '../../assets/elements.js';
 import { Loader } from '../../assets/loader.js';
-import { hideModal } from './utils.js';
+import { hideAlert, hideModal } from './utils.js';
 import { printLastReceipts } from './print.js';
 
 const hideLinks = () => ItemsToHide.forEach(item => $(item)?.hide());
@@ -18,7 +18,7 @@ const addLinks = () => {
 
 const initializeNotification = () => {
     $(document.body).append(notificationComponent);
-    $('.notification-container .link').click(() => $('.notification-container').fadeOut());
+    $('.notification-container .link').click(() => hideAlert(400));
 }
 
 const initializeModal = async (route) => {
