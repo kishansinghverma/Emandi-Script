@@ -112,8 +112,7 @@ const getRecordById = (url, recordId) => {
     formData.append('fromDate', formatDate(date));
     formData.append('toDate', formatDate());
 
-    return fetch(url, { method: 'POST', body: formData })
-        .then(handleJsonResponse).then(response => (response.data[0]));
+    return fetch(url, { method: 'POST', body: formData }).then(handleJsonResponse).then(response => (response.data[0]));
 }
 
 export const getSixrById = (sixrId) => getRecordById('/Traders/SP_Get_6R_List', sixrId);

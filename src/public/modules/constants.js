@@ -52,13 +52,13 @@ export const FetchParams = {
 }
 
 export const Url = {
-    UpdateRecord: getUrl('emandi/entry'),
-    SetRate: getUrl('emandi/rate'),
-    PeekRecord: getUrl('emandi/peek'),
-    PopRecord: getUrl('emandi/pop'),
+    FinalizeRecord: getUrl('dispatches/finalize'),
+    PeekRecord: getUrl('dispatches/peek'),
     PrintPdf: getUrl('files/html'),
+    sendNiner: getUrl('documents/niners'),
+    sendGatepass: getUrl('documents/gatepasses'),
     SendText: getUrl('whatsapp/sendtext/emandi'),
-    ResolveCaptcha: getUrl('emandi/captcha')
+    ResolveCaptcha: getUrl('vision/captcha')
 }
 
 export const HttpMessages = {

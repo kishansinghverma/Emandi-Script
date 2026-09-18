@@ -2,7 +2,7 @@
 
 Last updated: 2026-09-18
 
-Latest operation: scaled the notification toast down by approximately 20%.
+Latest operation: added constants for the current niner and gatepass document APIs.
 
 ## Current State
 
@@ -17,6 +17,17 @@ dimensions, including a 14px medium-weight message and a 380px desktop max width
 centered mobile and top-right desktop placement remain unchanged. The existing
 app has no warning notification variant, so the supplied warning tokens are
 defined but not assigned.
+
+The active local backend routes are now `/api/dispatches/peek`,
+`/api/dispatches/finalize`, and `/api/vision/captcha`. The toast uses a
+stronger two-layer shadow so its container is clearly separated from the page
+background.
+
+The unused `SetRate` constant was removed earlier; rate data continues to be
+sent as part of the dispatch finalize request. The finalize endpoint constant
+is now named `FinalizeRecord`; the unused `PopRecord` constant has also been
+removed. `Url.sendNiner` and `Url.sendGatepass` now point to the document
+creation endpoints, while the old `PrintPdf` call remains pending migration.
 
 `src/public/modules/services/utils.js` now owns the notification auto-dismiss
 timer and exposes `hideAlert`, preventing an older timer from closing a newer

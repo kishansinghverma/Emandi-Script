@@ -79,7 +79,7 @@ class AddGatepass extends RecordHandler {
         try {
             if (this.record) {
                 showLoader('Finalizing Record...');
-                await fetch(Url.UpdateRecord, {
+                await fetch(Url.FinalizeRecord, {
                     ...FetchParams.Patch,
                     body: JSON.stringify({ rate: this.record.rate ?? 0, finalize: true })
                 }).then(validateResponse).then(this.removeRecord);

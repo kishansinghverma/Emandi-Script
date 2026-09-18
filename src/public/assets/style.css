@@ -358,7 +358,7 @@
     --toast-text-secondary: #526071;
     --toast-muted: #7A8493;
     --toast-border: rgba(23, 32, 51, 0.08);
-    --toast-shadow: 0 12px 35px rgba(23, 32, 51, 0.10);
+    --toast-shadow: 0 14px 32px rgba(23, 32, 51, 0.18), 0 3px 8px rgba(23, 32, 51, 0.10);
     --toast-success: #35B779;
     --toast-success-bg: #F0FAF5;
     --toast-success-border: #BFE8D2;

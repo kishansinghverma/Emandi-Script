@@ -1,6 +1,6 @@
 # Repository Guidelines
 
-Last reviewed: 2026-09-18 — aligned notification toast tokens, text colors, typography, sizing, max width, and timer handling.
+Last reviewed: 2026-09-18 — aligned document API constants and refined toast styling.
 
 ## Project Structure & Module Organization
 
