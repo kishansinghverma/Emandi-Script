@@ -1,5 +1,6 @@
 import { MessageType } from "../constants.js";
-import { getNinerById, getSixrById, handleJsonResponse, hideLoader, showAlert, showLoader } from "../services/utils.js";
+import { sendGatepassById, sendNinerById } from "../services/delivery.js";
+import { alertError, getActionButton, getDateOnly, getNinerById, getSixrById, handleJsonResponse, hideLoader, showAlert, showLoader } from "../services/utils.js";
 
 class ListEntries {
     initializeForm = () => {
@@ -8,38 +9,55 @@ class ListEntries {
 }
 
 class GeneratedNineR {
+    initializeForm = () => {
+        $('#filter').click()
+        this.attachObserver();
+        this.updateColumns();
+    }
+
+    processRecipt = (e, print, download, share) => {
+        const row = $(e.currentTarget).closest('tr');
+        const data = $('#datatable1').DataTable().row(row).data();
+        const ninerNumber = data?.serial_number;
+        const date = getDateOnly(data?.created_at);
+
+        if (ninerNumber && date) {
+            showLoader("Processing Niner...");
+            sendNinerById(ninerNumber, date, print, download, share).catch(alertError).finally(hideLoader);
+        }
+        else showAlert(MessageType.Error, 'Niner Number Not Available!', 5);
+    }
+
     viewReciept = (e => {
         const row = $(e.currentTarget).closest('tr');
         const data = $('#datatable1').DataTable().row(row).data();
         const recordId = data?.id;
 
         if (recordId != null) window.open(`/Receipt/print_9rs/${recordId}`, '_blank', 'noopener, noreferrer');
-        else showAlert(MessageType.Error, 'Record Id Not Available!', 5);
+        else showAlert(MessageType.Error, 'Niner Id Not Available!', 5);
     });
+
+    printReciept = (e => this.processRecipt(e, true, false, false));
+    downloadReciept = (e => this.processRecipt(e, false, true, false));
+    shareReciept = (e => this.processRecipt(e, false, false, true));
 
     updateColumns = () => {
         $('#datatable1').addClass('niner-table');
-        $('#datatable1 thead tr th:last').text('कार्रवाई');
+        $('#datatable1.niner-table thead tr th:last').text('कार्रवाई');
     }
 
     injectActions = () => {
-        if($('#datatable1').DataTable()?.rows()?.data()?.length === 0) return;
-
-        const getButton = (icon, color, title, handler) => $('<button>', {
-            title,
-            type: 'button',
-            class: `btn btn-sm ${color}`
-        }).append($('<i>').addClass(`fa ${icon}`)).click(handler);
+        if ($('#datatable1').DataTable()?.rows()?.data()?.length === 0) return;
 
         $('#datatable1 tbody tr').each((_, row) => {
             const column = $(row).find('td:last');
             if (column.find('.button-wrapper').length) return;
-            
+
             const buttonWrapper = $('<div>').addClass('button-wrapper').appendTo(column);
-            buttonWrapper.append(getButton('fa-eye', 'btn-warning', 'View', this.viewReciept));
-            buttonWrapper.append(getButton('fa-whatsapp', 'btn-success', 'Send', this.viewReciept));
-            buttonWrapper.append(getButton('fa-print', 'btn-primary', 'Print', this.viewReciept));
-            buttonWrapper.append(getButton('fa-download', 'btn-info', 'Download', this.viewReciept));
+            buttonWrapper.append(getActionButton('fa-eye', 'btn-warning', 'View', this.viewReciept));
+            buttonWrapper.append(getActionButton('fa-whatsapp', 'btn-success', 'Send', this.shareReciept));
+            buttonWrapper.append(getActionButton('fa-print', 'btn-primary', 'Print', this.printReciept));
+            buttonWrapper.append(getActionButton('fa-download', 'btn-info', 'Download', this.downloadReciept));
         });
     };
 
@@ -50,13 +68,6 @@ class GeneratedNineR {
         const tableObserver = new MutationObserver(() => this.injectActions());
         tableObserver.observe(tbody, { childList: true });
     }
-
-    initializeForm = () => {
-        this.attachObserver();
-        this.updateColumns();
-        this.injectActions();
-        $('#filter').click();
-    }
 }
 
 class ListGatepasses {
@@ -65,11 +76,24 @@ class ListGatepasses {
     sixrUrl = '/Receipt/print_6rs';
 
     initializeForm = async () => {
-        this.injectSwitch();
         $('#filter').click();
+        this.updateColumns();
+        this.injectAdminSwitch();
+        this.attachObserver();
     }
 
-    injectSwitch = () => {
+    updateColumns = () => {
+        this.tableHeader = $('.dataTables_scrollHeadInner table thead tr').clone();
+        this.tableHeader.find('th').removeAttr('style');
+        [9, 5, 3].forEach(index => { this.tableHeader.find(`th:nth-child(${index})`).remove() });
+
+        this.tableHeader.find('th').eq(-5).text('टैगिंग का स्थान');
+        this.tableHeader.find('th').eq(-2).text('स्वीकृति');
+        this.tableHeader.find('th').eq(-1).text('कार्रवाई');
+        $('.dataTables_scrollBody #datatable1').addClass('gatepass-table');
+    }
+
+    injectAdminSwitch = () => {
         const handleSwitch = ({ target }) => {
             if (target.checked) {
                 this.modifyTable();
@@ -84,11 +108,38 @@ class ListGatepasses {
             .css('text-align', 'center');
     }
 
-    printNiner = ({ target }) => {
-        showLoader();
-        getNinerById($(target).text())
-            .then(({ id }) => window.open(`${this.ninerUrl}/${id}`, '_blank'))
-            .finally(hideLoader);
+    attachObserver = () => {
+        const table = document.querySelector('#datatable1');
+        if (!table) return;
+
+        const tableObserver = new MutationObserver(() => {
+            this.injectHeaders();
+            this.injectActions();
+        });
+
+        tableObserver.observe(table, { childList: true });
+    }
+
+    injectHeaders = () => $('#datatable1 thead').empty().append(this.tableHeader);;
+
+    injectActions = () => {
+        if ($('#datatable1')?.DataTable()?.rows()?.data()?.length === 0) return;
+
+        $('#datatable1 tbody tr').each((_, row) => {
+            const column = $(row).find('td:last');
+            if (column.find('.button-wrapper').length) return;
+
+            $(row).find('td:last').prev().html($(row).find('td:last').html()).end().empty();
+            const buttonWrapper = $('<div>').addClass('button-wrapper').appendTo(column);
+            buttonWrapper.append(getActionButton('fa-eye', 'btn-warning', 'View', this.viewReciept))
+            buttonWrapper.append(getActionButton('fa-whatsapp', 'btn-success', 'Send', this.shareReciept))
+            buttonWrapper.append(getActionButton('fa-print', 'btn-primary', 'Print', this.printReciept))
+            buttonWrapper.append(getActionButton('fa-download', 'btn-info', 'Download', this.downloadReciept));
+            
+            const taggingStatus = $('#datatable1')?.DataTable()?.rows(row).data()?.[0]?.isVehicleTagging;
+            if (taggingStatus !== "1") $(row).children().eq(10).html("<div class='text-red'>Not Tagged</div>");
+            else $(row).children().eq(9).append('<br>').append($(row).children().eq(8).text())
+        });
     }
 
     calculateBreakUp = async ({ target }) => {
@@ -157,6 +208,34 @@ class ListGatepasses {
             $('#datatable-gp thead tr').append($('<th>').html(item));
         });
     }
+
+    processRecipt = (e, print, download, share) => {
+        const row = $(e.currentTarget).closest('tr');
+        const data = $('#datatable1').DataTable().row(row).data();
+        const gatepassNumber = data?.serial_number;
+        const date = data?.created_at;
+
+        if (gatepassNumber && date) {
+            showLoader("Processing Gatepass...");
+            sendGatepassById(gatepassNumber, date, print, download, share).catch(alertError).finally(hideLoader);
+        }
+        else showAlert(MessageType.Error, 'Gatepass Number Not Available!', 5);
+    }
+
+    viewReciept = (e => {
+        const row = $(e.currentTarget).closest('tr');
+        const data = $('#datatable1').DataTable().row(row).data();
+        const recordId = data?.id;
+
+        if (recordId != null) window.open(`/Receipt/print_gps/${recordId}`, '_blank', 'noopener, noreferrer');
+        else showAlert(MessageType.Error, 'Gatepass Id Not Available!', 5);
+    });
+
+    printReciept = (e => this.processRecipt(e, true, false, false));
+
+    downloadReciept = (e => this.processRecipt(e, false, true, false));
+
+    shareReciept = (e => this.processRecipt(e, false, false, true));
 }
 
 export const List_Entries = new ListEntries();

@@ -1,6 +1,41 @@
 import { sendGatepassByHtml, sendLatestGatepass, sendLatestNiner, sendNinerByHtml } from "./delivery.js";
-import { parseGatepassReceipt, parseNinerReceipt } from "./receipt.js";
 import { alertError, hideLoader, showLoader } from "./utils.js";
+
+const parseNinerReceipt = (element) => {
+    const $element = $(element);
+    const $contents = $element.find('#content');
+    const qr = $contents.find('#qrcode img').attr('src');
+    const party = $element.find('tbody > tr:nth-child(4) > td:nth-child(6) > label').first().text().trim();
+    const tables = [
+        $contents.find('.table')[0]?.outerHTML,
+        $contents.find('.row .col-md-12 table')[0]?.outerHTML
+    ];
+
+    if (!party || !qr || tables.some(item => !item))
+        throw new Error('Unable to parse 9R receipt.');
+
+    return { party, tables, qr };
+};
+
+const parseGatepassReceipt = (element) => {
+    const $element = $(element);
+    const $contents = $element.find('#content');
+    const qr = $contents.find('#qrcode img').attr('src');
+    const party = $element.find('tbody > tr:nth-child(1) > td:nth-child(8) > label').first().text().trim();
+    const tables = [
+        $contents.find('.table')[0]?.outerHTML,
+        $contents.find('.row .col-md-12 table')[0]?.outerHTML,
+        $contents.find('.row .col-md-12 table')[1]?.outerHTML,
+        $contents.find('.row .col-md-12 table')[2]?.outerHTML,
+        $contents.find('.row .col-md-12 .row')[0]?.outerHTML,
+    ];
+
+    if (!party || !qr || tables.slice(0, 4).some(item => !item)) {
+        throw new Error('Unable to parse Gatepass receipt.');
+    }
+
+    return { party, tables, qr };
+};
 
 export const printLastNiner = (print, download, share) => {
     showLoader('Sending Niner...');

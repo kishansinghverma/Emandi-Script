@@ -704,7 +704,15 @@ form.forms-sample[action="/Account/ChangePassword"] {
     display: none !important;
 }
 
+#datatable1.gatepass-table .button-wrapper,
 #datatable1.niner-table .button-wrapper {
     display: flex;
     gap: 6px;
+}
+
+.dataTables_scrollHeadInner table,
+#datatable1.gatepass-table td:nth-child(3),
+#datatable1.gatepass-table td:nth-child(5),
+#datatable1.gatepass-table td:nth-child(9){
+    display: none !important;
 }
