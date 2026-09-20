@@ -127,15 +127,22 @@ const Print = `
 <div class="custom-modal">
 	${header}
 	<div class="custom-modal-content">
-		<div class="left-aligned">
-			<input type="radio" id="print" name="printtype" />
-			<label for="print">Print Document On Paper.</label>
+		<div class="document-actions-label">Select the document actions</div>
+		<div class="document-actions">
+			<label class="document-action-item" for="print">
+				<input type="checkbox" class="document-action" id="print" />
+				<span>Print</span>
+			</label>
+			<label class="document-action-item" for="download">
+				<input type="checkbox" class="document-action" id="download" />
+				<span>Download</span>
+			</label>
+			<label class="document-action-item" for="share">
+				<input type="checkbox" class="document-action" id="share" checked />
+				<span>Share</span>
+			</label>
 		</div>
-		<div class="left-aligned mb-1">
-			<input type="radio" id="forcedownload" name="printtype" />
-			<label for="forcedownload">Force Download.</label>
-		</div>
-        <button class="button success" id="print-btn">Send PDF</button>
+        <button class="button success" id="print-btn">Proceed</button>
 	</div>
 </div>`;
 

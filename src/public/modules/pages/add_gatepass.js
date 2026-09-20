@@ -2,7 +2,7 @@ import { FetchParams, MessageType, Url } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
 import { ComplexPromise, alertError, capitalize, hideLoader, hideModal, showAlert, showLoader, validateResponse, withButtonLoader } from "../services/utils.js";
-import { printLastNiner, sendLastGatepassNumber } from "../services/print.js"
+import { printLastNiner } from "../services/print.js"
 
 class AddGatepass extends RecordHandler {
     constructor() {
@@ -86,7 +86,7 @@ class AddGatepass extends RecordHandler {
                 hideLoader();
             }
 
-            await printLastNiner(false, false);
+            await printLastNiner(false, false, true);
             await sendLastGatepassNumber();
 
             this.postComplete();

@@ -10,9 +10,9 @@ const replaceLink = () => document.querySelector('[href="/Traders/NinerDashboard
 const initializeLoader = () => $(document.body).append(Loader);
 
 const addLinks = () => {
-    $('#aside > ul > li:nth-child(10)')?.after($(SendReceiptButton).click(() => printLastReceipts(false, false)));
+    $('#aside > ul > li:nth-child(10)')?.after($(SendReceiptButton).click(() => printLastReceipts(false, false, true)));
     $('#aside > ul > li:nth-child(10)')?.after($(PrintReceiptButton).click(() => {
-        if (confirm('Are You Sure To Print?')) printLastReceipts(true, false);
+        if (confirm('Are You Sure To Print?')) printLastReceipts(true, false, true);
     }));
 }
 
