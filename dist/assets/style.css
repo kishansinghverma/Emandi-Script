@@ -161,6 +161,28 @@
     display: flex;
 }
 
+.custom-modal .document-actions-label {
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.custom-modal .document-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.custom-modal .document-action-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.custom-modal .document-action-item input[type='checkbox'] {
+    margin: 0 !important;
+}
+
 .custom-modal .left-aligned input[type='radio'] {
     margin-right: 0.5rem;
     margin-top: -4px;
