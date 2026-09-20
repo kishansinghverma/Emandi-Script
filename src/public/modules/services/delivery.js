@@ -14,7 +14,6 @@ const handleDocumentResponse = async (response) => {
         $('<a>').attr({ href: downloadUrl, download: fileName, target: '_blank' }).get(0).click();
     }
 
-    showAlert(MessageType.Success, "Document Processed Sucessfully!", 5);
     return result;
 };
 
@@ -25,9 +24,11 @@ const sendDocumentRequest = async (url, payload) => fetch(url, {
     body: JSON.stringify(payload)
 }).then(handleDocumentResponse);
 
-const sendNiner = async (payload) => sendDocumentRequest(Url.sendNiner, payload);
+const sendNiner = async (payload) => sendDocumentRequest(Url.sendNiner, payload)
+    .then(() => showAlert(MessageType.Success, "Niner Processed Sucessfully!", 5));
 
-const sendGatepass = async (payload) => sendDocumentRequest(Url.sendGatepass, payload);
+const sendGatepass = async (payload) => sendDocumentRequest(Url.sendGatepass, payload)
+    .then(() => showAlert(MessageType.Success, "Gatepass Processed Sucessfully!", 5));
 
 export const sendLatestNiner = (print, download, share) => sendNiner({
     source: { type: 'latest' },

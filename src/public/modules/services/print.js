@@ -4,7 +4,7 @@ import { alertError, hideLoader, showLoader } from "./utils.js";
 
 export const printLastNiner = (print, download, share) => {
     showLoader('Sending Niner...');
-    return sendLatestNiner(print, download, share).catch(alertError).finally(hideLoader);
+    return sendLatestNiner(print, download, share).catch(e => console.log(e)).finally(hideLoader);
 };
 
 export const printLastGatepass = (print, download, share) => {
@@ -23,8 +23,6 @@ export const printNinerFromHtml = (element, print, download, share) => {
 };
 
 export const printGatepassFromHtml = (element, print, download, share) => {
-    showLoader('Sending Gatepass...');
-
     const receipt = parseGatepassReceipt(element);
     return sendGatepassByHtml(receipt.party, receipt.tables, receipt.qr, print, download, share)
         .catch(alertError).finally(hideLoader);

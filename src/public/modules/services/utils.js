@@ -15,10 +15,15 @@ export const hideModal = () => $('.custom-modal-container').hide();
 
 export const getNestedValue = (path, record) => (path.split('.').reduce((o, k) => o && o[k], record) ?? '');
 
-export const alertError = (err, shouldThrow = false) => {
+export const alertError = (err, rethrow = false) => {
     const error = err instanceof Error ? err : new Error(err?.message ?? err);
-    showAlert(MessageType.Error, error.message, 5);
-    if (shouldThrow) throw error;
+
+    if (err.response && err.response.text) {
+        err.response.text().then(t => showAlert(MessageType.Error, t ?? error.message, 5));
+    }
+    else showAlert(MessageType.Error, error.message, 5);
+
+    if (rethrow) throw error;
 };
 
 export const logError = (err) => console.log(err.message);
@@ -43,13 +48,13 @@ export const withButtonLoader = (element, promise) => {
     return promise
         .catch(() => { })
         .finally(() => {
-        $btn.removeClass('loading').prop('disabled', false);
-    });
+            $btn.removeClass('loading').prop('disabled', false);
+        });
 };
 
 export const validateResponse = (response) => {
     if (!response.ok)
-        throw { message: HttpMessages[response.status], code: response.status }
+        throw { message: HttpMessages[response.status], code: response.status, response: response }
 }
 
 export const handleJsonResponse = (response) => {
