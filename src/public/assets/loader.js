@@ -10,12 +10,6 @@ export const Info = `
 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 10.5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="7.5" r=".8" fill="currentColor"/></svg>
 `;
 
-export const ButtonLoader = `
-<svg viewBox="0 0 50 50" class="btn-spinner-svg">
-    <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
-</svg>
-`;
-
 export const CaptchaLoader = `
 <div class="captcha-input-loader" title="Resolving Captcha...">
     <svg viewBox="0 0 50 50" class="captcha-spinner-svg">

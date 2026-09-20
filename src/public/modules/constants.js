@@ -54,10 +54,8 @@ export const FetchParams = {
 export const Url = {
     FinalizeRecord: getUrl('dispatches/finalize'),
     PeekRecord: getUrl('dispatches/peek'),
-    PrintPdf: getUrl('files/html'),
     sendNiner: getUrl('documents/niners'),
     sendGatepass: getUrl('documents/gatepasses'),
-    SendText: getUrl('whatsapp/sendtext/emandi'),
     ResolveCaptcha: getUrl('vision/captcha')
 }
 
@@ -102,10 +100,6 @@ export const Stages = {
     Payment: 'Payment',
     NineR: 'NineR',
     Gatepass: 'Gatepass'
-}
-
-export const SplitwiseGroupId = {
-    "Prepaid Gatepass": 52740365
 }
 
 export const ItemsToHide = [

@@ -49,20 +49,6 @@
     animation: captcha-dash 1.5s ease-in-out infinite;
 }
 
-.btn-spinner-svg {
-    animation: captcha-rotate 1.2s linear infinite;
-    width: 14px;
-    height: 14px;
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.btn-spinner-svg .path {
-    stroke: #ffffff;
-    stroke-linecap: round;
-    animation: captcha-dash 1.5s ease-in-out infinite;
-}
-
 @keyframes captcha-rotate {
     100% {
         transform: rotate(360deg);
@@ -156,11 +142,6 @@
     margin-right: 1rem;
 }
 
-.custom-modal .left-aligned {
-    text-align: left;
-    display: flex;
-}
-
 .custom-modal .document-actions-label {
     text-align: left;
     font-weight: 600;
@@ -181,15 +162,6 @@
 
 .custom-modal .document-action-item input[type='checkbox'] {
     margin: 0 !important;
-}
-
-.custom-modal .left-aligned input[type='radio'] {
-    margin-right: 0.5rem;
-    margin-top: -4px;
-}
-
-.custom-modal .mb-1 {
-    margin-bottom: 1rem;
 }
 
 .custom-modal select,
@@ -704,7 +676,15 @@ form.forms-sample[action="/Account/ChangePassword"] {
     display: none !important;
 }
 
+#datatable1.gatepass-table .button-wrapper,
 #datatable1.niner-table .button-wrapper {
     display: flex;
     gap: 6px;
+}
+
+.dataTables_scrollHeadInner table,
+#datatable1.gatepass-table td:nth-child(3),
+#datatable1.gatepass-table td:nth-child(5),
+#datatable1.gatepass-table td:nth-child(9){
+    display: none !important;
 }

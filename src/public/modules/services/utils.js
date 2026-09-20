@@ -50,8 +50,6 @@ export const alertError = (err, rethrow = false) => {
     if (rethrow) throw error;
 };
 
-export const logError = (err) => console.log(err.message);
-
 export const showLoader = (message) => {
     $('.spinner-message').text(message);
     $('.spinner-container').stop().css({ display: 'flex' }).fadeTo(300, 1);
@@ -81,11 +79,6 @@ export const handleJsonResponse = (response) => {
     validateResponse(response);
     if (response.status !== 204)
         return response.json();
-}
-
-export const handleByStatusCode = (response) => {
-    validateResponse(response);
-    return response;
 }
 
 export const capitalize = (str) => {
@@ -133,5 +126,3 @@ export const getActionButton = (icon, color, title, handler) => $('<button>', {
 export const getSixrById = (sixrId) => getRecordById('/Traders/SP_Get_6R_List', sixrId);
 
 export const getNinerById = (ninerId) => getRecordById('/Traders/SP_Get_9R_List', ninerId);
-
-export const getGatepassById = (gatepassId) => getRecordById('/Traders/SP_Get_Gatepass_List', gatepassId);

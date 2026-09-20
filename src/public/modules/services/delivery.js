@@ -1,5 +1,5 @@
 import { backendBaseUrl, FetchParams, MessageType, Url } from "../constants.js";
-import { handleByStatusCode, handleJsonResponse, showAlert } from "./utils.js";
+import { handleJsonResponse, showAlert } from "./utils.js";
 
 const handleDocumentResponse = async (response) => {
     const result = await handleJsonResponse(response);
@@ -59,10 +59,3 @@ export const sendGatepassByHtml = (party, tables, qr, print, download, share) =>
     source: { type: 'html', party, tables, qr },
     ...getDocumentActions({ print, download, share })
 });
-
-export const sendTextMessage = async (message) => {
-    return fetch(Url.SendText, {
-        ...FetchParams.Post,
-        body: JSON.stringify({ message })
-    }).then(handleByStatusCode);
-};

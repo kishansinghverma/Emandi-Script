@@ -1,5 +1,4 @@
 import { MessageType } from "../constants.js";
-import { RecordHandler } from "../services/record.js";
 import { showAlert } from "../services/utils.js";
 
 class DigitalPayment {
