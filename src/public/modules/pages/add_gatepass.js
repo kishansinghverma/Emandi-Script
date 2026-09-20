@@ -2,7 +2,6 @@ import { FetchParams, MessageType, Url } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
 import { ComplexPromise, alertError, capitalize, hideLoader, hideModal, showAlert, showLoader, validateResponse, withButtonLoader } from "../services/utils.js";
-import { printLastNiner } from "../services/print.js"
 
 class AddGatepass extends RecordHandler {
     constructor() {
@@ -13,6 +12,7 @@ class AddGatepass extends RecordHandler {
     initializeForm = async () => {
         this.attachListener();
         this.executeInitialActions();
+        this.tagVehicle();
     }
 
     attachListener = () => {
@@ -72,27 +72,29 @@ class AddGatepass extends RecordHandler {
         location.href = "/Traders/Dashboard";
     }
 
-    onComplete = async () => {
+    tagVehicle = () => {
+        // TODO: Implement vehicle tagging flow.
+    }
+
+    onComplete = () => {
         hideModal();
         setTimeout(() => $('.swal-overlay').hide(), 200);
         showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
 
-        try {
-            if (this.record) {
-                showLoader('Finalizing Record...');
-                await fetch(Url.FinalizeRecord, {
-                    ...FetchParams.Patch,
-                    body: JSON.stringify({
-                        rate: this.record.rate ?? 0,
-                        ninerId: $('#nine_r_id').val(),
-                        gatepassId: $('#transaction_number').val()
-                    })
-                }).then(validateResponse).then(this.removeRecord);
-                hideLoader();
-            }
-        } catch (err) {
-            alertError(err);
-            hideLoader();
+        if (this.record) {
+            showLoader('Finalizing Record...');
+
+            fetch(Url.FinalizeRecord, {
+                ...FetchParams.Patch,
+                body: JSON.stringify({
+                    rate: this.record.rate ?? 0,
+                    ninerId: $('#nine_r_id').val(),
+                    gatepassId: $('#transaction_number').val()
+                })
+            }).then(validateResponse)
+                .then(this.removeRecord)
+                .catch(alertError)
+                .finally(hideLoader);
         }
     }
 
