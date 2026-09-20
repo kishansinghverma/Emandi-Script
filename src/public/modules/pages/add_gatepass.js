@@ -74,6 +74,7 @@ class AddGatepass extends RecordHandler {
 
     onComplete = async () => {
         hideModal();
+        setTimeout(() => $('.swal-overlay').hide(), 200);
         showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
 
         try {
@@ -81,15 +82,14 @@ class AddGatepass extends RecordHandler {
                 showLoader('Finalizing Record...');
                 await fetch(Url.FinalizeRecord, {
                     ...FetchParams.Patch,
-                    body: JSON.stringify({ rate: this.record.rate ?? 0, finalize: true })
+                    body: JSON.stringify({
+                        rate: this.record.rate ?? 0,
+                        ninerId: $('#nine_r_id').val(),
+                        gatepassId: $('#transaction_number').val()
+                    })
                 }).then(validateResponse).then(this.removeRecord);
                 hideLoader();
             }
-
-            await printLastNiner(false, false, true);
-            await sendLastGatepassNumber();
-
-            this.postComplete();
         } catch (err) {
             alertError(err);
             hideLoader();
