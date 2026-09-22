@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8">
+  <title>Location card creator</title>
+  <style>
+    body { font: 16px Arial, sans-serif; margin: 2rem; color: #202020; }
+    #cropper { width: 386px; height: 512px; background: #eee; overflow: hidden; position: relative; cursor: grab; touch-action: none; }
+    #cropper:active { cursor: grabbing; }
+    #cropImage { position: absolute; transform-origin: center; user-select: none; pointer-events: none; }
+    label, button { display: block; margin-top: 1rem; }
+    .fields { display: grid; grid-template-columns: 193px 193px; gap: .65rem; width: 386px; margin-top: 1rem; }
+    .fields input { box-sizing: border-box; width: 100%; padding: .4rem; }
+    #locationStatus { width: 386px; box-sizing: border-box; min-height: 4rem; margin-top: .75rem; padding: .75rem; border-radius: .35rem; background: #f1f5f5; white-space: pre-line; }
+    #useLocation { display: none; }
+    #zoom { width: 386px; }
+    #preview { display: block; width: 386px; height: 512px; margin-top: 1rem; }
+  </style>
+  <h1>Location card creator</h1>
+  <input id="file" type="file" accept="image/*">
+  <p>Drag to position the image; use the slider or mouse wheel to zoom. The frame has the final 771 × 1024 ratio.</p>
+  <button id="getLocation" type="button">Test current browser location</button>
+  <div id="locationStatus" aria-live="polite">Location has not been requested.</div>
+  <button id="useLocation" type="button">Use these coordinates for the card</button>
+  <div id="cropper"><img id="cropImage" alt="Selected image"></div>
+  <label>Zoom <input id="zoom" type="range" min="1" max="4" value="1" step="0.01"></label>
+  <div class="fields">
+    <input id="latitude" type="number" step="any" value="27.429087" placeholder="Latitude" aria-label="Latitude">
+    <input id="longitude" type="number" step="any" value="78.116088" placeholder="Longitude" aria-label="Longitude">
+  </div>
+  <p>City, state, postal code, country, and Plus Code are looked up automatically from the GPS coordinates.</p>
+  <small>Address data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</small>
+  <button id="apply" disabled>Create 771 × 1024 image</button>
+  <img id="preview" alt="Final image with location card">
+  <script src="location-card.js"></script>
+  <script>
+    const OUTPUT = { width: 771, height: 1024 };
+    const DISPLAY_SCALE = 0.5;
+    let source, image, zoomValue = 1, offsetX = 0, offsetY = 0, dragStart;
+    let browserCoordinates;
+
+    getLocation.onclick = () => {
+      if (!navigator.geolocation) {
+        locationStatus.textContent = 'This browser does not support the Geolocation API.';
+        return;
+      }
+      getLocation.disabled = true;
+      locationStatus.textContent = 'Requesting location permission…';
+      navigator.geolocation.getCurrentPosition(async position => {
+        const { latitude: lat, longitude: lon, accuracy } = position.coords;
+        browserCoordinates = { latitude: lat, longitude: lon };
+        locationStatus.textContent = `Latitude: ${lat.toFixed(6)}\nLongitude: ${lon.toFixed(6)}\nAccuracy: ±${Math.round(accuracy)} m\nCaptured: ${new Date(position.timestamp).toLocaleString()}\n\nLooking up location-card details…`;
+        try {
+          const details = await reverseGeocode(lat, lon);
+          browserCoordinates = { ...browserCoordinates, ...details };
+          locationStatus.textContent = `Latitude: ${lat.toFixed(6)}\nLongitude: ${lon.toFixed(6)}\nAccuracy: ±${Math.round(accuracy)} m\nCaptured: ${new Date(position.timestamp).toLocaleString()}\n\nPlus Code: ${details.plusCode}\nCity / District: ${details.city}\nState & Pincode: ${details.stateAndPincode}\nCountry: ${details.country}`;
+        } catch (error) {
+          locationStatus.textContent += `\n\nLocation-card details unavailable: ${error.message}`;
+        }
+        useLocation.style.display = 'block';
+        getLocation.disabled = false;
+      }, error => {
+        locationStatus.textContent = `Location unavailable: ${error.message}`;
+        getLocation.disabled = false;
+      }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+    };
+
+    useLocation.onclick = () => {
+      latitude.value = browserCoordinates.latitude.toFixed(6);
+      longitude.value = browserCoordinates.longitude.toFixed(6);
+      locationStatus.textContent += '\nCoordinates copied into the card fields.';
+    };
+
+    file.onchange = async () => {
+      source = URL.createObjectURL(file.files[0]);
+      image = await loadImage(source);
+      zoomValue = 1; offsetX = 0; offsetY = 0; zoom.value = 1;
+      apply.disabled = false;
+      renderCropper();
+    };
+
+    function renderCropper() {
+      if (!image) return;
+      const cover = Math.max(OUTPUT.width / image.width, OUTPUT.height / image.height);
+      const drawWidth = image.width * cover * zoomValue;
+      const drawHeight = image.height * cover * zoomValue;
+      offsetX = Math.max(-(drawWidth - OUTPUT.width) / 2, Math.min((drawWidth - OUTPUT.width) / 2, offsetX));
+      offsetY = Math.max(-(drawHeight - OUTPUT.height) / 2, Math.min((drawHeight - OUTPUT.height) / 2, offsetY));
+      cropImage.src = source;
+      cropImage.style.width = `${drawWidth * DISPLAY_SCALE}px`;
+      cropImage.style.height = `${drawHeight * DISPLAY_SCALE}px`;
+      cropImage.style.left = `${(386 - drawWidth * DISPLAY_SCALE) / 2 + offsetX * DISPLAY_SCALE}px`;
+      cropImage.style.top = `${(512 - drawHeight * DISPLAY_SCALE) / 2 + offsetY * DISPLAY_SCALE}px`;
+    }
+
+    cropper.onpointerdown = event => {
+      dragStart = { x: event.clientX, y: event.clientY, offsetX, offsetY };
+      cropper.setPointerCapture(event.pointerId);
+    };
+    cropper.onpointermove = event => {
+      if (!dragStart) return;
+      offsetX = dragStart.offsetX + (event.clientX - dragStart.x) / DISPLAY_SCALE;
+      offsetY = dragStart.offsetY + (event.clientY - dragStart.y) / DISPLAY_SCALE;
+      renderCropper();
+    };
+    cropper.onpointerup = () => { dragStart = null; };
+    zoom.oninput = () => { zoomValue = Number(zoom.value); renderCropper(); };
+    cropper.onwheel = event => {
+      event.preventDefault();
+      zoomValue = Math.max(1, Math.min(4, zoomValue - event.deltaY * 0.002));
+      zoom.value = zoomValue;
+      renderCropper();
+    };
+
+    apply.onclick = async () => {
+      apply.disabled = true;
+      apply.textContent = 'Looking up location…';
+      try {
+        preview.src = await createLocationCard(source, {
+        latitude: Number(latitude.value), longitude: Number(longitude.value),
+        zoom: zoomValue, offsetX, offsetY
+        });
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        apply.disabled = false;
+        apply.textContent = 'Create 771 × 1024 image';
+      }
+    };
+  </script>
+</html>

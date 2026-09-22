@@ -1,6 +1,6 @@
 # Repository Guidelines
 
-Last reviewed: 2026-09-18 — aligned document API constants and refined toast styling.
+Last reviewed: 2026-09-23 — documented the mobile vehicle-tagging modal and current handoff state.
 
 ## Project Structure & Module Organization
 
