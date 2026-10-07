@@ -1,7 +1,8 @@
 import { FetchParams, MessageType, Url } from "../constants.js";
+import { sendRequest } from "../services/backend.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
-import { ComplexPromise, alertError, capitalize, hideLoader, hideModal, showAlert, showLoader, validateResponse, withButtonLoader } from "../services/utils.js";
+import { ComplexPromise, alertError, capitalize, hideLoader, hideModal, showAlert, showLoader, withButtonLoader } from "../services/utils.js";
 
 class AddGatepass extends RecordHandler {
     constructor() {
@@ -84,17 +85,14 @@ class AddGatepass extends RecordHandler {
         if (this.record) {
             showLoader('Finalizing Record...');
 
-            fetch(Url.FinalizeRecord, {
+            sendRequest(Url.FinalizeRecord, {
                 ...FetchParams.Patch,
                 body: JSON.stringify({
                     rate: this.record.rate ?? 0,
                     ninerId: $('#nine_r_id').val(),
                     gatepassId: $('#transaction_number').val()
                 })
-            }).then(validateResponse)
-                .then(this.removeRecord)
-                .catch(alertError)
-                .finally(hideLoader);
+            }).then(this.removeRecord).catch(alertError).finally(hideLoader);
         }
     }
 

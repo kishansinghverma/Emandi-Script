@@ -1,6 +1,6 @@
 import { MessageType } from "../constants.js";
 import { sendGatepassById, sendNinerById } from "../services/delivery.js";
-import { alertError, getActionButton, getDateOnly, getNinerById, getSixrById, handleJsonResponse, hideLoader, showAlert, showLoader } from "../services/utils.js";
+import { alertError, getActionButton, getDateOnly, getNinerById, getSixrById, hideLoader, showAlert, showLoader } from "../services/utils.js";
 
 class ListEntries {
     initializeForm = () => {

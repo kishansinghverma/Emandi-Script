@@ -1,12 +1,9 @@
 import { backendBaseUrl, FetchParams, MessageType, Url } from "../constants.js";
-import { handleJsonResponse, showAlert } from "./utils.js";
+import { sendRequest } from "./backend.js";
+import { showAlert } from "./utils.js";
 
 const handleDocumentResponse = async (response) => {
-    const result = await handleJsonResponse(response);
-
-    if (response.status === 207) {
-        throw new Error('Document request partially failed.');
-    }
+    if (response.status === 207) throw new Error('Document request partially failed.');
 
     if (result?.downloadUrl) {
         const fileName = result.downloadUrl.split('/').pop();
@@ -17,9 +14,9 @@ const handleDocumentResponse = async (response) => {
     return result;
 };
 
-const getDocumentActions = ({ print = false, download = false, share = false } = {}) => ({ print, download, share });
+const getDocumentActions = ({ print = false, download = false, share = false } = {}) => ({ actions: { print, download, share } });
 
-const sendDocumentRequest = async (url, payload) => fetch(url, {
+const sendDocumentRequest = async (url, payload) => sendRequest(url, {
     ...FetchParams.Post,
     body: JSON.stringify(payload)
 }).then(handleDocumentResponse);
@@ -31,31 +28,35 @@ const sendGatepass = async (payload) => sendDocumentRequest(Url.sendGatepass, pa
     .then(() => showAlert(MessageType.Success, "Gatepass Processed Sucessfully!", 5));
 
 export const sendLatestNiner = (print, download, share) => sendNiner({
-    source: { type: 'latest' },
+    source: 'latest',
     ...getDocumentActions({ print, download, share })
 });
 
 export const sendNinerById = (ninerId, date, print, download, share) => sendNiner({
-    source: { type: 'id', ninerId, date },
+    source: 'id',
+    data: { id: ninerId, date },
     ...getDocumentActions({ print, download, share })
 });
 
 export const sendNinerByHtml = (party, tables, qr, print, download, share) => sendNiner({
-    source: { type: 'html', party, tables, qr },
+    source: 'payload',
+    data: {},
     ...getDocumentActions({ print, download, share })
 });
 
 export const sendLatestGatepass = (print, download, share) => sendGatepass({
-    source: { type: 'latest' },
+    source: 'latest',
     ...getDocumentActions({ print, download, share })
 });
 
 export const sendGatepassById = (gatepassId, date, print, download, share) => sendGatepass({
-    source: { type: 'id', gatepassId, date },
+    source: 'id',
+    data: { id: gatepassId, date },
     ...getDocumentActions({ print, download, share })
 });
 
 export const sendGatepassByHtml = (party, tables, qr, print, download, share) => sendGatepass({
-    source: { type: 'html', party, tables, qr },
+    source: 'payload',
+    data: {},
     ...getDocumentActions({ print, download, share })
 });
