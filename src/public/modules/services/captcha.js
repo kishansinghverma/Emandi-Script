@@ -1,6 +1,7 @@
 import { MessageType, Url, FetchParams } from "../constants.js";
 import { showAlert } from "./utils.js";
 import { CaptchaLoader } from "../../assets/loader.js";
+import { sendRequest } from "./backend.js";
 
 export const showCaptchaLoader = () => {
     const $input = $('#in-captcha').length ? $('#in-captcha') : $('#DNTCaptchaInputText');
@@ -25,56 +26,34 @@ export const hideCaptchaLoader = () => {
 };
 
 const tryResolve = async (source) => {
-    try {
-        const img = document.getElementById(source);
-        if (!img) return null;
+    showCaptchaLoader();
 
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth || img.width;
-        canvas.height = img.naturalHeight || img.height;
-        canvas.getContext("2d").drawImage(img, 0, 0);
+    const img = document.getElementById(source);
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth || img.width;
+    canvas.height = img.naturalHeight || img.height;
+    canvas.getContext("2d").drawImage(img, 0, 0);
 
-        const response = await fetch(Url.ResolveCaptcha, {
-            ...FetchParams.Post,
-            body: JSON.stringify({ base64string: canvas.toDataURL() })
-        });
+    const response = await sendRequest(Url.ResolveCaptcha, {
+        ...FetchParams.Post,
+        body: JSON.stringify({ base64string: canvas.toDataURL() })
+    }).then(({ text }) => (text)).finally(hideCaptchaLoader);
 
-        if (!response.ok) {
-            console.error('Captcha API Error:', response.status, response.statusText);
-            return null;
-        }
-
-        const data = await response.json();
-        return data.code;
-    } catch (error) {
-        console.error('Error resolving captcha via backend:', error);
-        return NaN;
-    }
+    return response;
 }
 
 export const resolveCaptcha = async (source) => {
-    showCaptchaLoader();
-
-    try {
-        for (let attempt = 0; attempt < 3; attempt++) {
-            const parsedText = await tryResolve(source);
-            const isValid = parsedText && /^\d{4}$/.test(parsedText);
-            if (isValid) return parsedText;
-        }
-
-        showAlert(MessageType.Error, "Captcha resolution failed, Enter manually!", 4);
+    const parsedText = await tryResolve(source).catch(err => {
+        showAlert(MessageType.Error, `Captcha resolution failed, ${err.message}`, 4);
         const $input = $('#in-captcha').length ? $('#in-captcha') : $('#DNTCaptchaInputText');
         $input.val('').focus();
-        return null;
-    } finally {
-        hideCaptchaLoader();
-    }
+    });
+
+    if (parsedText && /^\d{4}$/.test(parsedText)) return parsedText;
 }
 
 export const setResolvedCaptcha = (value, target) => {
-    if (value && !isNaN(value)) {
-        $(`#${target}`).val(value).trigger('input');
-    }
+    if (value) $(`#${target}`).val(value).trigger('input');
 };
 
 export const validateCaptcha = (response, isLogin) => {

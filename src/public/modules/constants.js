@@ -62,7 +62,7 @@ export const Url = {
 export const HttpMessages = {
     400: "Unable to fetch data, Bad Request!",
     401: "Authentication error, Check request!",
-    404: "Unable to fetch data from requested resource!",
+    404: "Requested resource not found!",
     204: "No content is available!",
     500: "Something went wrong on server!",
     413: "Content too large to send to server!"
