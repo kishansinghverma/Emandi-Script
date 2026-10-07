@@ -1,13 +1,17 @@
 import { backendBaseUrl, FetchParams, MessageType, Url } from "../constants.js";
 import { sendRequest } from "./backend.js";
-import { showAlert } from "./utils.js";
+import { alertError, showAlert } from "./utils.js";
 
 const handleDocumentResponse = async (response) => {
-    if (response.status === 207) throw new Error('Document request partially failed.');
+    if (!response.actions) throw new Error('Could not parse response.');
 
-    if (result?.downloadUrl) {
-        const fileName = result.downloadUrl.split('/').pop();
-        const downloadUrl = `${backendBaseUrl}${result.downloadUrl}`;
+    if (Object.values(response.actions).some(action => action.status === "failure"))
+        alertError("Some actions were not completed successfully!");
+
+    if (response.actions?.download?.status === 'success') {
+        const url = response.actions?.download?.url;
+        const fileName = url.split('/').pop();
+        const downloadUrl = `${backendBaseUrl}${url}`;
         $('<a>').attr({ href: downloadUrl, download: fileName, target: '_blank' }).get(0).click();
     }
 
