@@ -1,13 +1,5 @@
 import { HttpMessages } from "../constants.js";
 
-const validateResponse = async (response) => {
-    if (response.ok) return response;
-
-    const json = await response.json().catch(() => undefined);
-    const errorMessage = json?.message ?? HttpMessages[response.status];
-    throw new Error(json?.isError ? errorMessage : HttpMessages[response.status]);
-}
-
 const parseResponse = async (response) => {
     if (response.status === 204) return undefined;
 
@@ -24,6 +16,14 @@ const parseResponse = async (response) => {
 
     throw new Error("Invalid JSON response received from the server.")
 };
+
+export const validateResponse = async (response) => {
+    if (response.ok) return response;
+
+    const json = await response.json().catch(() => undefined);
+    const errorMessage = json?.message ?? HttpMessages[response.status];
+    throw new Error(json?.isError ? errorMessage : HttpMessages[response.status]);
+}
 
 export const sendRequest = async (url, options = {}) => {
     const response = await fetch(url, { ...options }).then(validateResponse);

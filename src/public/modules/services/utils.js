@@ -25,11 +25,19 @@ export const formatIsoString = (isoDate) => {
     return formatDate(date);
 }
 
-export const getDateOnly = (value) => {
+export const ninerDateFormatter = (value) => {
     const isValid = /^\d{2}\/\d{2}\/\d{4}/.test(value);
     if (!isValid) return null;
 
     const [month, day, year] = value.split(' ')[0].split('/');
+    return `${year}-${month}-${day}`;
+}
+
+export const gatepassDateFormatter = (value) => {
+    const isValid = /^\d{2}\/\d{2}\/\d{4}/.test(value);
+    if (!isValid) return null;
+
+    const [day, month, year] = value.split(' ')[0].split('/');
     return `${year}-${month}-${day}`;
 }
 

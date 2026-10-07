@@ -1,6 +1,7 @@
 import { MessageType } from "../constants.js";
+import { validateResponse } from "../services/backend.js";
 import { sendGatepassById, sendNinerById } from "../services/delivery.js";
-import { alertError, getActionButton, getDateOnly, getNinerById, getSixrById, hideLoader, showAlert, showLoader } from "../services/utils.js";
+import { alertError, gatepassDateFormatter, getActionButton, getNinerById, getSixrById, hideLoader, ninerDateFormatter, showAlert, showLoader } from "../services/utils.js";
 
 class ListEntries {
     initializeForm = () => {
@@ -19,7 +20,7 @@ class GeneratedNineR {
         const row = $(e.currentTarget).closest('tr');
         const data = $('#datatable1').DataTable().row(row).data();
         const ninerNumber = data?.serial_number;
-        const date = getDateOnly(data?.created_at);
+        const date = ninerDateFormatter(data?.created_at);
 
         if (ninerNumber && date) {
             showLoader("Processing Niner...");
@@ -180,7 +181,8 @@ class ListGatepasses {
         formData.append("toDate", $("#to_date").val());
 
         fetch('/Traders/SP_Get_Gatepass_List', { method: 'POST', body: formData })
-            .then(handleJsonResponse)
+            .then(validateResponse)
+            .then(response => response.json())
             .then(({ data }) => data.forEach(item => {
                 const row = $('<tr>');
                 row.append($('<td>').text(item.created_at))
@@ -213,7 +215,7 @@ class ListGatepasses {
         const row = $(e.currentTarget).closest('tr');
         const data = $('#datatable1').DataTable().row(row).data();
         const gatepassNumber = data?.serial_number;
-        const date = data?.created_at;
+        const date = gatepassDateFormatter(data?.created_at);
 
         if (gatepassNumber && date) {
             showLoader("Processing Gatepass...");
