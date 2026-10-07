@@ -1,4 +1,5 @@
 import { HttpMessages, Icon, MessageType } from "../constants.js";
+import { validateResponse } from "./backend.js";
 
 let notificationTimeoutId;
 
@@ -12,6 +13,8 @@ export class ComplexPromise {
 }
 
 export const formatDate = (date) => {
+    if (!date) return undefined;
+
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
@@ -114,9 +117,10 @@ const getRecordById = (url, recordId) => {
     formData.append('length', 1);
     formData.append('search[value]', recordId);
     formData.append('fromDate', formatDate(date));
-    formData.append('toDate', formatDate());
+    formData.append('toDate', formatDate(new Date()));
 
-    return fetch(url, { method: 'POST', body: formData }).then(handleJsonResponse).then(response => (response.data[0]));
+    return fetch(url, { method: 'POST', body: formData }).then(validateResponse)
+        .then(res => res.json()).then(response => (response.data[0]));
 }
 
 export const getSixrById = (sixrId) => getRecordById('/Traders/SP_Get_6R_List', sixrId);

@@ -136,11 +136,18 @@ class ListGatepasses {
             buttonWrapper.append(getActionButton('fa-whatsapp', 'btn-emandi-share', 'Send', this.shareReciept))
             buttonWrapper.append(getActionButton('fa-print', 'btn-emandi-print', 'Print', this.printReciept))
             buttonWrapper.append(getActionButton('fa-download', 'btn-emandi-download', 'Download', this.downloadReciept));
-            
+
             const taggingStatus = $('#datatable1')?.DataTable()?.rows(row).data()?.[0]?.isVehicleTagging;
             if (taggingStatus !== "1") $(row).children().eq(10).html("<div class='text-red'>Not Tagged</div>");
             else $(row).children().eq(9).append('<br>').append($(row).children().eq(8).text())
         });
+    }
+
+    printNiner = async ({ target }) => {
+        const column = $(target).parent();
+        const ninerId = column.parent().find('td.niner a').text();
+        const { id } = await getNinerById(ninerId);
+        window.open(`${this.ninerUrl}/${id}`, "_blank");
     }
 
     calculateBreakUp = async ({ target }) => {
@@ -187,7 +194,7 @@ class ListGatepasses {
                 const row = $('<tr>');
                 row.append($('<td>').text(item.created_at))
                 row.append($('<td>').html($('<a>').text(item.serial_number).attr('href', `${this.gatepassUrl}/${item.id}`).attr('target', '_blank')))
-                row.append($('<td>').html($('<a>').text(item.nine_r_id).click(this.printNiner)).addClass('niner'))
+                row.append($('<td>').html($('<a>').text(item.nine_r_id).click(this.printNiner)))
                 row.append($('<td>').text(item.kreta_mandi))
                 row.append($('<td>').text(item.vehicle_no))
                 row.append($('<td>').text(item.crop_weight))
