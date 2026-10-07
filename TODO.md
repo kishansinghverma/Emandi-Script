@@ -1,5 +1,12 @@
 # Refactor TODO
 
+## Vehicle Tagging (Deferred)
+
+Keep the current flow at cropped image previews for now.
+
+- [ ] Add the location card to the cropped vehicle image only; keep the number-plate image separate.
+- [ ] Submit the prepared images to eMandi once the tagging API flow is implemented.
+
 ## 4. Clean Up Network Boundaries
 - [ ] Split Emandi-site requests from external backend requests into separate service modules.
 - [ ] Wrap `fetch` calls in a single HTTP helper with consistent error handling, status validation, and response parsing.
@@ -36,10 +43,10 @@
 - [ ] Make local/dev/prod asset URLs configurable without editing source files.
 
 ## 10. Add Basic Verification
-- [ ] Add smoke tests for route detection, record-state handling, and response validation.
-- [ ] Add fixture-based tests for receipt HTML parsing and PDF payload generation.
-- [ ] Add a lightweight browser harness or documented manual verification checklist for each workflow stage.
-- [ ] Capture one known-good response sample per critical Emandi AJAX endpoint for regression checks.
+
+- [ ] Document manual verification for route detection, record handling, and response validation.
+- [ ] Manually verify receipt rendering and PDF generation.
+- [ ] Document normal, loading, and error states to check for each workflow stage.
 
 ## Suggested Order
 1. Stabilize live bugs and stop unsafe continuation paths.

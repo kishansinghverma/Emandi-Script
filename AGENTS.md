@@ -1,6 +1,6 @@
 # Repository Guidelines
 
-Last reviewed: 2026-09-23 — documented the mobile vehicle-tagging modal and current handoff state.
+Last reviewed: 2026-09-23 — recorded preview-only tagging, no-test policy, and preserved Webpack configuration.
 
 ## Project Structure & Module Organization
 
@@ -21,7 +21,10 @@ bundled files directly.
 - `npm run build` bundles `src/public/index.js` with Webpack and copies the
   stylesheet and script loader into `dist/`.
 
-There is no automated test suite or lint command at present. Validate changes
+Preserve `webpack.config.cjs`. The user restored it explicitly; do not delete it
+or replace it with inline build options. Keep `npm run build` using this config.
+
+There are no automated test or lint commands. Validate changes
 by running the build and exercising the affected eMandi workflow with the
 userscript pointed at the local server.
 
@@ -50,11 +53,17 @@ timer when the toast is dismissed manually.
 
 ## Testing Guidelines
 
-For behavior changes, verify both the normal form flow and error/loading
+Do not write tests, test files, test scripts, or test harnesses.
+For behavior changes, manually verify both the normal form flow and error/loading
 states where relevant (especially captcha, printing, and submission code).
 Run `npm run build` before submitting so generated output and copied assets
-are current. If adding tests, place them beside the relevant module or in a
-new `test/` directory and add an npm script to document execution.
+are current.
+
+## Vehicle Tagging Scope
+
+Keep the tagging flow at vehicle and number-plate cropping with final previews.
+Location-card composition and eMandi submission are deferred in `TODO.md`; do
+not implement them until requested. Keep both image outputs separate.
 
 ## Commit & Pull Request Guidelines
 
