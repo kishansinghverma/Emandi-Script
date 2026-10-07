@@ -54,10 +54,10 @@ class GeneratedNineR {
             if (column.find('.button-wrapper').length) return;
 
             const buttonWrapper = $('<div>').addClass('button-wrapper').appendTo(column);
-            buttonWrapper.append(getActionButton('fa-eye', 'btn-warning', 'View', this.viewReciept));
-            buttonWrapper.append(getActionButton('fa-whatsapp', 'btn-success', 'Send', this.shareReciept));
-            buttonWrapper.append(getActionButton('fa-print', 'btn-primary', 'Print', this.printReciept));
-            buttonWrapper.append(getActionButton('fa-download', 'btn-info', 'Download', this.downloadReciept));
+            buttonWrapper.append(getActionButton('fa-eye', 'btn-emandi-view', 'View', this.viewReciept));
+            buttonWrapper.append(getActionButton('fa-whatsapp', 'btn-emandi-share', 'Send', this.shareReciept));
+            buttonWrapper.append(getActionButton('fa-print', 'btn-emandi-print', 'Print', this.printReciept));
+            buttonWrapper.append(getActionButton('fa-download', 'btn-emandi-download', 'Download', this.downloadReciept));
         });
     };
 
@@ -131,10 +131,10 @@ class ListGatepasses {
 
             $(row).find('td:last').prev().html($(row).find('td:last').html()).end().empty();
             const buttonWrapper = $('<div>').addClass('button-wrapper').appendTo(column);
-            buttonWrapper.append(getActionButton('fa-eye', 'btn-warning', 'View', this.viewReciept))
-            buttonWrapper.append(getActionButton('fa-whatsapp', 'btn-success', 'Send', this.shareReciept))
-            buttonWrapper.append(getActionButton('fa-print', 'btn-primary', 'Print', this.printReciept))
-            buttonWrapper.append(getActionButton('fa-download', 'btn-info', 'Download', this.downloadReciept));
+            buttonWrapper.append(getActionButton('fa-eye', 'btn-emandi-view', 'View', this.viewReciept))
+            buttonWrapper.append(getActionButton('fa-whatsapp', 'btn-emandi-share', 'Send', this.shareReciept))
+            buttonWrapper.append(getActionButton('fa-print', 'btn-emandi-print', 'Print', this.printReciept))
+            buttonWrapper.append(getActionButton('fa-download', 'btn-emandi-download', 'Download', this.downloadReciept));
             
             const taggingStatus = $('#datatable1')?.DataTable()?.rows(row).data()?.[0]?.isVehicleTagging;
             if (taggingStatus !== "1") $(row).children().eq(10).html("<div class='text-red'>Not Tagged</div>");

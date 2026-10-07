@@ -682,6 +682,103 @@ form.forms-sample[action="/Account/ChangePassword"] {
     gap: 6px;
 }
 
+#datatable1.gatepass-table .button-wrapper .btn-emandi-view,
+#datatable1.gatepass-table .button-wrapper .btn-emandi-share,
+#datatable1.gatepass-table .button-wrapper .btn-emandi-print,
+#datatable1.gatepass-table .button-wrapper .btn-emandi-download,
+#datatable1.niner-table .button-wrapper .btn-emandi-view,
+#datatable1.niner-table .button-wrapper .btn-emandi-share,
+#datatable1.niner-table .button-wrapper .btn-emandi-print,
+#datatable1.niner-table .button-wrapper .btn-emandi-download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-view:active,
+#datatable1.gatepass-table .button-wrapper .btn-emandi-share:active,
+#datatable1.gatepass-table .button-wrapper .btn-emandi-print:active,
+#datatable1.gatepass-table .button-wrapper .btn-emandi-download:active,
+#datatable1.niner-table .button-wrapper .btn-emandi-view:active,
+#datatable1.niner-table .button-wrapper .btn-emandi-share:active,
+#datatable1.niner-table .button-wrapper .btn-emandi-print:active,
+#datatable1.niner-table .button-wrapper .btn-emandi-download:active {
+    transform: scale(0.96);
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-view,
+#datatable1.niner-table .button-wrapper .btn-emandi-view {
+    background-color: #E0EDFE;
+    border-color: #98C8FD;
+    color: #1D4ED8;
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-view:hover,
+#datatable1.niner-table .button-wrapper .btn-emandi-view:hover {
+    background-color: #C4DEFE;
+    color: #1E40AF;
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-share,
+#datatable1.niner-table .button-wrapper .btn-emandi-share {
+    background-color: #D6FAE8;
+    border-color: #72E8B9;
+    color: #047857;
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-share:hover,
+#datatable1.niner-table .button-wrapper .btn-emandi-share:hover {
+    background-color: #ABF4D2;
+    color: #065F46;
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-share:focus-visible,
+#datatable1.niner-table .button-wrapper .btn-emandi-share:focus-visible {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-print,
+#datatable1.niner-table .button-wrapper .btn-emandi-print {
+    background-color: #FEFAC8;
+    border-color: #FDE14C;
+    color: #854D0E;
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-print:hover,
+#datatable1.niner-table .button-wrapper .btn-emandi-print:hover {
+    background-color: #FEF18F;
+    color: #713F12;
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-print:focus-visible,
+#datatable1.niner-table .button-wrapper .btn-emandi-print:focus-visible {
+    box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.3);
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-download,
+#datatable1.niner-table .button-wrapper .btn-emandi-download {
+    background-color: #F1EEFE;
+    border-color: #C8BAFD;
+    color: #6D28D9;
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-download:hover,
+#datatable1.niner-table .button-wrapper .btn-emandi-download:hover {
+    background-color: #E1DBFE;
+    color: #5B21B6;
+}
+
+#datatable1.gatepass-table .button-wrapper .btn-emandi-download:focus-visible,
+#datatable1.niner-table .button-wrapper .btn-emandi-download:focus-visible {
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+}
+
 .dataTables_scrollHeadInner table,
 #datatable1.gatepass-table td:nth-child(3),
 #datatable1.gatepass-table td:nth-child(5),

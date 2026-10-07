@@ -30,7 +30,7 @@ export const getDateOnly = (value) => {
     if (!isValid) return null;
 
     const [month, day, year] = value.split(' ')[0].split('/');
-    return `${day}/${month}/${year}`;
+    return `${year}-${month}-${day}`;
 }
 
 export const getNestedValue = (path, record) => (path.split('.').reduce((o, k) => o && o[k], record) ?? '');
