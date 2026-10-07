@@ -2,7 +2,7 @@ const BlankModal = `<div />`;
 
 const header = `
 <div class="custom-modal-header">
-	<div>E-Mandi Assistant</div>
+	<div><i class="fa fa-gear" style="margin-right: 0.5rem;"></i>E-Mandi Assistant</div>
 	<div class="link">&#x2715;</div>
 </div>`;
 
