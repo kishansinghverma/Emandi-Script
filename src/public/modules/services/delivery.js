@@ -14,8 +14,6 @@ const handleDocumentResponse = async (response) => {
         const downloadUrl = `${backendBaseUrl}${url}`;
         $('<a>').attr({ href: downloadUrl, download: fileName, target: '_blank' }).get(0).click();
     }
-
-    return result;
 };
 
 const getDocumentActions = ({ print = false, download = false, share = false } = {}) => ({ actions: { print, download, share } });
