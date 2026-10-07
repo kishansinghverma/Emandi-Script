@@ -1,5 +1,6 @@
 import { recordComponent } from "../../assets/elements.js";
 import { MessageType, Url } from "../constants.js";
+import { sendRequest } from "./backend.js";
 import { alertError, getNestedValue, handleJsonResponse, hideLoader, showAlert, showLoader } from "./utils.js";
 
 export class RecordHandler {
@@ -11,13 +12,12 @@ export class RecordHandler {
     }
 
     #fetchRecord = async () => {
-        showLoader('Checking Queue...')
-        return fetch(Url.PeekRecord).then(handleJsonResponse).then(this.#handlePayload).catch(alertError).finally(hideLoader);
+        showLoader('Checking Queue...');
+        return sendRequest(Url.PeekRecord).then(this.#handlePayload).catch(alertError).finally(hideLoader);
     }
 
     #autoFillForm = (record) => {
-        const inputs = $('.custom-modal-content input[data-property], .custom-modal-content select[data-property]');
-        inputs.each((_, input) => {
+        $('.custom-modal-content input[data-property], .custom-modal-content select[data-property]').each((_, input) => {
             if ($(input).data('property')) {
                 const tokens = $(input).data('property').split(',').map(item => getNestedValue(item, record));
                 const value = tokens.slice(0, -1).join(', ') + (tokens.length > 1 ? ', ' : '') + tokens[tokens.length - 1];
@@ -29,7 +29,7 @@ export class RecordHandler {
     setRecord = (payload) => localStorage.setItem(this.#storagePath, JSON.stringify(payload));
 
     removeRecord = () => localStorage.removeItem(this.#storagePath);
-    
+
     getRecord = async () => {
         const localData = localStorage.getItem(this.#storagePath);
         return (!localData || !Object.keys(localData)) ?

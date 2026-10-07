@@ -1,4 +1,4 @@
-import { getDate } from "../modules/services/utils.js";
+import { formatDate, formatIsoString } from "../modules/services/utils.js";
 
 export const SendReceiptButton = `
     <li>
@@ -32,7 +32,7 @@ export const notificationComponent = `
 export const recordComponent = (record) => (`
     <div class="info-heading">
         <div class="info-name wrap-text">${record.seller}</div>
-        <div class="info-date wrap-text ${getDate() === record.date && 'valid'}">${record.date}</div>
+        <div class="info-date wrap-text ${formatDate(new Date()) === formatIsoString(record.date) && 'valid'}">${formatIsoString(record.date)}</div>
     </div>
     <div class="input-group">
         <div class="info-vehicle f-icon">${record.vehicleNumber}</div>
