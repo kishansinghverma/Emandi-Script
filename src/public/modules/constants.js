@@ -52,11 +52,11 @@ export const FetchParams = {
 }
 
 export const Url = {
-    FinalizeRecord: getUrl('dispatches/finalize'),
-    PeekRecord: getUrl('dispatches/peek'),
-    sendNiner: getUrl('documents/niners'),
-    sendGatepass: getUrl('documents/gatepasses'),
-    ResolveCaptcha: getUrl('vision/captcha')
+    FinalizeRecord: getUrl('gatepasses/finalize'),
+    PeekRecord: getUrl('gatepasses/peek'),
+    sendNiner: getUrl('emandi/niners'),
+    sendGatepass: getUrl('emandi/gatepasses'),
+    ResolveCaptcha: getUrl('imaging/captcha')
 }
 
 export const HttpMessages = {
