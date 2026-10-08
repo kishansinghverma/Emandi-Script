@@ -56,7 +56,8 @@ export const Url = {
     PeekRecord: getUrl('gatepasses/peek'),
     sendNiner: getUrl('emandi/niners'),
     sendGatepass: getUrl('emandi/gatepasses'),
-    ResolveCaptcha: getUrl('imaging/captcha')
+    ResolveCaptcha: getUrl('imaging/captcha'),
+    GetS3File: getUrl('s3/get')
 }
 
 export const HttpMessages = {

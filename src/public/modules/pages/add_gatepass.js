@@ -3,6 +3,7 @@ import { sendRequest } from "../services/backend.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
 import { ComplexPromise, alertError, capitalize, hideLoader, hideModal, showAlert, showLoader, withButtonLoader } from "../services/utils.js";
+import { initializeVehicleTagging } from "../services/vehicleTagging.js";
 
 class AddGatepass extends RecordHandler {
     constructor() {
@@ -13,7 +14,6 @@ class AddGatepass extends RecordHandler {
     initializeForm = async () => {
         this.attachListener();
         this.executeInitialActions();
-        this.tagVehicle();
     }
 
     attachListener = () => {
@@ -29,7 +29,7 @@ class AddGatepass extends RecordHandler {
         this.checkPaidType();
         $('#img-captcha').append($('#dntCaptchaImg'));
         resolveCaptcha('dntCaptchaImg').then(value => setResolvedCaptcha(value, 'in-captcha')).catch(alertError);
-        this.renderRecord();
+        this.renderRecord().then(() => this.tagVehicle(this.record));
     }
 
     checkPaidType = () => { if ($('#nine_r_id option').length > 0) this.selectPaidType() };
@@ -74,7 +74,7 @@ class AddGatepass extends RecordHandler {
     }
 
     tagVehicle = () => {
-        // TODO: Implement vehicle tagging flow.
+        initializeVehicleTagging(this.record);
     }
 
     onComplete = () => {
