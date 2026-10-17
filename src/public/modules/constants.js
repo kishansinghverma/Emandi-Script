@@ -13,8 +13,8 @@ const CommonDiv = '#content > div > div';
 const PrintDiv = '#content';
 const LoginDiv = '.box-login';
 
-//const baseUrl = "https://unity-hub.onrender.com/api";
-const baseUrl = "http://localhost:8080/api";
+const baseUrl = "https://unity-hub.onrender.com/api";
+// const baseUrl = "http://localhost:8080/api";
 
 const getUrl = (path) => (`${baseUrl}/${path}`);
 
@@ -57,7 +57,9 @@ export const Url = {
     sendNiner: getUrl('emandi/niners'),
     sendGatepass: getUrl('emandi/gatepasses'),
     ResolveCaptcha: getUrl('imaging/captcha'),
-    GetS3File: getUrl('s3/get')
+    GetS3File: getUrl('s3/get'),
+    GetVehicleTaggingVehicle: getUrl('vehicle-tagging/vehicles'),
+    VehicleTaggingEntries: getUrl('vehicle-tagging/entries')
 }
 
 export const HttpMessages = {

@@ -1,6 +1,6 @@
 import { MessageType } from "../constants.js";
 import { validateResponse } from "../services/backend.js";
-import { sendGatepassById, sendNinerById } from "../services/delivery.js";
+import { sendGatepassById, sendNinerById } from "../services/receipt.js";
 import { alertError, gatepassDateFormatter, getActionButton, getNinerById, getSixrById, hideLoader, ninerDateFormatter, showAlert, showLoader } from "../services/utils.js";
 
 class ListEntries {

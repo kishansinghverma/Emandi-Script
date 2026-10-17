@@ -1,4 +1,4 @@
-import { printNinerFromHtml } from "../services/print.js";
+import { printNinerFromHtml } from "../services/receipt.js";
 import { alertError, hideLoader, hideModal, showLoader } from "../services/utils.js";
 
 class PrintNiner {
@@ -17,7 +17,7 @@ class PrintNiner {
         const print = $('#print').is(':checked');
         const share = $('#share').is(':checked');
 
-        showLoader('Sending Niner...');
+        showLoader('Processing Niner...');
         await printNinerFromHtml(document, print, download, share)
             .then(hideModal)
             .catch(alertError)

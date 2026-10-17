@@ -3,7 +3,7 @@ import { Modals } from '../../assets/modals.js';
 import { PrintReceiptButton, SendReceiptButton, notificationComponent } from '../../assets/elements.js';
 import { Loader } from '../../assets/loader.js';
 import { hideAlert, hideModal } from './utils.js';
-import { printLastReceipts } from './print.js';
+import { printLastReceipts } from './receipt.js';
 
 const hideLinks = () => ItemsToHide.forEach(item => $(item)?.hide());
 const replaceLink = () => document.querySelector('[href="/Traders/NinerDashboard"]')?.setAttribute('href', '/Traders/NineR');

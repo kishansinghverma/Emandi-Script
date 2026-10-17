@@ -1,4 +1,4 @@
-import { printGatepassFromHtml } from "../services/print.js";
+import { printGatepassFromHtml } from "../services/receipt.js";
 import { alertError, hideLoader, hideModal, showLoader } from "../services/utils.js";
 
 class PrintGatepass {
@@ -17,7 +17,7 @@ class PrintGatepass {
         const print = $('#print').is(':checked');
         const share = $('#share').is(':checked');
 
-        showLoader('Sending Gatepass...');
+        showLoader('Processing Gatepass...');
         await printGatepassFromHtml(document, print, download, share)
             .then(hideModal)
             .catch(alertError)

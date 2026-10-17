@@ -2,9 +2,6 @@
 
 ## Vehicle Tagging (Deferred)
 
-Keep the current flow at cropped image previews for now.
-
-- [ ] Add the location card to the cropped vehicle image only; keep the number-plate image separate.
 - [ ] Submit the prepared images to eMandi once the tagging API flow is implemented.
 
 ## 4. Clean Up Network Boundaries

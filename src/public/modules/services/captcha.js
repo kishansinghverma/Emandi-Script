@@ -3,7 +3,7 @@ import { showAlert } from "./utils.js";
 import { CaptchaLoader } from "../../assets/loader.js";
 import { sendRequest } from "./backend.js";
 
-export const showCaptchaLoader = () => {
+const showCaptchaLoader = () => {
     const $input = $('#in-captcha').length ? $('#in-captcha') : $('#DNTCaptchaInputText');
     if ($input.length) {
         if (!$input.parent().hasClass('captcha-input-wrapper')) {
@@ -17,7 +17,7 @@ export const showCaptchaLoader = () => {
     }
 };
 
-export const hideCaptchaLoader = () => {
+const hideCaptchaLoader = () => {
     const $input = $('#in-captcha').length ? $('#in-captcha') : $('#DNTCaptchaInputText');
     if ($input.length) {
         $input.parent().removeClass('loading');

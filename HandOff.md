@@ -1,75 +1,145 @@
-# Project Handoff
+# Emandi Script Handoff
 
-Last updated: 2026-09-23
+Last updated: 2026-10-14
 
-Latest operation: rebuilt the two-step vehicle-image cropper with native dialog,
-canvas, and pointer events; no added dependencies. The user confirmed that the
-flow should stop at cropped previews and restored the Webpack configuration.
+## Scope
 
-## Current State
+The active work is the vehicle-tagging flow used from the gatepass page. The
+main implementation is in
+[`src/public/modules/services/vehicleTagging.js`](src/public/modules/services/vehicleTagging.js),
+with page integration in
+[`src/public/modules/pages/add_gatepass.js`](src/public/modules/pages/add_gatepass.js)
+and styling in [`src/public/assets/style.css`](src/public/assets/style.css).
 
-The notification toast in `src/public/assets/elements.js`,
-`src/public/assets/loader.js`, and `src/public/assets/style.css` uses the Soft
-Capsule design: muted status surfaces, fine borders, solid circular white-
-stroke icons, readable 16px messages, and a subtle dismiss control. The
-status palette now uses the supplied success, info, error, accent, border,
-text, and shadow tokens. Message and dismiss-control text follows the active
-status color. The container now uses approximately 80% of its previous
-dimensions, including a 14px medium-weight message and a 380px desktop max width. Its
-centered mobile and top-right desktop placement remain unchanged. The existing
-app has no warning notification variant, so the supplied warning tokens are
-defined but not assigned.
+## Completed
 
-The active local backend routes are now `/api/dispatches/peek`,
-`/api/dispatches/finalize`, and `/api/vision/captcha`. The toast uses a
-stronger two-layer shadow so its container is clearly separated from the page
-background.
+### Vehicle-tagging modal
 
-The gatepass page now waits for the queued record before running its vehicle
-tagging flow. When both `record.vehicleImage` and `record.numberPlateImage`
-are available, `tagVehicle()` opens a full-screen responsive modal. The modal
-supports vehicle-image cropping first, number-plate cropping second, drag and
-pinch/slider zoom interactions, back navigation, and a final preview of both
-cropped images. A Vehicle images button reopens the dialog. The vehicle output
-is 771 × 1024; the plate keeps its source aspect ratio at 771 pixels wide.
-Done stores both JPEG data URLs in `Add_Gatepass.taggedImages` for the current
-page; the original queued record remains intact. The current flow only previews
-the cropped images; location-card
-composition is intentionally not yet applied. The vehicle and number-plate
-outputs remain separate so the location card can later be applied only to the
-vehicle image.
+- The modal always opens at Step 0: Gatepass validation.
+- Gatepass number is initialized from `#transaction_number`.
+- Validation runs initially, on blur, and when Enter is pressed.
+- The existing inline input loader is shown while gatepass validation is pending.
+- Success displays the validated vehicle type and vehicle number.
+- Existing record images are preloaded from the S3 route when available.
+- Missing, invalid, or unparseable images leave the modal open and provide
+  manual image selectors.
+- Manual image selection does not automatically advance the flow.
+- Reset reloads record images and restores the gatepass number from the page.
+- Vehicle and number-plate images can be cropped independently.
+- Drag, mouse, wheel, pinch, zoom, rotation, sliders, and +/- controls are
+  supported in the image editor.
+- Vehicle and number-plate outputs remain separate.
+- Back navigation is available between the image, location, and review steps.
 
-The unused `SetRate` constant was removed earlier; rate data continues to be
-sent as part of the dispatch finalize request. The finalize endpoint constant
-is now named `FinalizeRecord`; the unused `PopRecord` constant has also been
-removed. `Url.sendNiner` and `Url.sendGatepass` now point to the document
-creation endpoints, while the old `PrintPdf` call remains pending migration.
+### Location step and location card
 
-`src/public/modules/services/utils.js` now owns the notification auto-dismiss
-timer and exposes `hideAlert`, preventing an older timer from closing a newer
-toast. Manual dismissal in `initialization.js` uses the same cleanup path.
+- The location step displays a Google Maps preview.
+- Coordinates are initialized from the queued record when valid.
+- Missing coordinates use a randomized location within approximately 100m of
+  the configured seed: `latitude: 27.4288667`, `longitude: 78.116275`.
+- Latitude and longitude can be edited manually.
+- Randomize generates a new coordinate pair from the configured seed.
+- Reset restores queued coordinates or generates a seeded fallback.
+- `generateLocationCard()` creates the stamped vehicle image at the existing
+  vehicle output size.
+- ArcGIS is now the only reverse-geocoding provider.
+- Address mapping currently uses:
+  - Street: ArcGIS `Address`
+  - City / District: ArcGIS `City` and `Subregion`/`District`
+  - State & Pincode: ArcGIS `Region` and `Postal`
+  - Country: ArcGIS `Country`/`CountryCode`
+  - Plus Code: generated locally
+- The Review step opens immediately after Location. Location-card generation
+  runs asynchronously and replaces the vehicle preview when complete.
+- The Tag Vehicle button stays disabled while location-card generation is in
+  progress.
 
-## Verification
+### Review and payload preparation
 
-Automated tests and the test script were removed at the user's request. Do not
-add tests or test files; use the build and manual workflow verification.
-The user restored `webpack.config.cjs` and the original config-based build
-command. Preserve this file; do not delete it or move its options into the CLI.
-`npm run build` and `git diff --check` passed on 2026-09-23.
-The vehicle-tagging flow still needs manual mobile workflow verification,
-including image loading failures, closing during loading, Back, and reopening.
+- Review shows the stamped vehicle image, cropped number-plate image, vehicle
+  details, gatepass number, and GPS coordinates.
+- Review values are compared with page values for vehicle number and gatepass
+  number using match/mismatch card styling.
+- The prepared vehicle-tagging payload includes vehicle details, gatepass,
+  coordinates, contact number, both image values, and nullable `ipAddress`.
+- The POST request to `Url.VehicleTaggingEntries` is intentionally commented
+  out. The payload is currently logged only.
+- `finalizeRecord()` is exported and available to `add_gatepass.js`; it calls
+  the existing finalize route with a PATCH request.
 
-The working tree contains uncommitted changes for the cropper, docs, and
-generated bundle. `TODO.md` is staged; the new
-`src/public/modules/services/vehicle.js` is untracked. Preserve existing staging.
-`location-card.js` and `location-card-example.html` are
-tracked reference files. The location-card helper is not included in the
-production bundle, and the cropper does not submit images to eMandi.
-Location-card composition and eMandi submission are explicitly deferred in `TODO.md`.
+## Current flow
 
-## Next Session
+1. Validate Gatepass
+2. Crop Vehicle Image
+3. Crop Number Plate Image
+4. Select Location
+5. Review and Tag Vehicle
 
-Manually verify the cropper on mobile: both crop steps, drag/pinch/slider zoom,
-Back, final previews, closing while loading, failed image loads, and reopening.
-Also check the normal gatepass form with no queued images. Do not add test files
-or expand tagging beyond previews unless the user requests it.
+If record images are unavailable, Step 0 remains open and the user can select
+both images manually before continuing.
+
+## Remaining work
+
+- Connect the prepared payload to the real vehicle-tagging POST endpoint.
+- Confirm the final backend contract for both image fields and payload size.
+- Confirm whether `vehicleImage` and `vehicleFullImage` are mapped to the
+  intended backend fields; the current preparation uses the cropped plate and
+  stamped vehicle image according to the existing implementation.
+- Decide whether the hardcoded contact number should come from the page/session
+  instead of `9675679250`.
+- Replace hardcoded latitude/longitude payload values with selected coordinates
+  if required by the backend contract.
+- Complete the final end-to-end submission flow after the POST contract is
+  confirmed.
+- Verify the backend accepts `ipAddress: null`.
+- Confirm the backend body limit is at least 10 MB.
+- Decide whether the existing `finalizeRecord()` call in the gatepass submit
+  completion path should remain separate from vehicle-tagging submission.
+
+## Known glitches and risks
+
+- ArcGIS is a single point of failure for address metadata now that the other
+  reverse-geocoding providers have been removed. If ArcGIS omits a field, the
+  card may show `Not available`.
+- Location-card generation still performs a network lookup and canvas export;
+  the UI transition is asynchronous, but the final stamped preview depends on
+  that request completing.
+- If location-card generation fails after Review has opened, the error is shown
+  through the existing alert path. This failure state should be reviewed to
+  ensure Tag Vehicle cannot continue without a valid stamped image.
+- The real POST call is not active, so successful Review currently does not
+  submit vehicle-tagging data.
+- Manual browser verification is still required for mobile pinch gestures,
+  image failures, Reset, Back navigation, and closing while asynchronous work
+  is pending.
+- The current working tree already contains unrelated/uncommitted changes.
+  Preserve them and review the full diff before committing.
+
+## Documentation inconsistencies
+
+- `TODO.md` still describes location-card composition and submission as
+  deferred, although location-card composition is now implemented.
+- `AGENTS.md` still describes vehicle tagging as preview-only and says location
+  cards are deferred. That guidance should be updated if this implementation is
+  now the accepted direction.
+- The old root `location-card.js` and `location-card-example.html` remain
+  reference files and are not the implementation used by the bundle.
+
+## Verification performed
+
+- JavaScript syntax check passed with `node --check` for
+  `src/public/modules/services/vehicleTagging.js`.
+- No automated tests exist by repository policy.
+- `npm run build` was not run, in accordance with `AGENTS.md`.
+- The generated `dist/` output has not been updated.
+
+## Recommended next order
+
+1. Manually test the complete modal flow on desktop and mobile.
+2. Fix the location-card generation failure state before enabling submission.
+3. Confirm backend payload names, image mapping, nullable IP handling, and the
+   10 MB request limit.
+4. Enable and test the vehicle-tagging POST request.
+5. Update `TODO.md` and `AGENTS.md` to reflect the accepted location-card flow.
+6. Run the build only when explicitly requested, then verify the generated
+   bundle in the target userscript workflow.
