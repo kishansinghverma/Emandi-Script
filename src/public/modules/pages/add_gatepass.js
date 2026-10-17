@@ -1,8 +1,7 @@
-import { FetchParams, MessageType, Url } from "../constants.js";
-import { sendRequest } from "../services/backend.js";
+import { MessageType } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
-import { ComplexPromise, alertError, capitalize, hideLoader, hideModal, showAlert, showLoader, withButtonLoader } from "../services/utils.js";
+import { ComplexPromise, alertError, capitalize, hideModal, showAlert, withButtonLoader } from "../services/utils.js";
 import { initializeVehicleTagging } from "../services/vehicleTagging.js";
 
 class AddGatepass extends RecordHandler {
@@ -29,7 +28,7 @@ class AddGatepass extends RecordHandler {
         this.checkPaidType();
         $('#img-captcha').append($('#dntCaptchaImg'));
         resolveCaptcha('dntCaptchaImg').then(value => setResolvedCaptcha(value, 'in-captcha')).catch(alertError);
-        this.renderRecord().then(() => this.tagVehicle(this.record));
+        this.renderRecord();
     }
 
     checkPaidType = () => { if ($('#nine_r_id option').length > 0) this.selectPaidType() };
@@ -73,27 +72,11 @@ class AddGatepass extends RecordHandler {
         location.href = "/Traders/Dashboard";
     }
 
-    tagVehicle = () => {
-        initializeVehicleTagging(this.record);
-    }
-
     onComplete = () => {
         hideModal();
         setTimeout(() => $('.swal-overlay').hide(), 200);
         showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
-
-        if (this.record) {
-            showLoader('Finalizing Record...');
-
-            sendRequest(Url.FinalizeRecord, {
-                ...FetchParams.Patch,
-                body: JSON.stringify({
-                    rate: this.record.rate ?? 0,
-                    ninerId: $('#nine_r_id').val(),
-                    gatepassId: $('#transaction_number').val()
-                })
-            }).then(this.removeRecord).catch(alertError).finally(hideLoader);
-        }
+        initializeVehicleTagging();
     }
 
     handleAjaxResponse(option, response) {
