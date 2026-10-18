@@ -133,3 +133,61 @@ const getRecordById = (url, recordId) => {
 export const getSixrById = (sixrId) => getRecordById('/Traders/SP_Get_6R_List', sixrId);
 
 export const getNinerById = (ninerId) => getRecordById('/Traders/SP_Get_9R_List', ninerId);
+
+export const imageLabel = (type) => type === 'plate' ? 'Number plate' : 'Vehicle';
+
+export const validCoordinates = (value) => {
+    const latitude = Number(value?.latitude);
+    const longitude = Number(value?.longitude);
+    return Number.isFinite(latitude) && latitude >= -90 && latitude <= 90
+        && Number.isFinite(longitude) && longitude >= -180 && longitude <= 180;
+};
+
+export const randomizeCoordinates = ({ latitude, longitude }, maxDistanceKm = 0.1) => {
+    const earthRadiusKm = 6371;
+    const distance = Math.sqrt(Math.random()) * maxDistanceKm;
+    const bearing = Math.random() * Math.PI * 2;
+    const lat1 = Number(latitude) * Math.PI / 180;
+    const lon1 = Number(longitude) * Math.PI / 180;
+    const angularDistance = distance / earthRadiusKm;
+    const lat2 = Math.asin(
+        Math.sin(lat1) * Math.cos(angularDistance)
+        + Math.cos(lat1) * Math.sin(angularDistance) * Math.cos(bearing)
+    );
+    const lon2 = lon1 + Math.atan2(
+        Math.sin(bearing) * Math.sin(angularDistance) * Math.cos(lat1),
+        Math.cos(angularDistance) - Math.sin(lat1) * Math.sin(lat2)
+    );
+    return {
+        latitude: (lat2 * 180 / Math.PI).toFixed(7),
+        longitude: (lon2 * 180 / Math.PI).toFixed(7)
+    };
+};
+
+export const blobToBase64 = (blob) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+});
+
+export const parseErrorResponse = async (response) => {
+    const body = await response.text();
+    if (!body) return undefined;
+
+    try {
+        const parsed = JSON.parse(body);
+        return parsed.message || parsed.error || parsed.title;
+    } catch (_) {
+        return body.trim() || undefined;
+    }
+};
+
+export const getImageLoadError = async (type, response) => {
+    const label = imageLabel(type);
+    if (!response) return `Unable to load ${label.toLowerCase()} image.`;
+    if (response.status === 404) return `${label} image is not available.`;
+
+    const backendMessage = await parseErrorResponse(response);
+    return backendMessage || `Unable to load ${label.toLowerCase()} image.`;
+};

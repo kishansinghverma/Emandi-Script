@@ -2,7 +2,7 @@ import { MessageType } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
 import { ComplexPromise, alertError, capitalize, hideModal, showAlert, withButtonLoader } from "../services/utils.js";
-import { initializeVehicleTagging } from "../services/vehicleTagging.js";
+import { vehicleTagging } from "../services/vehicleTagging.js";
 
 class AddGatepass extends RecordHandler {
     constructor() {
@@ -76,7 +76,7 @@ class AddGatepass extends RecordHandler {
         hideModal();
         setTimeout(() => $('.swal-overlay').hide(), 200);
         showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
-        initializeVehicleTagging();
+        vehicleTagging.initialize();
     }
 
     handleAjaxResponse(option, response) {
