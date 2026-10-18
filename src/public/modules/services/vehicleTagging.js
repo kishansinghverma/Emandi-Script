@@ -1,12 +1,14 @@
-import { FetchParams, Url } from "../constants.js";
+import { FetchParams, MessageType, Url } from "../constants.js";
 import {
     alertError,
     blobToBase64,
     capitalize,
+    gatepassDateFormatter,
     getImageLoadError,
     hideLoader,
     imageLabel,
     randomizeCoordinates,
+    showAlert,
     showLoader,
     validCoordinates
 } from "./utils.js";
@@ -14,6 +16,7 @@ import { sendRequest } from "./backend.js";
 import { CaptchaLoader } from "../../assets/loader.js";
 import { vehicleTaggingEditor, vehicleTaggingLocation, vehicleTaggingModal, vehicleTaggingReview } from "../../assets/elements.js";
 import { RecordHandler } from "./record.js";
+import { sendGatepassById, sendNinerById } from "./receipt.js";
 
 const MODAL_SEL = '.vehicle-tagging-modal';
 
@@ -31,7 +34,6 @@ export class VehicleTagging extends RecordHandler {
     directFinalize = false;
     locationPending = false;
     cleanInteractions = null;
-    onComplete = null;
 
     gatepass = {
         number: '',
@@ -979,30 +981,42 @@ export class VehicleTagging extends RecordHandler {
             vehicleFullImage: vehicleImage
         };
 
-        console.log('Vehicle tagging payload:', payload);
-
-        // TODO: Send the prepared payload after the request contract is confirmed.
-        // sendRequest(Url.VehicleTaggingEntries, { ...FetchParams.Post, body: JSON.stringify(payload) });
+        showLoader('Tagging Vehicle...');
+        sendRequest(Url.VehicleTaggingEntries, { ...FetchParams.Post, body: JSON.stringify(payload) })
+            .then(async () => {
+                hideLoader();
+                showAlert(MessageType.Success, "Vehicle Tagged Successfully!");
+                await this.finalizeRecord();
+            }).catch(alertError).finally(hideLoader);
     };
 
-    finalizeRecord = () => {
+    finalizeRecord = async () => {
+        const date = gatepassDateFormatter($('#dateofissue').val());
+        const ninerId = $('#nine_r_id').val();
+        const gatepassId = this.gatepass?.number || $('.vehicle-tagging-gatepass-input').val() || $('#transaction_number').val();
+
+        showLoader('Sending Niner...');
+        await sendNinerById(ninerId, date, false, false, true).catch(alertError);
+
+        showLoader('Sending Gatepass...');
+        await sendGatepassById(gatepassId, date, false, false, true).catch(alertError);
+
         if (this.record) {
             showLoader('Finalizing Record...');
-
-            const patchData = {
-                rate: this.record.rate ?? 0,
-                ninerId: $('#nine_r_id').val(),
-                gatepassId: $('#transaction_number').val() || this.gatepass?.number || $('.vehicle-tagging-gatepass-input').val()
-            };
-
-            sendRequest(Url.FinalizeRecord, {
+            await sendRequest(Url.FinalizeRecord, {
                 ...FetchParams.Patch,
-                body: JSON.stringify(patchData)
-            }).then(() => {
-                this.removeRecord();
-                this.close();
-            }).catch(alertError).finally(hideLoader);
+                body: JSON.stringify({ rate: this.record.rate ?? 0, ninerId, gatepassId })
+            }).then(this.removeRecord).catch(alertError);
         }
+
+        this.onComplete();
+    };
+
+    onComplete = () => {
+        hideLoader();
+        this.close();
+        showAlert(MessageType.Success, "Gatepass Provisioned Successfully!");
+        location.href = "/Traders/Dashboard";
     };
 
     bindControls = () => {
@@ -1036,10 +1050,9 @@ export class VehicleTagging extends RecordHandler {
         this.renderEditorStep();
     };
 
-    initialize = async (record, onCompleteCallback) => {
+    initialize = async () => {
         this.resetState();
-        this.onComplete = onCompleteCallback;
-        this.record = record || await this.getRecord();
+        this.record = await this.getRecord();
 
         this.renderModal();
         this.bindControls();
@@ -1052,9 +1065,9 @@ export class VehicleTagging extends RecordHandler {
                 this.updateUI();
             });
 
-        $('.vehicle-tagging-next').off('click').on('click', () => {
+        $('.vehicle-tagging-next').off('click').on('click', async () => {
             if (this.directFinalize) {
-                this.finalizeRecord();
+                await this.finalizeRecord();
             } else {
                 (this.currentStep === 'review' ? this.handleReview() : this.handleNext()).catch(this.handleActionError);
             }

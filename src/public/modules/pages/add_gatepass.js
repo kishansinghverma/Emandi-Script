@@ -12,8 +12,7 @@ class AddGatepass extends RecordHandler {
 
     initializeForm = async () => {
         this.attachListener();
-        // this.executeInitialActions();
-        vehicleTagging.initialize();
+        this.executeInitialActions();
     }
 
     attachListener = () => {
@@ -68,15 +67,11 @@ class AddGatepass extends RecordHandler {
         }
     }
 
-    postComplete = () => {
-        showAlert(MessageType.Success, "Process Completed&emsp;🎉");
-        location.href = "/Traders/Dashboard";
-    }
-
     onComplete = () => {
         hideModal();
         setTimeout(() => $('.swal-overlay').hide(), 200);
         showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
+        vehicleTagging.initialize();
     }
 
     handleAjaxResponse(option, response) {
