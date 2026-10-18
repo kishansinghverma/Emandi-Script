@@ -195,7 +195,8 @@
     color: #15803d;
 }
 
-.vehicle-tagging-error-container .vehicle-tagging-image-error:has(.is-success) {
+.vehicle-tagging-error-container .vehicle-tagging-image-error:has(.is-success),
+.vehicle-tagging-error-container .vehicle-tagging-image-error.is-success {
     border-color: #86efac;
     background: #f0fdf4;
     color: #166534;
