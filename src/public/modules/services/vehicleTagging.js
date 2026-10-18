@@ -202,6 +202,7 @@ export class VehicleTagging extends RecordHandler {
     };
 
     loadRecordImages = async () => {
+        this.cleanupMedia();
         this.imageError = null;
         this.renderManualStep('Fetching images, please wait...');
         showLoader('Loading record images...');
@@ -226,6 +227,7 @@ export class VehicleTagging extends RecordHandler {
 
     reloadStepZero = () => {
         this.gatepass = { number: '', data: null, valid: false, pending: false, message: '', details: '' };
+        this.cleanupMedia();
         this.loadRecordImages().finally(() => this.validateGatepass());
     };
 
@@ -968,7 +970,9 @@ export class VehicleTagging extends RecordHandler {
             sendRequest(Url.FinalizeRecord, {
                 ...FetchParams.Patch,
                 body: JSON.stringify(patchData)
-            }).then(this.onComplete).catch(alertError).finally(hideLoader);
+            }).then(() => {
+                this.removeRecord();
+            }).catch(alertError).finally(hideLoader);
         }
     };
 
@@ -1000,7 +1004,6 @@ export class VehicleTagging extends RecordHandler {
         if ($(MODAL_SEL).length) return;
         $(vehicleTaggingModal).appendTo(document.body);
         $(MODAL_SEL).find('.custom-modal-header .link').click(this.close);
-        $(MODAL_SEL).find('.vehicle-tagging-reload').click(this.resetCanvas);
         this.renderEditorStep();
     };
 
@@ -1011,7 +1014,7 @@ export class VehicleTagging extends RecordHandler {
 
         this.renderModal();
         this.bindControls();
-        this.renderManualStep('Fetching images, please wait...');
+        this.renderManualStep('Fetching Images, Please wait...');
         $('.vehicle-tagging-reload').off('click.vehicleTagging').on('click.vehicleTagging', this.reloadStepZero);
 
         $('.vehicle-tagging-next').off('click').on('click', () => {
