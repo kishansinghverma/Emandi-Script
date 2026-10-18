@@ -1,6 +1,6 @@
 # Repository Guidelines
 
-Last reviewed: 2026-09-23 — recorded preview-only tagging, no-test policy, and preserved Webpack configuration.
+Last reviewed: 2026-10-19 — updated vehicle tagging scope to include location-card composition and backend submission.
 
 ## Project Structure & Module Organization
 
@@ -64,9 +64,12 @@ Run `npm run build` only when the user explicitly requests a build or generated
 
 ## Vehicle Tagging Scope
 
-Keep the tagging flow at vehicle and number-plate cropping with final previews.
-Location-card composition and eMandi submission are deferred in `TODO.md`; do
-not implement them until requested. Keep both image outputs separate.
+The vehicle tagging flow covers:
+1. Gatepass validation and vehicle/plate image loading (from S3 record or manual selection).
+2. Separate vehicle and number-plate cropping with image adjustments.
+3. Location selection with ArcGIS reverse geocoding to compose a stamped vehicle location card.
+4. Final review and submission of the tagging payload to the backend API (`Url.VehicleTaggingEntries`), followed by record finalization and receipt processing. Direct finalization without tagging is also supported when a queued record is present.
+Keep both vehicle and number-plate image outputs separate.
 
 ## Commit & Pull Request Guidelines
 

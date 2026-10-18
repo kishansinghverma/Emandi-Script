@@ -1,36 +1,28 @@
 # Refactor TODO
 
-## Vehicle Tagging (Deferred)
-
-- [ ] Submit the prepared images to eMandi once the tagging API flow is implemented.
-
-## 4. Clean Up Network Boundaries
+## 1. Clean Up Network Boundaries
 - [ ] Split Emandi-site requests from external backend requests into separate service modules.
-- [ ] Wrap `fetch` calls in a single HTTP helper with consistent error handling, status validation, and response parsing.
-- [ ] Remove duplicated request assembly for receipt lookup, PDF generation, and record fetching.
+- [ ] Wrap `fetch` calls in a single HTTP helper with consistent error handling, status validation, and response parsing (harden non-`.content` JSON parsing in `backend.js`).
 - [ ] Move `baseUrl` and environment-specific endpoints out of [src/public/modules/constants.js](/Users/kishansinghverma/Extras/Repos/Emandi-Script/src/public/modules/constants.js:16) into build/runtime config.
 
 ## 5. Refactor Page Controllers
 - [ ] Convert each page module into the same shape: `initialize`, `bindEvents`, `loadState`, `syncForm`, `submit`, `handleResponse`.
-- [ ] Move captcha wiring into a reusable helper instead of repeating it in login, 6R, 9R submit, and gatepass flows.
+- [ ] Move captcha wiring into a reusable helper instead of repeating it in login, 6R, 9R submit, and gatepass flows, and ensure image load is awaited before resolution.
 - [ ] Move record autofill into declarative field maps rather than manual `updateForm()` methods full of literals.
+- [ ] Replace deprecated `async: false` in `ninersubmit.js` with asynchronous promise handling.
 - [ ] Remove direct reliance on global site functions where possible, and wrap unavoidable globals behind adapter methods.
 
 ## 6. Make Printing Maintainable
 - [ ] Extract shared receipt-fetching logic in [src/public/modules/services/print.js](/Users/kishansinghverma/Extras/Repos/Emandi-Script/src/public/modules/services/print.js:4).
-- [ ] Replace fragile DOM scraping for receipt tables and party labels with document parsers that validate required nodes.
-- [ ] Separate “fetch receipt HTML”, “transform to PDF payload”, and “deliver output” into independent steps.
-- [ ] Make WhatsApp/send/print/download behavior explicit in function names and request payloads.
 
 ## 7. Reduce Magic Constants
-- [ ] Move crop codes, grade values, paid-type defaults, mobile fallback values, and date-window rules into named config.
+- [ ] Move crop codes (`58`), grade values (`9`), paid-type defaults, mobile numbers (`7037433280`, `9675679250`), and date-window rules into named config.
 - [ ] Document why each fixed value exists and which workflow depends on it.
 - [ ] Remove dead constants such as unused URLs or IDs unless they are part of planned work.
 
 ## 8. Improve UI Injection Hygiene
 - [ ] Prevent duplicate modal/notification/loader injection when the script executes more than once on the same page.
-- [ ] Separate modal markup from behavior so modal templates stay static and controllers stay procedural.
-- [ ] Standardize alert, loader, and modal lifecycle handling.
+- [ ] Add session pre-warming on `/Traders/Dashboard` and handle `/Traders/Dashboard` without throwing route injection error.
 - [ ] Remove draggable/modal behavior from the bootstrap path if it is not essential.
 
 ## 9. Rework Build and Delivery
