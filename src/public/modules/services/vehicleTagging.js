@@ -984,7 +984,6 @@ export class VehicleTagging extends RecordHandler {
         showLoader('Tagging Vehicle...');
         sendRequest(Url.VehicleTaggingEntries, { ...FetchParams.Post, body: JSON.stringify(payload) })
             .then(async () => {
-                hideLoader();
                 showAlert(MessageType.Success, "Vehicle Tagged Successfully!");
                 await this.finalizeRecord();
             }).catch(alertError).finally(hideLoader);
