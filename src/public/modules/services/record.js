@@ -1,5 +1,5 @@
 import { recordComponent } from "../../assets/elements.js";
-import { MessageType, Url } from "../constants.js";
+import { Messages, MessageType, Url } from "../constants.js";
 import { sendRequest } from "./backend.js";
 import { alertError, getNestedValue, hideLoader, showAlert, showLoader } from "./utils.js";
 
@@ -8,11 +8,11 @@ export class RecordHandler {
 
     #handlePayload = (record) => {
         if (record) return record;
-        showAlert(MessageType.Info, 'No Gatepass Queued', 5);
+        showAlert(MessageType.Info, Messages.NoGatepassQueued, 5);
     }
 
     #fetchRecord = async () => {
-        showLoader('Checking Queue...');
+        showLoader(Messages.CheckingQueue);
         return sendRequest(Url.PeekRecord).then(this.#handlePayload).catch(alertError).finally(hideLoader);
     }
 

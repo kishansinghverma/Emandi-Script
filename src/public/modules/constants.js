@@ -72,6 +72,79 @@ export const HttpMessages = {
     413: "Content too large to send to server!"
 }
 
+export const Messages = {
+    SixRCreated: '6R Created Successfully.<br>Heading To Payment...',
+    GatepassCreated: 'Gatepass Created Successfully!',
+    QuantitySelected: (qty = '') => `Quantity Selected : ${qty} Quintal!`,
+    NinerCreated: 'Niner Created Successfully!',
+    CaptchaResolutionFailed: (message = '') => `Captcha Resolution Failed: ${message}`,
+    CheckRequiredFields: 'Check All Required Fields!',
+    ReceiptActionFailed: 'Some Reciept Action Failed!',
+    NoGatepassQueued: 'No Gatepass Queued!',
+    LoadingImages: 'Loading Images...',
+    LoadingVehicleImage: 'Loading Vehicle Image...',
+    LoadingNumberPlateImage: 'Loading Number Plate Image...',
+    GatepassNumberRequired: 'Gatepass Number Is Required.',
+    UnableToValidateGatepass: 'Unable To Validate Gatepass Number.',
+    ImagesReadyNext: 'Images Ready, Click Next To Continue.',
+    ImagesReadyEnterGatepass: 'Images Ready, Enter Gatepass Number To Continue.',
+    ImagesNotAvailableManual: 'Images Not Available, Choose Manually.',
+    FetchingImages: 'Fetching Images, Please Wait...',
+
+    // Alert & Toast Messages
+    ScriptReady: 'Script Ready...',
+    VehicleTagged: 'Vehicle Tagged Successfully!',
+    GatepassProvisioned: 'Gatepass Provisioned Successfully!',
+    EmandiSessionReady: 'Emandi Session Ready!',
+    NinerProcessed: 'Niner Processed Successfully!',
+    GatepassProcessed: 'Gatepass Processed Successfully!',
+    NoPaid9RFound: 'No Paid Niner Found!',
+    NoPaid6RFound: 'No Paid SixR found!',
+    NinerNumberNotAvailable: 'Niner Number Not Available!',
+    NinerIdNotAvailable: 'Niner Id Not Available!',
+    GatepassNumberNotAvailable: 'Gatepass Number Not Available!',
+    GatepassIdNotAvailable: 'Gatepass Id Not Available!',
+    InvalidCaptcha: 'Invalid Captcha! Reloading...',
+    WeightNotProvided: 'Weight Not Provided!',
+    QuantityUnavailable: 'Quantity Unavailable!<br>Select Manually...',
+    NoPaymentsPending: 'No Payments Pending!',
+    ConfirmPrint: 'Are You Sure To Print?',
+
+    // Loader & Spinner Messages
+    ProcessingNiner: 'Processing Niner...',
+    ProcessingGatepass: 'Processing Gatepass...',
+    FetchingRecords: 'Fetching Records...',
+    TaggingVehicle: 'Tagging Vehicle...',
+    SendingNiner: 'Sending Niner...',
+    SendingGatepass: 'Sending Gatepass...',
+    FinalizingRecord: 'Finalizing Record...',
+    RefreshingEmandiSession: 'Refreshing Emandi Session...',
+    CheckingQueue: 'Checking Queue...',
+    PleaseWait: 'Please Wait...',
+    ResolvingCaptcha: 'Resolving Captcha...'
+}
+
+export const Labels = {
+    // Button Labels
+    Next: 'Next',
+    Review: 'Review',
+    TagVehicle: 'Tag Vehicle',
+    Finalize: 'Finalize',
+    ChooseAnImage: 'Choose an image',
+
+    // Input & Field Labels / Placeholders
+    GatepassNumber: 'Gatepass Number',
+
+    // Vehicle Tagging Modal Steps & Labels
+    ValidateGatepass: 'Validate Gatepass',
+    VehicleTagging: 'Vehicle Tagging',
+    NumberPlateTagging: 'Number Plate Tagging',
+    SelectLocation: 'Select Location',
+    ReviewVehicleTagging: 'Review Vehicle Tagging',
+    FinalizeDirectly: 'Finalize the record directly.',
+    GatepassValidatedFor: 'Gatepass Validated For'
+}
+
 export const Icon = {
     success: Loader.Success,
     error: Loader.Error,

@@ -1,4 +1,4 @@
-import { MessageType, StageMap, Stages } from "../constants.js";
+import { Messages, MessageType, StageMap, Stages } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
 import { ComplexPromise, alertError, capitalize, hideModal, showAlert, withButtonLoader } from "../services/utils.js";
@@ -66,7 +66,7 @@ class AddSixR extends RecordHandler {
                 }
             }
             else {
-                alertError('Check the required fields!');
+                alertError(Messages.CheckRequiredFields);
                 this.submissionPromise.reject();
             }
         });
@@ -74,7 +74,7 @@ class AddSixR extends RecordHandler {
 
     onComplete = () => {
         if (this.record) this.setRecord(this.record);
-        showAlert(MessageType.Success, '6R Created Successfully.<br>Heading To Payment');
+        showAlert(MessageType.Success, Messages.SixRCreated);
         window.location.href = StageMap[Stages.Payment].Url;
     }
 

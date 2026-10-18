@@ -1,4 +1,4 @@
-import { MessageType } from "../constants.js";
+import { Messages, MessageType } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
 import { ComplexPromise, alertError, capitalize, hideModal, showAlert, withButtonLoader } from "../services/utils.js";
@@ -62,7 +62,7 @@ class AddGatepass extends RecordHandler {
             }
         }
         else {
-            alertError('Check the required fields!');
+            alertError(Messages.CheckRequiredFields);
             this.submissionPromise.reject();
         }
     }
@@ -70,7 +70,7 @@ class AddGatepass extends RecordHandler {
     onComplete = () => {
         hideModal();
         setTimeout(() => $('.swal-overlay').hide(), 200);
-        showAlert(MessageType.Success, "Gatepass Created Successfully.", 3);
+        showAlert(MessageType.Success, Messages.GatepassCreated, 3);
         vehicleTagging.initialize();
     }
 
@@ -85,7 +85,7 @@ class AddGatepass extends RecordHandler {
                 if (option.data.includes('ExportType=0&PaidType=0')) this.selectPaidType();
                 //Handle fetching of Paid NineR(s).
                 else if (option.data.includes('ExportType=0&PaidType=1'))
-                    (response.length > 0) ? this.selectNiner() : showAlert(MessageType.Error, 'No Paid 9R Found!', 5);
+                    (response.length > 0) ? this.selectNiner() : showAlert(MessageType.Error, Messages.NoPaid9RFound, 5);
             }
             else if (option.url.includes('/Traders/add_gatepass')) {
                 // Validate Captcha is correctly parsed.

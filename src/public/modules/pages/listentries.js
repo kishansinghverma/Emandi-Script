@@ -1,4 +1,4 @@
-import { MessageType } from "../constants.js";
+import { Messages, MessageType } from "../constants.js";
 import { validateResponse } from "../services/backend.js";
 import { sendGatepassById, sendNinerById } from "../services/receipt.js";
 import { alertError, gatepassDateFormatter, getActionButton, getNinerById, getSixrById, hideLoader, ninerDateFormatter, showAlert, showLoader } from "../services/utils.js";
@@ -23,10 +23,10 @@ class GeneratedNineR {
         const date = ninerDateFormatter(data?.created_at);
 
         if (ninerNumber && date) {
-            showLoader("Processing Niner...");
+            showLoader(Messages.ProcessingNiner);
             sendNinerById(ninerNumber, date, print, download, share).catch(alertError).finally(hideLoader);
         }
-        else showAlert(MessageType.Error, 'Niner Number Not Available!', 5);
+        else showAlert(MessageType.Error, Messages.NinerNumberNotAvailable, 5);
     }
 
     viewReciept = (e => {
@@ -35,7 +35,7 @@ class GeneratedNineR {
         const recordId = data?.id;
 
         if (recordId != null) window.open(`/Receipt/print_9rs/${recordId}`, '_blank', 'noopener, noreferrer');
-        else showAlert(MessageType.Error, 'Niner Id Not Available!', 5);
+        else showAlert(MessageType.Error, Messages.NinerIdNotAvailable, 5);
     });
 
     printReciept = (e => this.processRecipt(e, true, false, false));
@@ -175,7 +175,7 @@ class ListGatepasses {
     }
 
     initializeTable = () => {
-        showLoader('Fetching Records...');
+        showLoader(Messages.FetchingRecords);
         $('#datatable-gp tbody').empty();
 
         const formData = new FormData();
@@ -225,10 +225,10 @@ class ListGatepasses {
         const date = gatepassDateFormatter(data?.created_at);
 
         if (gatepassNumber && date) {
-            showLoader("Processing Gatepass...");
+            showLoader(Messages.ProcessingGatepass);
             sendGatepassById(gatepassNumber, date, print, download, share).catch(alertError).finally(hideLoader);
         }
-        else showAlert(MessageType.Error, 'Gatepass Number Not Available!', 5);
+        else showAlert(MessageType.Error, Messages.GatepassNumberNotAvailable, 5);
     }
 
     viewReciept = (e => {
@@ -237,7 +237,7 @@ class ListGatepasses {
         const recordId = data?.id;
 
         if (recordId != null) window.open(`/Receipt/print_gps/${recordId}`, '_blank', 'noopener, noreferrer');
-        else showAlert(MessageType.Error, 'Gatepass Id Not Available!', 5);
+        else showAlert(MessageType.Error, Messages.GatepassIdNotAvailable, 5);
     });
 
     printReciept = (e => this.processRecipt(e, true, false, false));

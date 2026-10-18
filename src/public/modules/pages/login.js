@@ -1,4 +1,4 @@
-import { MessageType, Url } from "../constants.js";
+import { Messages, MessageType, Url } from "../constants.js";
 import { sendRequest } from "../services/backend.js";
 import { setResolvedCaptcha, validateCaptcha, resolveCaptcha } from "../services/captcha.js";
 import { ComplexPromise, showAlert, alertError } from "../services/utils.js";
@@ -28,7 +28,7 @@ class LoginForm {
     }
 
     executeInitialActions() {
-        showAlert(MessageType.Success, 'Script Ready...')
+        showAlert(MessageType.Success, Messages.ScriptReady)
         $('#dntCaptchaRefreshButton').click();
         this.loginPromise.resolve();
     }

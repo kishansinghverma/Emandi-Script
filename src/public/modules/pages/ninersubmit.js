@@ -1,4 +1,4 @@
-import { MessageType, StageMap, Stages } from "../constants.js";
+import { Messages, MessageType, StageMap, Stages } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
 import { alertError, showAlert, ComplexPromise, withButtonLoader } from "../services/utils.js";
@@ -25,7 +25,7 @@ class NinerSubmit extends RecordHandler {
 
     validateExecution = () => {
         if (!$('#dntCaptchaImg')[0]) {
-            showAlert(MessageType.Error, "No Paid 6R found!", 5);
+            showAlert(MessageType.Error, Messages.NoPaid6RFound, 5);
             $('.custom-modal').hide();
             throw new Error('No Paid 6R found!');
         }
@@ -42,7 +42,7 @@ class NinerSubmit extends RecordHandler {
         let requiredWeight = parseFloat($('#weight').val());
         if (isNaN(requiredWeight) || !(requiredWeight > 0)) {
             this.submissionPromise.reject();
-            alertError('Weight Not Provided!');
+            alertError(Messages.WeightNotProvided);
             throw new Error('Weight Not Provided!');
         }
 
@@ -60,10 +60,10 @@ class NinerSubmit extends RecordHandler {
         });
 
         if (parseFloat($('#weight').val()) === parseFloat($('#takenQty').text()))
-            showAlert(MessageType.Success, `Quantity Selected : ${$('#takenQty').text()} Quintal.`)
+            showAlert(MessageType.Success, Messages.QuantitySelected($('#takenQty').text()))
         else {
             this.submissionPromise.reject();
-            alertError('Quantity Unavailable!<br>Select Manually...');
+            alertError(Messages.QuantityUnavailable);
             throw new Error('Select Manually...');
         }
     }
@@ -92,7 +92,7 @@ class NinerSubmit extends RecordHandler {
     }
 
     onComplete = () => {
-        showAlert(MessageType.Success, "Niner Created Successfully.", 5);
+        showAlert(MessageType.Success, Messages.NinerCreated, 5);
         if (this.record) this.setRecord({
             ...this.record,
             rate: $('#rate').val()

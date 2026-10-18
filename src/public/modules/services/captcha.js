@@ -1,4 +1,4 @@
-import { MessageType, Url, FetchParams } from "../constants.js";
+import { FetchParams, Messages, MessageType, Url } from "../constants.js";
 import { showAlert } from "./utils.js";
 import { CaptchaLoader } from "../../assets/loader.js";
 import { sendRequest } from "./backend.js";
@@ -13,7 +13,7 @@ const showCaptchaLoader = () => {
             $input.after(CaptchaLoader);
         }
         $input.parent().addClass('loading');
-        $input.attr('placeholder', 'Resolving Captcha...');
+        $input.attr('placeholder', Messages.ResolvingCaptcha);
     }
 };
 
@@ -44,7 +44,7 @@ const tryResolve = async (source) => {
 
 export const resolveCaptcha = async (source) => {
     const parsedText = await tryResolve(source).catch(err => {
-        showAlert(MessageType.Error, `Captcha resolution failed, ${err.message}`, 4);
+        showAlert(MessageType.Error, Messages.CaptchaResolutionFailed(err.message), 4);
         const $input = $('#in-captcha').length ? $('#in-captcha') : $('#DNTCaptchaInputText');
         $input.val('').focus();
     });
@@ -58,7 +58,7 @@ export const setResolvedCaptcha = (value, target) => {
 
 export const validateCaptcha = (response, isLogin) => {
     function invalidate() {
-        showAlert(MessageType.Error, 'Invalid Captcha! Reloading...');
+        showAlert(MessageType.Error, Messages.InvalidCaptcha);
         setTimeout(() => location.reload(), 1000);
     }
 

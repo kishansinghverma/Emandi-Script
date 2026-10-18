@@ -1,4 +1,4 @@
-import { MessageType } from "../constants.js";
+import { Messages, MessageType } from "../constants.js";
 import { showAlert } from "../services/utils.js";
 
 class DigitalPayment {
@@ -28,7 +28,7 @@ class DigitalPayment {
         }
     }
 
-    notifyEmptyResponse = () => showAlert(MessageType.Info, 'No Payments Pending!', 5);
+    notifyEmptyResponse = () => showAlert(MessageType.Info, Messages.NoPaymentsPending, 5);
 }
 
 class GeneratedDigitalPayment {

@@ -1,4 +1,4 @@
-import { backendBaseUrl, FetchParams, MessageType, Url } from "../constants.js";
+import { backendBaseUrl, FetchParams, Messages, MessageType, Url } from "../constants.js";
 import { sendRequest } from "./backend.js";
 import { parseGatepassReceipt, parseNinerReceipt } from "./extractor.js";
 import { alertError, hideLoader, showAlert, showLoader } from "./utils.js";
@@ -7,7 +7,7 @@ const handleDocumentResponse = async (response) => {
     if (!response.actions) throw new Error('Could not parse response.');
 
     if (Object.values(response.actions).some(action => action.status === "failure"))
-        alertError("Some actions were not completed successfully!");
+        alertError(Messages.ReceiptActionFailed);
 
     if (response.actions?.download?.status === 'success') {
         const url = response.actions?.download?.url;
@@ -25,10 +25,10 @@ const sendDocumentRequest = async (url, payload) => sendRequest(url, {
 }).then(handleDocumentResponse);
 
 const sendNiner = async (payload) => sendDocumentRequest(Url.sendNiner, payload)
-    .then(() => showAlert(MessageType.Success, "Niner Processed Successfully!", 5));
+    .then(() => showAlert(MessageType.Success, Messages.NinerProcessed, 5));
 
 const sendGatepass = async (payload) => sendDocumentRequest(Url.sendGatepass, payload)
-    .then(() => showAlert(MessageType.Success, "Gatepass Processed Successfully!", 5));
+    .then(() => showAlert(MessageType.Success, Messages.GatepassProcessed, 5));
 
 const sendLatestNiner = (print, download, share) => sendNiner({
     source: 'latest',
@@ -75,12 +75,12 @@ export const printGatepassFromHtml = (element, print, download, share) => {
 };
 
 const printLastNiner = (print, download, share) => {
-    showLoader('Processing Niner...');
+    showLoader(Messages.ProcessingNiner);
     return sendLatestNiner(print, download, share).catch(alertError).finally(hideLoader);
 };
 
 const printLastGatepass = (print, download, share) => {
-    showLoader('Processing Gatepass...');
+    showLoader(Messages.ProcessingGatepass);
     return sendLatestGatepass(print, download, share).catch(alertError).finally(hideLoader);
 };
 

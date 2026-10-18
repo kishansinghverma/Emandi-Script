@@ -1,4 +1,4 @@
-import { FetchParams, MessageType, Url } from "../constants.js";
+import { FetchParams, Labels, Messages, MessageType, Url } from "../constants.js";
 import {
     alertError,
     blobToBase64,
@@ -113,9 +113,9 @@ export class VehicleTagging extends RecordHandler {
 
     manualImagesReady = () => Boolean(this.media.raw.vehicle && this.media.raw.plate);
 
-    getImageReadyMessage = (successMessage = 'Both images are ready. Click next to continue.') => this.gatepass.valid
+    getImageReadyMessage = (successMessage = Messages.ImagesReadyNext) => this.gatepass.valid
         ? successMessage
-        : 'Images ready. Enter a valid gatepass number to continue.';
+        : Messages.ImagesReadyEnterGatepass;
 
     updateGatepassStatus = (message, valid = false, details = '') => {
         this.gatepass.message = message || '';
@@ -147,7 +147,7 @@ export class VehicleTagging extends RecordHandler {
         if (!value) {
             this.gatepass.pending = false;
             $('.vehicle-tagging-gatepass-input-wrapper').removeClass('loading');
-            this.updateGatepassStatus('Gatepass number is required.');
+            this.updateGatepassStatus(Messages.GatepassNumberRequired);
             this.updateUI();
             return false;
         }
@@ -155,13 +155,13 @@ export class VehicleTagging extends RecordHandler {
         try {
             const response = await sendRequest(`${Url.GetVehicleTaggingVehicle}?gatepassId=${encodeURIComponent(value)}`);
             if (typeof response === 'string') throw new Error(response);
-            if (!response || typeof response !== 'object') throw new Error('Unable to validate gatepass number.');
+            if (!response || typeof response !== 'object') throw new Error(Messages.UnableToValidateGatepass);
 
             this.gatepass.number = value;
             this.gatepass.data = response;
             this.gatepass.valid = true;
             this.updateGatepassStatus(
-                'Gatepass Validated For',
+                Labels.GatepassValidatedFor,
                 true,
                 `${capitalize(response.vehicleName || 'vehicle')} - ${response.vehicleNumber || 'Not available'}`
             );
@@ -170,7 +170,7 @@ export class VehicleTagging extends RecordHandler {
             }
             return true;
         } catch (error) {
-            this.updateGatepassStatus(error.message || 'Unable to validate gatepass number.');
+            this.updateGatepassStatus(error.message || Messages.UnableToValidateGatepass);
             if (this.manualImagesReady()) {
                 this.renderManualStep(this.getImageReadyMessage());
             }
@@ -183,7 +183,7 @@ export class VehicleTagging extends RecordHandler {
     };
 
     preloadImage = async (type, path) => {
-        if (!path) throw new Error(`No ${type} image is available.`);
+        if (!path) throw new Error(`No ${capitalize(type)} Image Is Available.`);
         const response = await fetch(`${Url.GetS3File}?path=${encodeURIComponent(path)}`);
         if (!response.ok) throw new Error(await getImageLoadError(type, response));
 
@@ -198,7 +198,7 @@ export class VehicleTagging extends RecordHandler {
             });
         } catch (_) {
             URL.revokeObjectURL(url);
-            throw new Error(`Unable to parse ${imageLabel(type).toLowerCase()} image.`);
+            throw new Error(`Unable To Parse ${capitalize(imageLabel(type))} Image.`);
         }
         if (previousUrl) URL.revokeObjectURL(previousUrl);
         this.media.previewUrls[type] = url;
@@ -208,8 +208,8 @@ export class VehicleTagging extends RecordHandler {
     loadRecordImages = async () => {
         this.cleanupMedia();
         this.imageError = null;
-        this.renderManualStep('Fetching images, please wait...');
-        showLoader('Loading record images...');
+        this.renderManualStep(Messages.FetchingImages);
+        showLoader(Messages.LoadingImages);
 
         const results = await Promise.all(['vehicle', 'plate'].map(async (type) => {
             const path = type === 'vehicle' ? this.record?.rawVehicleImage : this.record?.rawNumberPlateImage;
@@ -223,8 +223,8 @@ export class VehicleTagging extends RecordHandler {
         void results;
 
         this.renderManualStep(this.imageError || (this.manualImagesReady()
-            ? this.getImageReadyMessage('Images loaded from record. Click next to continue.')
-            : 'Images not available, choose them manually.'));
+            ? this.getImageReadyMessage('Images Loaded From record. Click Next To Continue.')
+            : Messages.ImagesNotAvailableManual));
         this.updateUI();
         hideLoader();
     };
@@ -253,7 +253,7 @@ export class VehicleTagging extends RecordHandler {
         const previousUrl = this.media.previewUrls[type];
         const url = URL.createObjectURL(file);
         const image = new Image();
-        this.renderManualStep('Fetching images, please wait...');
+        this.renderManualStep(Messages.FetchingImages);
         this.updateUI();
 
         image.onload = () => {
@@ -268,7 +268,7 @@ export class VehicleTagging extends RecordHandler {
         };
         image.onerror = () => {
             URL.revokeObjectURL(url);
-            this.imageError = `Unable to parse ${imageLabel(type).toLowerCase()} image.`;
+            this.imageError = `Unable To Parse ${capitalize(imageLabel(type))} Image.`;
             this.renderManualStep(this.imageError);
             this.updateUI();
         };
@@ -338,7 +338,7 @@ export class VehicleTagging extends RecordHandler {
         } else {
             selectArea.append(
                 $('<i>').addClass('fa fa-image vehicle-tagging-manual-select-icon'),
-                $('<span>').text('Choose an image')
+                $('<span>').text(Labels.ChooseAnImage)
             );
         }
 
@@ -353,21 +353,21 @@ export class VehicleTagging extends RecordHandler {
 
         const isSuccessMessage = this.gatepass.valid
             && this.manualImagesReady()
-            && /both images are ready|images loaded from record/i.test(message);
+            && /Both Images Are Ready|Images Loaded From Record/i.test(message);
 
         $('.vehicle-tagging-modal-content').html($('<div>', {
             class: 'vehicle-tagging-review-container vehicle-tagging-error-container'
         }).append(
             $('<div>', { class: 'vehicle-tagging-gatepass-field' }).append(
                 $('<div>', { class: 'vehicle-tagging-gatepass-header' }).append(
-                    $('<label>').text('Gatepass Number')
+                    $('<label>').text(Labels.GatepassNumber)
                 ),
                 $('<div>', { class: 'captcha-input-wrapper vehicle-tagging-gatepass-input-wrapper' }).append(
                     $('<input>', {
                         class: 'vehicle-tagging-gatepass-input',
                         type: 'text',
                         value: this.gatepass.number || $('#transaction_number').val() || '',
-                        placeholder: 'Gatepass Number'
+                        placeholder: Labels.GatepassNumber
                     }).attr('autocomplete', 'off'),
                     CaptchaLoader
                 ),
@@ -386,7 +386,7 @@ export class VehicleTagging extends RecordHandler {
                         type: 'checkbox',
                         class: 'vehicle-tagging-direct-finalize-checkbox'
                     }).prop('checked', this.directFinalize),
-                    $('<span>').text('Finalize the record directly.')
+                    $('<span>').text(Labels.FinalizeDirectly)
                 )
             )
         ));
@@ -511,7 +511,7 @@ export class VehicleTagging extends RecordHandler {
         const longitude = Number(coordinates?.longitude);
         if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90
             || !Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
-            throw new TypeError('Valid latitude and longitude are required.');
+            throw new TypeError('Valid Latitude And Longitude Are Required.');
         }
 
         const response = await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?${new URLSearchParams({
@@ -519,21 +519,21 @@ export class VehicleTagging extends RecordHandler {
             distance: '1000',
             f: 'json'
         })}`, { headers: { Accept: 'application/json' } });
-        if (!response.ok) throw new Error(`ArcGIS lookup failed (${response.status}).`);
+        if (!response.ok) throw new Error(`ArcGIS Lookup Failed: ${response.status}.`);
 
         const address = (await response.json()).address || {};
 
         const cityName = address.City || address.city || address.town || address.village || address.municipality;
         const districtName = address.District || address.Subregion || address.city_district || address.county || address.state_district;
         const city = [cityName, districtName].filter(Boolean).filter((value, index, values) => values.indexOf(value) === index).join(', ') || 'Not available';
-        const street = address.Address || address.address || 'Not available';
+        const street = address.Address || address.address || 'Not Available';
         const postcode = address.Postal || address.PostalCode || address.postalCode || address.postcode || address.postal_code;
         const state = address.Region || address.State || address.state;
-        const stateAndPincode = [state, postcode].filter(Boolean).join(' - ') || 'Not available';
+        const stateAndPincode = [state, postcode].filter(Boolean).join(' - ') || 'Not Available';
         const countryCode = address.CountryCode || address.country_code;
         const country = address.Country || address.country
             || ({ IN: 'India', IND: 'India' }[countryCode] || countryCode)
-            || 'Not available';
+            || 'Not Available';
 
         const plusCode = (() => {
             const alphabet = '23456789CFGHJMPQRVWX';
@@ -568,7 +568,7 @@ export class VehicleTagging extends RecordHandler {
         const image = await new Promise((resolve, reject) => {
             const loaded = new Image();
             loaded.onload = () => resolve(loaded);
-            loaded.onerror = () => reject(new Error('Could not load vehicle image.'));
+            loaded.onerror = () => reject(new Error('Could Not Load Vehicle Image.'));
             if (imageSource instanceof Blob) {
                 imageUrl = URL.createObjectURL(imageSource);
                 loaded.src = imageUrl;
@@ -777,7 +777,7 @@ export class VehicleTagging extends RecordHandler {
         const vehicleType = this.gatepass.data?.vehicleName || 'Vehicle';
         const vehicleNumber = String(this.gatepass.data?.vehicleNumber || '').trim();
         const pageVehicleNumber = String($('#vehicle_no').val() || '').trim();
-        const vehicleDetails = vehicleNumber ? `${vehicleType} - ${vehicleNumber}` : 'Not available';
+        const vehicleDetails = vehicleNumber ? `${vehicleType} - ${vehicleNumber}` : 'Not Available';
         const vehicleMatchesPage = Boolean(vehicleNumber && pageVehicleNumber && vehicleNumber === pageVehicleNumber);
 
         $('.vehicle-tagging-review-vehicle-details-value').text(vehicleDetails);
@@ -786,7 +786,7 @@ export class VehicleTagging extends RecordHandler {
             .toggleClass('is-mismatch', Boolean(vehicleNumber) && !vehicleMatchesPage);
 
         const gatepassMatchesPage = Boolean(reviewGatepassNumber && pageGatepassNumber && reviewGatepassNumber.trim() === pageGatepassNumber);
-        $('.vehicle-tagging-review-gatepass-value').text(reviewGatepassNumber || 'Not available');
+        $('.vehicle-tagging-review-gatepass-value').text(reviewGatepassNumber || 'Not Available');
         $('.vehicle-tagging-gatepass-card')
             .toggleClass('is-match', gatepassMatchesPage)
             .toggleClass('is-mismatch', Boolean(reviewGatepassNumber) && !gatepassMatchesPage);
@@ -799,15 +799,27 @@ export class VehicleTagging extends RecordHandler {
     };
 
     updateUI = () => {
-        const titles = { manual: 'Validate Gatepass', vehicle: 'Vehicle Tagging', plate: 'Number Plate Tagging', location: 'Select Location', review: 'Review Vehicle Tagging' };
-        const nextLabels = { manual: 'Next', vehicle: 'Next', plate: 'Next', location: 'Review', review: 'Tag Vehicle' };
+        const titles = {
+            manual: Labels.ValidateGatepass,
+            vehicle: Labels.VehicleTagging,
+            plate: Labels.NumberPlateTagging,
+            location: Labels.SelectLocation,
+            review: Labels.ReviewVehicleTagging
+        };
+        const nextLabels = {
+            manual: Labels.Next,
+            vehicle: Labels.Next,
+            plate: Labels.Next,
+            location: Labels.Review,
+            review: Labels.TagVehicle
+        };
 
         $('.vehicle-tagging-title').text(titles[this.currentStep]);
         $('.vehicle-tagging-direct-finalize-card').toggle(Boolean(this.record)).toggleClass('is-checked', this.directFinalize);
         $('.vehicle-tagging-direct-finalize-checkbox').prop('checked', this.directFinalize);
 
         if (this.directFinalize) {
-            $('.vehicle-tagging-next-label').text('Finalize');
+            $('.vehicle-tagging-next-label').text(Labels.Finalize);
             $('.vehicle-tagging-next i').attr('class', 'fa fa-check');
             $('.vehicle-tagging-next').addClass('is-finalize').prop('disabled', !this.record);
         } else {
@@ -827,7 +839,7 @@ export class VehicleTagging extends RecordHandler {
 
     loadVehicleTaggingImage = (type) => {
         const image = this.media.raw[type];
-        if (!image) throw new Error(`The ${type} image has not been preloaded.`);
+        if (!image) throw new Error(`The ${capitalize(type)} Image Has Not Been Preloaded.`);
 
         this.canvasState.image = image;
         this.setupCanvasInteractions();
@@ -881,14 +893,14 @@ export class VehicleTagging extends RecordHandler {
         if (step === 'manual') {
             this.renderManualStep(this.imageError || (this.manualImagesReady()
                 ? this.getImageReadyMessage()
-                : 'Images not available, choose them manually.'));
+                : Messages.ImagesNotAvailableManual));
             $('.vehicle-tagging-reload').off('click.vehicleTagging').on('click.vehicleTagging', this.reloadStepZero);
             return;
         }
 
         this.renderEditorStep();
         $('.vehicle-tagging-reload').off('click.vehicleTagging').on('click.vehicleTagging', this.resetCanvas);
-        showLoader(`Loading ${step === 'vehicle' ? 'vehicle' : 'number plate'} image...`);
+        showLoader(step === 'vehicle' ? Messages.LoadingVehicleImage : Messages.LoadingNumberPlateImage);
         try {
             this.loadVehicleTaggingImage(step);
         } catch (err) {
@@ -937,7 +949,7 @@ export class VehicleTagging extends RecordHandler {
         }
 
         const image = await this.exportCroppedImage();
-        if (!image) throw new Error('Unable to finalize the current image.');
+        if (!image) throw new Error('Unable To Finalize The Current Image.');
 
         if (this.currentStep === 'vehicle') {
             this.media.finalized.vehicle = image;
@@ -981,10 +993,10 @@ export class VehicleTagging extends RecordHandler {
             vehicleFullImage: vehicleImage
         };
 
-        showLoader('Tagging Vehicle...');
+        showLoader(Messages.TaggingVehicle);
         sendRequest(Url.VehicleTaggingEntries, { ...FetchParams.Post, body: JSON.stringify(payload) })
             .then(async () => {
-                showAlert(MessageType.Success, "Vehicle Tagged Successfully!");
+                showAlert(MessageType.Success, Messages.VehicleTagged);
                 await this.finalizeRecord();
             }).catch(alertError).finally(hideLoader);
     };
@@ -994,14 +1006,14 @@ export class VehicleTagging extends RecordHandler {
         const ninerId = $('#nine_r_id').val();
         const gatepassId = this.gatepass?.number || $('.vehicle-tagging-gatepass-input').val() || $('#transaction_number').val();
 
-        showLoader('Sending Niner...');
+        showLoader(Messages.SendingNiner);
         await sendNinerById(ninerId, date, false, false, true).catch(alertError);
 
-        showLoader('Sending Gatepass...');
+        showLoader(Messages.SendingGatepass);
         await sendGatepassById(gatepassId, date, false, false, true).catch(alertError);
 
         if (this.record) {
-            showLoader('Finalizing Record...');
+            showLoader(Messages.FinalizingRecord);
             await sendRequest(Url.FinalizeRecord, {
                 ...FetchParams.Patch,
                 body: JSON.stringify({ rate: this.record.rate ?? 0, ninerId, gatepassId })
@@ -1014,7 +1026,7 @@ export class VehicleTagging extends RecordHandler {
     onComplete = () => {
         hideLoader();
         this.close();
-        showAlert(MessageType.Success, "Gatepass Provisioned Successfully!");
+        showAlert(MessageType.Success, Messages.GatepassProvisioned);
         location.href = "/Traders/Dashboard";
     };
 
@@ -1055,7 +1067,7 @@ export class VehicleTagging extends RecordHandler {
 
         this.renderModal();
         this.bindControls();
-        this.renderManualStep('Fetching Images, Please wait...');
+        this.renderManualStep(Messages.FetchingImages);
         $('.vehicle-tagging-reload').off('click.vehicleTagging').on('click.vehicleTagging', this.reloadStepZero);
         $('.vehicle-tagging-direct-finalize-checkbox')
             .off('change.vehicleTagging')

@@ -1,4 +1,4 @@
-import { ItemsToHide, MessageType, RouteMap, Url } from '../constants.js';
+import { ItemsToHide, Messages, MessageType, RouteMap, Url } from '../constants.js';
 import { Modals } from '../../assets/modals.js';
 import { PrintReceiptButton, SendReceiptButton, SessionResetButton, notificationComponent } from '../../assets/elements.js';
 import { Loader } from '../../assets/loader.js';
@@ -13,13 +13,13 @@ const initializeLoader = () => $(document.body).append(Loader);
 const addLinks = () => {
     $('#aside > ul > li:nth-child(10)')?.after($(SendReceiptButton).click(() => printLastReceipts(false, false, true)));
     $('#aside > ul > li:nth-child(10)')?.after($(PrintReceiptButton).click(() => {
-        if (confirm('Are You Sure To Print?')) printLastReceipts(true, false, false);
+        if (confirm(Messages.ConfirmPrint)) printLastReceipts(true, false, false);
     }));
 
     $('#header > div.navbar-collapse > ul.navbar-right > li:nth-child(1)').before($(SessionResetButton).click(() => {
-        showLoader('Refreshing Emandi Session...');
+        showLoader(Messages.RefreshingEmandiSession);
         sendRequest(Url.Session)
-            .then(() => showAlert(MessageType.Success, 'Emandi Session Ready!'))
+            .then(() => showAlert(MessageType.Success, Messages.EmandiSessionReady))
             .catch(alertError).finally(hideLoader);
     }));
 }

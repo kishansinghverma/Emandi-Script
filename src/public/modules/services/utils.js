@@ -1,4 +1,4 @@
-import { Icon, MessageType } from "../constants.js";
+import { Icon, Messages, MessageType } from "../constants.js";
 import { validateResponse } from "./backend.js";
 
 let notificationTimeoutId;
@@ -102,7 +102,7 @@ export const showLoader = (message) => {
 export const hideLoader = () => {
     $('.spinner-container').fadeTo(300, 0, () => {
         $('.spinner-container').css({ opacity: 0, display: 'none' });
-        $('.spinner-message').text('Please Wait...');
+        $('.spinner-message').text(Messages.PleaseWait);
     })
 }
 
@@ -185,9 +185,9 @@ export const parseErrorResponse = async (response) => {
 
 export const getImageLoadError = async (type, response) => {
     const label = imageLabel(type);
-    if (!response) return `Unable to load ${label.toLowerCase()} image.`;
-    if (response.status === 404) return `${label} image is not available.`;
+    if (!response) return `Unable To Load ${capitalize(label)} Image.`;
+    if (response.status === 404) return `${capitalize(label)} Image Not Available.`;
 
     const backendMessage = await parseErrorResponse(response);
-    return backendMessage || `Unable to load ${label.toLowerCase()} image.`;
+    return backendMessage || `Unable To Load ${capitalize(label)} Image.`;
 };
