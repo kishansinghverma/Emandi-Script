@@ -818,6 +818,61 @@
     background: #ede9fe;
 }
 
+.vehicle-tagging-direct-finalize-card {
+    display: flex;
+    align-items: center;
+    width: min(100%, 760px);
+    min-width: 0;
+    margin: 14px auto 0;
+    padding: 12px 18px;
+    border: 1px solid #dbe3ef;
+    border-radius: 14px;
+    background: #f8fafc;
+    box-sizing: border-box;
+    transition: border-color .15s ease, background-color .15s ease;
+}
+
+.vehicle-tagging-direct-finalize-card:hover {
+    border-color: #cbd5e1;
+    background: #f1f5f9;
+}
+
+.vehicle-tagging-direct-finalize-card.is-checked {
+    border-color: #a7f3d0;
+    background: #ecfdf5;
+}
+
+.vehicle-tagging-direct-finalize {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    user-select: none;
+}
+
+.vehicle-tagging-direct-finalize input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #047857;
+}
+
+.vehicle-tagging-next.is-finalize {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #047857;
+}
+
+.vehicle-tagging-next.is-finalize:hover {
+    background: #d1fae5;
+}
+
 @media (max-width: 600px) {
     .vehicle-tagging-modal {
         width: calc(100% - 16px);
@@ -912,6 +967,11 @@
     .vehicle-tagging-modal-footer {
         gap: 12px;
         padding: 12px 10px 14px;
+    }
+
+    .vehicle-tagging-direct-finalize-card {
+        padding: 10px 14px;
+        margin-top: 10px;
     }
 
     .vehicle-tagging-next-actions {
