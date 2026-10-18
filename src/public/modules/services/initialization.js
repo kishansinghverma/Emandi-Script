@@ -1,9 +1,10 @@
-import { ItemsToHide, RouteMap } from '../constants.js';
+import { ItemsToHide, MessageType, RouteMap, Url } from '../constants.js';
 import { Modals } from '../../assets/modals.js';
-import { PrintReceiptButton, SendReceiptButton, notificationComponent } from '../../assets/elements.js';
+import { PrintReceiptButton, SendReceiptButton, SessionResetButton, notificationComponent } from '../../assets/elements.js';
 import { Loader } from '../../assets/loader.js';
-import { hideAlert, hideModal } from './utils.js';
+import { alertError, hideAlert, hideLoader, hideModal, showAlert, showLoader } from './utils.js';
 import { printLastReceipts } from './receipt.js';
+import { sendRequest } from './backend.js';
 
 const hideLinks = () => ItemsToHide.forEach(item => $(item)?.hide());
 const replaceLink = () => document.querySelector('[href="/Traders/NinerDashboard"]')?.setAttribute('href', '/Traders/NineR');
@@ -13,6 +14,13 @@ const addLinks = () => {
     $('#aside > ul > li:nth-child(10)')?.after($(SendReceiptButton).click(() => printLastReceipts(false, false, true)));
     $('#aside > ul > li:nth-child(10)')?.after($(PrintReceiptButton).click(() => {
         if (confirm('Are You Sure To Print?')) printLastReceipts(true, false, false);
+    }));
+
+    $('#header > div.navbar-collapse > ul.navbar-right > li:nth-child(1)').before($(SessionResetButton).click(() => {
+        showLoader('Refreshing Emandi Session...');
+        sendRequest(Url.Session)
+            .then(() => showAlert(MessageType.Success, 'Emandi Session Ready!'))
+            .catch(alertError).finally(hideLoader);
     }));
 }
 

@@ -16,6 +16,14 @@ export const PrintReceiptButton = `
         </a>
     </li>`;
 
+export const SessionResetButton = `
+    <li>
+        <a href="#">
+            <i class="fa fa-refresh"></i>
+            <span> Reset Session </span>
+        </a>
+    </li>`;
+
 export const notificationComponent = `
     <div class="notification-container" role="status" aria-live="polite" aria-atomic="true">
         <div class="notification-body">
