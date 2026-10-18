@@ -148,7 +148,6 @@
     align-items: center;
     justify-content: center;
     flex: 1 1 auto;
-    min-height: 0;
     min-height: 120px;
     gap: 18px;
     width: 100%;
@@ -338,7 +337,8 @@
 }
 
 .vehicle-tagging-manual-picker-card.has-image .vehicle-tagging-manual-select {
-    border-color: #15803d;
+    border: 1px dashed #34d399;
+    background: #f0fdf4;
 }
 
 .vehicle-tagging-manual-picker-input {
@@ -487,11 +487,6 @@
     background: #e2e8f0;
     accent-color: #7c3aed;
     cursor: pointer;
-}
-
-.vehicle-tagging-manual-picker-card.has-image .vehicle-tagging-manual-select {
-    border: 1px dashed #34d399;
-    background: #f0fdf4;
 }
 
 .vehicle-tagging-step {
@@ -678,9 +673,9 @@
 .vehicle-tagging-review-info-card.is-match {
     border-color: #86efac;
     background: #f0fdf4;
+    color: #166534;
 }
 
-.vehicle-tagging-review-info-card.is-match,
 .vehicle-tagging-review-info-card.is-match strong {
     color: #166534;
 }
@@ -688,32 +683,11 @@
 .vehicle-tagging-review-info-card.is-mismatch {
     border-color: #fcd34d;
     background: #fffbeb;
-}
-
-.vehicle-tagging-review-info-card.is-mismatch,
-.vehicle-tagging-review-info-card.is-mismatch strong {
     color: #92400e;
 }
 
-.vehicle-tagging-response {
-    width: min(100%, 760px);
-    margin: 0 auto 20px;
-    padding: 12px 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    background: #f8fafc;
-    color: #334155;
-}
-
-.vehicle-tagging-response-content {
-    max-height: 180px;
-    margin: 8px 0 0;
-    overflow: auto;
-    white-space: pre-wrap;
-    word-break: break-word;
-    color: #475569;
-    font: 12px/1.5 monospace;
-    text-align: left;
+.vehicle-tagging-review-info-card.is-mismatch strong {
+    color: #92400e;
 }
 
 .vehicle-tagging-location-container {
@@ -825,7 +799,6 @@
 }
 
 .vehicle-tagging-reload {
-    --button-color: #eab308;
     background: #fffbeb;
     border-color: #fde68a;
     color: #854d0e;
@@ -914,11 +887,6 @@
 
     .vehicle-tagging-gatepass-field {
         gap: 6px;
-        width: calc(100% - 24px);
-        min-width: 0;
-    }
-
-    .vehicle-tagging-manual-pickers {
         width: calc(100% - 24px);
         min-width: 0;
     }
