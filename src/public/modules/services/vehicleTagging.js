@@ -28,6 +28,7 @@ export class VehicleTagging extends RecordHandler {
     selectedCoordinates = null;
     manualMode = false;
     imageError = null;
+    directFinalize = false;
     locationPending = false;
     cleanInteractions = null;
     onComplete = null;
@@ -79,6 +80,7 @@ export class VehicleTagging extends RecordHandler {
         this.currentStep = 'manual';
         this.manualMode = true;
         this.imageError = null;
+        this.directFinalize = false;
         this.locationPending = false;
         this.selectedCoordinates = null;
         this.gatepass = {
@@ -375,11 +377,26 @@ export class VehicleTagging extends RecordHandler {
             ),
             $('<div>', { class: 'vehicle-tagging-image-error', role: 'alert' }).append(
                 $('<span>', { class: isSuccessMessage ? 'vehicle-tagging-image-status is-success' : 'vehicle-tagging-image-status' }).text(capitalize(message))
+            ),
+            $('<div>', { class: 'vehicle-tagging-direct-finalize-card' }).append(
+                $('<label>', { class: 'vehicle-tagging-direct-finalize' }).append(
+                    $('<input>', {
+                        type: 'checkbox',
+                        class: 'vehicle-tagging-direct-finalize-checkbox'
+                    }).prop('checked', this.directFinalize),
+                    $('<span>').text('Finalize the record directly.')
+                )
             )
         ));
 
         this.bindManualPickers();
         this.bindGatepassInput();
+        $('.vehicle-tagging-direct-finalize-checkbox')
+            .off('change.vehicleTagging')
+            .on('change.vehicleTagging', ({ target }) => {
+                this.directFinalize = target.checked;
+                this.updateUI();
+            });
         if (this.gatepass.message) this.updateGatepassStatus(this.gatepass.message, this.gatepass.valid, this.gatepass.details);
         $('.vehicle-tagging-gatepass-input-wrapper').toggleClass('loading', Boolean(this.gatepass.pending));
     };
@@ -784,15 +801,26 @@ export class VehicleTagging extends RecordHandler {
         const nextLabels = { manual: 'Next', vehicle: 'Next', plate: 'Next', location: 'Review', review: 'Tag Vehicle' };
 
         $('.vehicle-tagging-title').text(titles[this.currentStep]);
-        $('.vehicle-tagging-next-label').text(nextLabels[this.currentStep]);
+        $('.vehicle-tagging-direct-finalize-card').toggle(Boolean(this.record)).toggleClass('is-checked', this.directFinalize);
+        $('.vehicle-tagging-direct-finalize-checkbox').prop('checked', this.directFinalize);
+
+        if (this.directFinalize) {
+            $('.vehicle-tagging-next-label').text('Finalize');
+            $('.vehicle-tagging-next i').attr('class', 'fa fa-check');
+            $('.vehicle-tagging-next').addClass('is-finalize').prop('disabled', !this.record);
+        } else {
+            $('.vehicle-tagging-next-label').text(nextLabels[this.currentStep]);
+            $('.vehicle-tagging-next i').attr('class', 'fa fa-arrow-right');
+            $('.vehicle-tagging-next').removeClass('is-finalize').prop('disabled', this.currentStep === 'manual'
+                ? !this.manualImagesReady() || !this.gatepass.valid || this.gatepass.pending
+                : this.currentStep === 'review'
+                    ? !this.gatepass.data || this.locationPending
+                    : this.manualMode && !this.manualImagesReady());
+        }
+
         $('.vehicle-tagging-back').toggle(this.currentStep !== 'manual');
         $('.vehicle-tagging-controls').toggle(['vehicle', 'plate'].includes(this.currentStep) && !this.imageError && !this.manualMode);
         $('.vehicle-tagging-reload').toggle(this.currentStep === 'manual' || (['vehicle', 'plate', 'location'].includes(this.currentStep) && !this.imageError && !this.manualMode));
-        $('.vehicle-tagging-next').prop('disabled', this.currentStep === 'manual'
-            ? !this.manualImagesReady() || !this.gatepass.valid || this.gatepass.pending
-            : this.currentStep === 'review'
-                ? !this.gatepass.data || this.locationPending
-                : this.manualMode && !this.manualImagesReady());
     };
 
     loadVehicleTaggingImage = (type) => {
@@ -964,7 +992,7 @@ export class VehicleTagging extends RecordHandler {
             const patchData = {
                 rate: this.record.rate ?? 0,
                 ninerId: $('#nine_r_id').val(),
-                gatepassId: $('#transaction_number').val()
+                gatepassId: $('#transaction_number').val() || this.gatepass?.number || $('.vehicle-tagging-gatepass-input').val()
             };
 
             sendRequest(Url.FinalizeRecord, {
@@ -972,6 +1000,7 @@ export class VehicleTagging extends RecordHandler {
                 body: JSON.stringify(patchData)
             }).then(() => {
                 this.removeRecord();
+                this.close();
             }).catch(alertError).finally(hideLoader);
         }
     };
@@ -1016,9 +1045,19 @@ export class VehicleTagging extends RecordHandler {
         this.bindControls();
         this.renderManualStep('Fetching Images, Please wait...');
         $('.vehicle-tagging-reload').off('click.vehicleTagging').on('click.vehicleTagging', this.reloadStepZero);
+        $('.vehicle-tagging-direct-finalize-checkbox')
+            .off('change.vehicleTagging')
+            .on('change.vehicleTagging', ({ target }) => {
+                this.directFinalize = target.checked;
+                this.updateUI();
+            });
 
         $('.vehicle-tagging-next').off('click').on('click', () => {
-            (this.currentStep === 'review' ? this.handleReview() : this.handleNext()).catch(this.handleActionError);
+            if (this.directFinalize) {
+                this.finalizeRecord();
+            } else {
+                (this.currentStep === 'review' ? this.handleReview() : this.handleNext()).catch(this.handleActionError);
+            }
         });
         $('.vehicle-tagging-back').off('click').on('click', () => {
             this.handleBack().catch(this.handleActionError);
