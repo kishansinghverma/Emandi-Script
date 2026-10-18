@@ -223,7 +223,7 @@ export class VehicleTagging extends RecordHandler {
         void results;
 
         this.renderManualStep(this.imageError || (this.manualImagesReady()
-            ? this.getImageReadyMessage('Images Loaded From record. Click Next To Continue.')
+            ? this.getImageReadyMessage()
             : Messages.ImagesNotAvailableManual));
         this.updateUI();
         hideLoader();
@@ -353,7 +353,10 @@ export class VehicleTagging extends RecordHandler {
 
         const isSuccessMessage = this.gatepass.valid
             && this.manualImagesReady()
-            && /Both Images Are Ready|Images Loaded From Record/i.test(message);
+            && (
+                message === Messages.ImagesReadyNext
+                || /Images Ready.*Click Next|Both Images Are Ready|Images Loaded From Record/i.test(message)
+            );
 
         $('.vehicle-tagging-modal-content').html($('<div>', {
             class: 'vehicle-tagging-review-container vehicle-tagging-error-container'
@@ -377,10 +380,10 @@ export class VehicleTagging extends RecordHandler {
                 this.renderManualPicker('vehicle', 1),
                 this.renderManualPicker('plate', 2)
             ),
-            $('<div>', { class: 'vehicle-tagging-image-error', role: 'alert' }).append(
+            $('<div>', { class: isSuccessMessage ? 'vehicle-tagging-image-error is-success' : 'vehicle-tagging-image-error', role: 'alert' }).append(
                 $('<span>', { class: isSuccessMessage ? 'vehicle-tagging-image-status is-success' : 'vehicle-tagging-image-status' }).text(capitalize(message))
             ),
-            $('<div>', { class: 'vehicle-tagging-direct-finalize-card' }).append(
+            this.record ? $('<div>', { class: 'vehicle-tagging-direct-finalize-card' }).append(
                 $('<label>', { class: 'vehicle-tagging-direct-finalize' }).append(
                     $('<input>', {
                         type: 'checkbox',
@@ -388,7 +391,7 @@ export class VehicleTagging extends RecordHandler {
                     }).prop('checked', this.directFinalize),
                     $('<span>').text(Labels.FinalizeDirectly)
                 )
-            )
+            ) : null
         ));
 
         this.bindManualPickers();
@@ -401,6 +404,7 @@ export class VehicleTagging extends RecordHandler {
             });
         if (this.gatepass.message) this.updateGatepassStatus(this.gatepass.message, this.gatepass.valid, this.gatepass.details);
         $('.vehicle-tagging-gatepass-input-wrapper').toggleClass('loading', Boolean(this.gatepass.pending));
+        this.updateUI();
     };
 
     getCropSize = () => {

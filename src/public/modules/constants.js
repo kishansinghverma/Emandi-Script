@@ -141,7 +141,7 @@ export const Labels = {
     NumberPlateTagging: 'Number Plate Tagging',
     SelectLocation: 'Select Location',
     ReviewVehicleTagging: 'Review Vehicle Tagging',
-    FinalizeDirectly: 'Finalize the record directly.',
+    FinalizeDirectly: 'Finalize The Record Directly.',
     GatepassValidatedFor: 'Gatepass Validated For'
 }
 
