@@ -518,26 +518,26 @@ export class VehicleTagging extends RecordHandler {
             throw new TypeError('Valid Latitude And Longitude Are Required.');
         }
 
-        const response = await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?${new URLSearchParams({
-            location: `${longitude},${latitude}`,
-            distance: '1000',
-            f: 'json'
-        })}`, { headers: { Accept: 'application/json' } });
-        if (!response.ok) throw new Error(`ArcGIS Lookup Failed: ${response.status}.`);
-
-        const address = (await response.json()).address || {};
+        let address = {};
+        try {
+            const response = await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?${new URLSearchParams({
+                location: `${longitude},${latitude}`,
+                distance: '1000',
+                f: 'json'
+            })}`, { headers: { Accept: 'application/json' } });
+            if (!response.ok) throw new Error(`ArcGIS Lookup Failed: ${response.status}.`);
+            address = (await response.json()).address || {};
+        } catch {}
 
         const cityName = address.City || address.city || address.town || address.village || address.municipality;
         const districtName = address.District || address.Subregion || address.city_district || address.county || address.state_district;
-        const city = [cityName, districtName].filter(Boolean).filter((value, index, values) => values.indexOf(value) === index).join(', ') || 'Not available';
+        const city = [cityName, districtName].filter(Boolean).filter((value, index, values) => values.indexOf(value) === index).join(', ') || 'Not Available';
         const street = address.Address || address.address || 'Not Available';
         const postcode = address.Postal || address.PostalCode || address.postalCode || address.postcode || address.postal_code;
         const state = address.Region || address.State || address.state;
         const stateAndPincode = [state, postcode].filter(Boolean).join(' - ') || 'Not Available';
         const countryCode = address.CountryCode || address.country_code;
-        const country = address.Country || address.country
-            || ({ IN: 'India', IND: 'India' }[countryCode] || countryCode)
-            || 'Not Available';
+        const country = address.Country || address.country || ({ IN: 'India', IND: 'India' }[countryCode] || countryCode) || 'Not Available';
 
         const plusCode = (() => {
             const alphabet = '23456789CFGHJMPQRVWX';
