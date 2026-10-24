@@ -1301,7 +1301,7 @@
     min-width: 0;
     margin: 0;
     overflow-wrap: anywhere;
-    white-space: normal;
+    white-space: pre-line;
     color: var(--toast-status);
     font-size: 14px;
     font-weight: 500;

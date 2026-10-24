@@ -79,7 +79,7 @@ export const showAlert = (type, message, hideAfter = 0) => {
     notificationTimeoutId = undefined;
     $('.notification-container').stop(true, false).removeClass(Object.values(MessageType).join(' ')).addClass(type).show();
     $('.notification-container .icon').html(Icon[type]);
-    $('.notification-container .message').html(message);
+    $('.notification-container .message').text(message);
     if (hideAfter > 0) notificationTimeoutId = setTimeout(() => hideAlert(), hideAfter * 1000);
 }
 
