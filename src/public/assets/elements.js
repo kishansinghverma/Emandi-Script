@@ -37,17 +37,27 @@ export const notificationComponent = `
         </div>
     </div >`;
 
-export const recordComponent = (record) => (`
-    <div class="info-heading">
-        <div class="info-name wrap-text">${record.seller}</div>
-        <div class="info-date wrap-text ${formatDate(new Date()) === formatIsoString(record.date) && 'valid'}">${formatIsoString(record.date)}</div>
-    </div>
-    <div class="input-group">
-        <div class="info-vehicle f-icon">${record.vehicleNumber}</div>
-        <div class="info-weight f-icon">${record.weight} Qtl.</div>
-    </div>
-    <div class="info-party f-icon">${record.party.name}, ${record.party.mandi}, ${record.party.state}</div>
-`);
+export const recordComponent = (record) => {
+    const component = $(`
+        <div class="info-heading">
+            <div class="info-name wrap-text"></div>
+            <div class="info-date wrap-text"></div>
+        </div>
+        <div class="input-group">
+            <div class="info-vehicle f-icon"></div>
+            <div class="info-weight f-icon"></div>
+        </div>
+        <div class="info-party f-icon"></div>
+    `);
+
+    const date = formatIsoString(record.date);
+    component.find('.info-name').text(record.seller);
+    component.find('.info-date').toggleClass('valid', formatDate(new Date()) === date).text(date);
+    component.find('.info-vehicle').text(record.vehicleNumber);
+    component.find('.info-weight').text(`${record.weight} Qtl.`);
+    component.filter('.info-party').text(`${record.party.name}, ${record.party.mandi}, ${record.party.state}`);
+    return component;
+};
 
 export const vehicleTaggingModal = `
 <div class="vehicle-tagging-modal" role="dialog" aria-modal="true" aria-label="Vehicle Tagging">

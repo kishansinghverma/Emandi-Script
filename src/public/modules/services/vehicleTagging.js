@@ -1021,10 +1021,12 @@ export class VehicleTagging extends RecordHandler {
             await sendRequest(Url.FinalizeRecord, {
                 ...FetchParams.Patch,
                 body: JSON.stringify({ rate: this.record.rate ?? 0, ninerId, gatepassId })
-            }).then(this.removeRecord).catch(alertError);
+            }).then(() => {
+                this.removeRecord();
+                this.onComplete();
+            }).catch(alertError);
         }
-
-        this.onComplete();
+        else this.onComplete();
     };
 
     onComplete = () => {
