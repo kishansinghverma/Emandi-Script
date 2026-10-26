@@ -96,17 +96,14 @@ export const Messages = {
     GatepassProcessed: 'Gatepass Processed Successfully!',
     NoPaid9RFound: 'No Paid Niner Found!',
     NoPaid6RFound: 'No Paid SixR found!',
-    NinerNumberNotAvailable: 'Niner Number Not Available!',
     NinerDetailsNotAvailable: 'Niner Details Not Available!',
     NinerIdNotAvailable: 'Niner Id Not Available!',
     GatepassNumberNotAvailable: 'Gatepass Number Not Available!',
     GatepassDetailsNotAvailable: 'Gatepass Details Not Available!',
-    GatepassIdNotAvailable: 'Gatepass Id Not Available!',
     InvalidCaptcha: 'Invalid Captcha! Reloading...',
     WeightNotProvided: 'Weight Not Provided!',
     QuantityUnavailable: 'Quantity Unavailable!\nSelect Manually...',
     NoPaymentsPending: 'No Payments Pending!',
-    ConfirmPrint: 'Are You Sure To Print?',
 
     // Loader & Spinner Messages
     ProcessingNiner: 'Processing Niner...',

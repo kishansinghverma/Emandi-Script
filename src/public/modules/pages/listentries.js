@@ -1,9 +1,9 @@
 import { Messages, MessageType } from "../constants.js";
 import { validateResponse } from "../services/backend.js";
 import { getNinerBySerialNumber, getSixrBySerialNumber } from "../services/entries.js";
-import { sendGatepassByPayload, sendGatepassBySerialNumber, sendNinerByPayload, sendNinerBySerialNumber } from "../services/receipt.js";
+import { sendGatepassByPayload, sendNinerByPayload } from "../services/receipt.js";
 import { alertError, hideLoader, showAlert, showLoader } from "../services/components.js";
-import { gatepassDateFormatter, getActionButton, ninerDateFormatter } from "../services/utils.js";
+import { getActionButton } from "../services/utils.js";
 
 class ListEntries {
     initializeForm = () => {
