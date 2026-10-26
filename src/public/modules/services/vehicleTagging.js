@@ -296,8 +296,6 @@ class VehicleTagging extends RecordHandler {
 
     bindGatepassInput = () => {
         $('.vehicle-tagging-gatepass-input')
-            .off('blur.vehicleTagging')
-            .on('blur.vehicleTagging', this.validateGatepass)
             .off('keydown.vehicleTagging')
             .on('keydown.vehicleTagging', (event) => {
                 if (event.key !== 'Enter') return;
@@ -980,6 +978,8 @@ class VehicleTagging extends RecordHandler {
     };
 
     handleReview = async () => {
+        showLoader(Messages.TaggingVehicle);
+        
         const [vehicleImage, plateImage] = await Promise.all([
             blobToBase64(this.media.finalized.vehicleFull),
             blobToBase64(this.media.finalized.plate)
@@ -1000,15 +1000,20 @@ class VehicleTagging extends RecordHandler {
             VehicleFullImage: vehicleImage
         };
 
-        showLoader(Messages.TaggingVehicle);
+        $(".vehicle-tagging-button").attr('disabled', true);
+
         sendVehicleTaggingRequest('InsertVehcileTaggingData', payload)
             .then(async () => {
                 showAlert(MessageType.Success, Messages.VehicleTagged);
                 await this.finalizeRecord();
-            }).catch(alertError).finally(hideLoader);
+            }).catch(alertError).finally(() => {
+                $(".vehicle-tagging-button").attr('disabled', false);
+                hideLoader();
+            });
     };
 
     finalizeRecord = async () => {
+        $(".vehicle-tagging-button").attr('disabled', true);
         const date = gatepassDateFormatter($('#dateofissue').val());
         const ninerNumber = $('#nine_r_id').val();
         const gatepassNumber = this.gatepass?.number || $('.vehicle-tagging-gatepass-input').val() || $('#transaction_number').val();
@@ -1027,7 +1032,7 @@ class VehicleTagging extends RecordHandler {
             }).then(() => {
                 this.removeRecord();
                 this.onComplete();
-            }).catch(alertError);
+            }).catch(alertError).finally(() => $(".vehicle-tagging-button").attr('disabled', false));
         }
         else this.onComplete();
     };
