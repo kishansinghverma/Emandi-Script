@@ -3,9 +3,10 @@ import { sendRequest } from "./backend.js";
 import { CaptchaLoader } from "../../assets/loader.js";
 import { vehicleTaggingEditor, vehicleTaggingLocation, vehicleTaggingModal, vehicleTaggingReview } from "../../assets/elements.js";
 import { RecordHandler } from "./record.js";
-import { sendGatepassBySerialNumber, sendNinerBySerialNumber } from "./receipt.js";
+import { sendGatepassByPayload, sendNinerBySerialNumber } from "./receipt.js";
 import { alertError, hideLoader, showAlert, showLoader } from "./components.js";
 import { blobToBase64, capitalize, gatepassDateFormatter, getImageLoadError, imageLabel, randomizeCoordinates, validCoordinates } from "./utils.js";
+import { getGatepassBySerialNumber } from "./entries.js";
 
 const MODAL_SEL = '.vehicle-tagging-modal';
 const VEHICLE_TAGGING_API = '/api/VehicleTaggingAPI';
@@ -985,12 +986,15 @@ class VehicleTagging extends RecordHandler {
             blobToBase64(this.media.finalized.plate)
         ]);
 
+        const vehicleTypeId = parseInt(this.gatepass.data?.vehicleId);
+        if (isNaN(vehicleTypeId)) throw new Error('Vehicle Type Is Not Correct, Check Upstream Response!');
+
         const payload = {
             ContactNumber: '9675679250',
             InstrumentNumber: this.gatepass.number || $('#transaction_number').val(),
             InstrumentType: 1,
             InstrumentTypeName: 'Gatepass',
-            VehicleTypeId: this.gatepass.data?.vehicleId,
+            VehicleTypeId: vehicleTypeId,
             VehicleTypeName: this.gatepass.data?.vehicleName,
             VehicleNumber: this.gatepass.data?.vehicleNumber,
             Latitude: this.selectedCoordinates?.latitude || Number(LOCATION_SEED.latitude).toFixed(7),
@@ -1015,20 +1019,21 @@ class VehicleTagging extends RecordHandler {
     finalizeRecord = async () => {
         $(".vehicle-tagging-button").attr('disabled', true);
         const date = gatepassDateFormatter($('#dateofissue').val());
-        const ninerNumber = $('#nine_r_id').val();
         const gatepassNumber = this.gatepass?.number || $('.vehicle-tagging-gatepass-input').val() || $('#transaction_number').val();
+        const gatepassDetails = await getGatepassBySerialNumber(gatepassNumber, date);
+        const ninerSerialNumber = $('#nine_r_id').val() || gatepassDetails.nine_r_id;
 
         showLoader(Messages.SendingNiner);
-        await sendNinerBySerialNumber(ninerNumber, date, false, false, true).catch(alertError);
+        await sendNinerBySerialNumber(ninerSerialNumber, date, false, false, true).catch(alertError);
 
         showLoader(Messages.SendingGatepass);
-        await sendGatepassBySerialNumber(gatepassNumber, date, false, false, true).catch(alertError);
+        await sendGatepassByPayload(gatepassDetails, false, false, true).catch(alertError);
 
         if (this.record) {
             showLoader(Messages.FinalizingRecord);
             await sendRequest(Url.FinalizeRecord, {
                 ...FetchParams.Patch,
-                body: JSON.stringify({ rate: this.record.rate ?? 0, ninerId: ninerNumber, gatepassId: gatepassNumber })
+                body: JSON.stringify({ rate: this.record.rate ?? 0, ninerId: ninerSerialNumber, gatepassId: gatepassNumber })
             }).then(() => {
                 this.removeRecord();
                 this.onComplete();
