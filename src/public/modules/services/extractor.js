@@ -226,6 +226,8 @@ export const getNinerPayload = (record) => ({
     vehicleName: record.vehicleName,
     vehicle_no: record.vehicle_no,
     crop_code: record.crop_code,
+    crop_name_eng: record.crop_name_eng,
+    mandi_name_eng: record.mandi_name_eng,
     crop_type: record.crop_type,
     crop_weight: record.crop_weight,
     crop_rate: record.crop_rate,
