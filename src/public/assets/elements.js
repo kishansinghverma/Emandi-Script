@@ -3,8 +3,8 @@ import { formatDate, formatIsoString } from "../modules/services/utils.js";
 export const SendReceiptButton = `
     <li>
         <a href="#">
-            <i class="fa fa-envelope-o"></i>
-            <span> Send Last Receipts </span>
+            <i class="fa fa-whatsapp"></i>
+            <span> Share Last Receipts </span>
         </a>
     </li>`;
 

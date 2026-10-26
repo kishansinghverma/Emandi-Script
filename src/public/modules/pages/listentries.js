@@ -1,7 +1,7 @@
 import { Messages, MessageType } from "../constants.js";
 import { validateResponse } from "../services/backend.js";
 import { getNinerBySerialNumber, getSixrBySerialNumber } from "../services/entries.js";
-import { sendGatepassBySerialNumber, sendNinerBySerialNumber } from "../services/receipt.js";
+import { sendGatepassByPayload, sendGatepassBySerialNumber, sendNinerByPayload, sendNinerBySerialNumber } from "../services/receipt.js";
 import { alertError, hideLoader, showAlert, showLoader } from "../services/components.js";
 import { gatepassDateFormatter, getActionButton, ninerDateFormatter } from "../services/utils.js";
 
@@ -21,14 +21,12 @@ class GeneratedNineR {
     processRecipt = (e, print, download, share) => {
         const row = $(e.currentTarget).closest('tr');
         const data = $('#datatable1').DataTable().row(row).data();
-        const ninerNumber = data?.serial_number;
-        const date = ninerDateFormatter(data?.created_at);
-
-        if (ninerNumber && date) {
+ 
+        if (data) {
             showLoader(Messages.ProcessingNiner);
-            sendNinerBySerialNumber(ninerNumber, date, print, download, share).catch(alertError).finally(hideLoader);
+            sendNinerByPayload(data, print, download, share).catch(alertError).finally(hideLoader);
         }
-        else showAlert(MessageType.Error, Messages.NinerNumberNotAvailable, 5);
+        else showAlert(MessageType.Error, Messages.NinerDetailsNotAvailable, 5);
     }
 
     viewReciept = (e => {
@@ -145,17 +143,14 @@ class ListGatepasses {
         });
     }
 
-    printNiner = async ({ target }) => {
-        const column = $(target).parent();
-        const ninerNumber = column.parent().find('td.niner a').text();
-        const { id } = await getNinerBySerialNumber(ninerNumber);
+    printNiner = async (serialNumber) => {
+        const { id } = await getNinerBySerialNumber(serialNumber);
         window.open(`${this.ninerUrl}/${id}`, "_blank");
     }
 
-    calculateBreakUp = async ({ target }) => {
+    calculateBreakUp = async ({ target }, ninerSerialNumber) => {
         const column = $(target).parent();
-        const ninerNumber = column.parent().find('td.niner a').text();
-        const { six_r_id } = await getNinerBySerialNumber(ninerNumber);
+        const { six_r_id } = await getNinerBySerialNumber(ninerSerialNumber);
         const sixrIds = six_r_id.split(',');
         column.html('<table class="break-up">');
 
@@ -194,13 +189,13 @@ class ListGatepasses {
             .then(response => response.json())
             .then(({ data }) => data.forEach(item => {
                 const row = $('<tr>');
-                row.append($('<td>').text(item.created_at))
-                row.append($('<td>').html($('<a>').text(item.serial_number).attr('href', `${this.gatepassUrl}/${item.id}`).attr('target', '_blank')))
-                row.append($('<td>').html($('<a>').text(item.nine_r_id).click(this.printNiner)))
-                row.append($('<td>').text(item.kreta_mandi))
-                row.append($('<td>').text(item.vehicle_no))
-                row.append($('<td>').text(item.crop_weight))
-                row.append($('<td>').html($('<a>').text('Show').click(this.calculateBreakUp)))
+                row.append($('<td>').text(item.created_at));
+                row.append($('<td>').html($('<a>').text(item.serial_number).attr('href', `${this.gatepassUrl}/${item.id}`).attr('target', '_blank')));
+                row.append($('<td>').html($('<a>').text(item.nine_r_id).click(() => this.printNiner(item.nine_r_id))));
+                row.append($('<td>').text(item.kreta_mandi));
+                row.append($('<td>').text(item.vehicle_no));
+                row.append($('<td>').text(item.crop_weight));
+                row.append($('<td>').html($('<a>').text('Show').click((e)=>this.calculateBreakUp(e, item.nine_r_id))));
                 row.appendTo($('#datatable-gp tbody'));
             })).finally(() => {
                 $('#datatable-gp tbody tr').length > 0 ? $('.no-content').hide() : $('.no-content').show();
@@ -223,12 +218,10 @@ class ListGatepasses {
     processRecipt = (e, print, download, share) => {
         const row = $(e.currentTarget).closest('tr');
         const data = $('#datatable1').DataTable().row(row).data();
-        const gatepassNumber = data?.serial_number;
-        const date = gatepassDateFormatter(data?.created_at);
 
-        if (gatepassNumber && date) {
+        if (data) {
             showLoader(Messages.ProcessingGatepass);
-            sendGatepassBySerialNumber(gatepassNumber, date, print, download, share).catch(alertError).finally(hideLoader);
+            sendGatepassByPayload(data, print, download, share).catch(alertError).finally(hideLoader);
         }
         else showAlert(MessageType.Error, Messages.GatepassNumberNotAvailable, 5);
     }
@@ -239,7 +232,7 @@ class ListGatepasses {
         const recordId = data?.id;
 
         if (recordId != null) window.open(`/Receipt/print_gps/${recordId}`, '_blank', 'noopener, noreferrer');
-        else showAlert(MessageType.Error, Messages.GatepassIdNotAvailable, 5);
+        else showAlert(MessageType.Error, Messages.GatepassDetailsNotAvailable, 5);
     });
 
     printReciept = (e => this.processRecipt(e, true, false, false));

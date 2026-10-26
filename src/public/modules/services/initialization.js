@@ -1,18 +1,15 @@
-import { ItemsToHide, Messages, RouteMap } from '../constants.js';
+import { ItemsToHide, RouteMap } from '../constants.js';
 import { Modals } from '../../assets/modals.js';
-import { PrintReceiptButton, SendReceiptButton, notificationComponent } from '../../assets/elements.js';
+import { SendReceiptButton, notificationComponent } from '../../assets/elements.js';
 import { Loader } from '../../assets/loader.js';
 import { hideAlert, hideModal } from './components.js';
-import { printLastReceipts } from './receipt.js';
+import { sendLastReceipts } from './receipt.js';
 
 const hideLinks = () => ItemsToHide.forEach(item => $(item)?.hide());
 const replaceLink = () => document.querySelector('[href="/Traders/NinerDashboard"]')?.setAttribute('href', '/Traders/NineR');
 const initializeLoader = () => $(document.body).append(Loader);
 const addLinks = () => {
-    $('#aside > ul > li:nth-child(10)')?.after($(SendReceiptButton).click(() => printLastReceipts(false, false, true)));
-    $('#aside > ul > li:nth-child(10)')?.after($(PrintReceiptButton).click(() => {
-        if (confirm(Messages.ConfirmPrint)) printLastReceipts(true, false, false);
-    }));
+    $('#aside > ul > li:nth-child(10)')?.after($(SendReceiptButton).click(() => sendLastReceipts(false, false, true)));
 }
 
 const initializeNotification = () => {

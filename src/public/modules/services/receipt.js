@@ -51,9 +51,8 @@ const sendLatestGatepass = async (print, download, share) => {
     return sendGatepass(receiptData, print, download, share);
 };
 
-export const sendNinerBySerialNumber = async (serialNumber, date, print, download, share) => {
-    const niner = await getNinerBySerialNumber(serialNumber, date);
-    const receiptData = getNinerPayload(niner);
+export const sendNinerByPayload = async (payload, print, download, share) => {
+    const receiptData = getNinerPayload(payload);
     return sendNiner(receiptData, print, download, share);
 };
 
@@ -62,9 +61,13 @@ export const sendNinerFromHtml = (element, print, download, share) => {
     return sendNiner(payload, print, download, share, qr);
 };
 
-export const sendGatepassBySerialNumber = async (serialNumber, date, print, download, share) => {
-    const gatepass = await getGatepassBySerialNumber(serialNumber, date);
-    const receiptData = getGatepassPayload(gatepass);
+export const sendNinerBySerialNumber = async (serialNumber, date, print, download, share) => {
+    const niner = await getNinerBySerialNumber(serialNumber, date);
+    return sendNinerByPayload(niner, print, download, share);
+};
+
+export const sendGatepassByPayload = async (payload, print, download, share) => {
+    const receiptData = getGatepassPayload(payload);
     return sendGatepass(receiptData, print, download, share);
 };
 
@@ -73,7 +76,12 @@ export const sendGatepassFromHtml = (element, print, download, share) => {
     return sendGatepass(payload, print, download, share, qr);
 };
 
-export const printLastReceipts = async (print, download, share) => {
+export const sendGatepassBySerialNumber = async (serialNumber, date, print, download, share) => {
+    const gatepass = await getGatepassBySerialNumber(serialNumber, date);
+    return sendGatepassByPayload(gatepass, print, download, share);
+};
+
+export const sendLastReceipts = async (print, download, share) => {
     showLoader(Messages.ProcessingNiner);
     await sendLatestNiner(print, download, share).catch(alertError).finally(hideLoader);
 
