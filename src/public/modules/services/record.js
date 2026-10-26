@@ -1,7 +1,8 @@
 import { recordComponent } from "../../assets/elements.js";
 import { Messages, MessageType, Url } from "../constants.js";
 import { sendRequest } from "./backend.js";
-import { alertError, getNestedValue, hideLoader, showAlert, showLoader } from "./utils.js";
+import { alertError, hideLoader, showAlert, showLoader } from "./components.js";
+import { getNestedValue } from "./utils.js";
 
 export class RecordHandler {
     #storagePath = 'Record';

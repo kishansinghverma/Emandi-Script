@@ -1,6 +1,6 @@
 import { Messages } from "../constants.js";
 import { sendGatepassFromHtml } from "../services/receipt.js";
-import { alertError, hideLoader, hideModal, showLoader } from "../services/utils.js";
+import { alertError, hideLoader, hideModal, showLoader } from "../services/components.js";
 
 class PrintGatepass {
     initializeForm = () => {

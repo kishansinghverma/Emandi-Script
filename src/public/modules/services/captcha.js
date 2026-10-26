@@ -1,5 +1,5 @@
 import { FetchParams, Messages, MessageType, Url } from "../constants.js";
-import { showAlert } from "./utils.js";
+import { showAlert } from "./components.js";
 import { CaptchaLoader } from "../../assets/loader.js";
 import { sendRequest } from "./backend.js";
 

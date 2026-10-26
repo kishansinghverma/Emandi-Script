@@ -4,19 +4,8 @@ import { CaptchaLoader } from "../../assets/loader.js";
 import { vehicleTaggingEditor, vehicleTaggingLocation, vehicleTaggingModal, vehicleTaggingReview } from "../../assets/elements.js";
 import { RecordHandler } from "./record.js";
 import { sendGatepassBySerialNumber, sendNinerBySerialNumber } from "./receipt.js";
-import {
-    alertError,
-    blobToBase64,
-    capitalize,
-    gatepassDateFormatter,
-    getImageLoadError,
-    hideLoader,
-    imageLabel,
-    randomizeCoordinates,
-    showAlert,
-    showLoader,
-    validCoordinates
-} from "./utils.js";
+import { alertError, hideLoader, showAlert, showLoader } from "./components.js";
+import { blobToBase64, capitalize, gatepassDateFormatter, getImageLoadError, imageLabel, randomizeCoordinates, validCoordinates } from "./utils.js";
 
 const MODAL_SEL = '.vehicle-tagging-modal';
 const VEHICLE_TAGGING_API = '/api/VehicleTaggingAPI';
@@ -28,7 +17,7 @@ const SIZES = {
 const LOCATION_SEED = { latitude: 27.4288667, longitude: 78.116275 };
 
 const sendVehicleTaggingRequest = async (endpoint, payload) => fetch(`${VEHICLE_TAGGING_API}/${endpoint}`, {
-    ... FetchParams.Post,
+    ...FetchParams.Post,
     credentials: 'omit',
     body: JSON.stringify(payload)
 }).then(async res => {

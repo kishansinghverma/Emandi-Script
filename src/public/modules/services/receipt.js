@@ -2,7 +2,7 @@ import { backendBaseUrl, FetchParams, Messages, MessageType, Url } from "../cons
 import { sendRequest } from "./backend.js";
 import { getGatepassPayload, getNinerPayload, parseGatepassReceipt, parseNinerReceipt } from "./extractor.js";
 import { getGatepassBySerialNumber, getLatestGatepass, getLatestNiner, getNinerBySerialNumber } from "./entries.js";
-import { alertError, hideLoader, showAlert, showLoader } from "./utils.js";
+import { alertError, hideLoader, showAlert, showLoader } from "./components.js";
 
 const handleDocumentResponse = async (response) => {
     if (!response.actions) throw new Error('Could not parse response.');

@@ -1,7 +1,8 @@
 import { Messages, MessageType, StageMap, Stages } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
-import { alertError, showAlert, ComplexPromise, withButtonLoader } from "../services/utils.js";
+import { alertError, showAlert, withButtonLoader } from "../services/components.js";
+import { ComplexPromise } from "../services/utils.js";
 
 class NinerSubmit extends RecordHandler {
     initializeForm = () => {

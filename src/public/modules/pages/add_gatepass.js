@@ -2,7 +2,8 @@ import { StartTaggingButton } from "../../assets/elements.js";
 import { Messages, MessageType } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
-import { ComplexPromise, alertError, capitalize, hideModal, showAlert, withButtonLoader } from "../services/utils.js";
+import { alertError, hideModal, showAlert, withButtonLoader } from "../services/components.js";
+import { ComplexPromise, capitalize } from "../services/utils.js";
 import { vehicleTagging } from "../services/vehicleTagging.js";
 
 class AddGatepass extends RecordHandler {

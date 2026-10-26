@@ -1,5 +1,5 @@
 import { Messages, MessageType } from "../constants.js";
-import { showAlert } from "../services/utils.js";
+import { showAlert } from "../services/components.js";
 
 class DigitalPayment {
     initializeForm = () => {

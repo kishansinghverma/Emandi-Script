@@ -1,6 +1,7 @@
 import { Messages, MessageType } from "../constants.js";
 import { setResolvedCaptcha, validateCaptcha, resolveCaptcha } from "../services/captcha.js";
-import { ComplexPromise, showAlert, alertError } from "../services/utils.js";
+import { alertError, showAlert } from "../services/components.js";
+import { ComplexPromise } from "../services/utils.js";
 
 class LoginForm {
     initializeForm = () => {
