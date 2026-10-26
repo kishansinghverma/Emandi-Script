@@ -1,5 +1,4 @@
 import { Icon, Messages, MessageType } from "../constants.js";
-import { validateResponse } from "./backend.js";
 
 let notificationTimeoutId;
 
@@ -111,28 +110,6 @@ export const getActionButton = (icon, color, title, handler) => $('<button>', {
     type: 'button',
     class: `btn btn-sm ${color}`
 }).append($('<i>').addClass(`fa ${icon}`)).click(handler);
-
-const getRecordById = (url, recordId) => {
-    const date = new Date();
-    date.setFullYear(date.getFullYear(), date.getMonth() - 18);
-
-    const formData = new FormData();
-    formData.append('draw', 1);
-    formData.append('order[0][column]', 1);
-    formData.append('order[0][dir]', 'desc');
-    formData.append('start', 0);
-    formData.append('length', 1);
-    formData.append('search[value]', recordId);
-    formData.append('fromDate', formatDate(date));
-    formData.append('toDate', formatDate(new Date()));
-
-    return fetch(url, { method: 'POST', body: formData }).then(validateResponse)
-        .then(res => res.json()).then(response => (response.data[0]));
-}
-
-export const getSixrById = (sixrId) => getRecordById('/Traders/SP_Get_6R_List', sixrId);
-
-export const getNinerById = (ninerId) => getRecordById('/Traders/SP_Get_9R_List', ninerId);
 
 export const imageLabel = (type) => type === 'plate' ? 'Number plate' : 'Vehicle';
 

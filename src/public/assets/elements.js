@@ -16,11 +16,11 @@ export const PrintReceiptButton = `
         </a>
     </li>`;
 
-export const SessionResetButton = `
+export const StartTaggingButton = `
     <li>
         <a href="#">
             <i class="fa fa-refresh"></i>
-            <span> Reset Session </span>
+            <span> Start Tagging </span>
         </a>
     </li>`;
 

@@ -1,4 +1,9 @@
 import { FetchParams, Labels, Messages, MessageType, Url } from "../constants.js";
+import { sendRequest } from "./backend.js";
+import { CaptchaLoader } from "../../assets/loader.js";
+import { vehicleTaggingEditor, vehicleTaggingLocation, vehicleTaggingModal, vehicleTaggingReview } from "../../assets/elements.js";
+import { RecordHandler } from "./record.js";
+import { sendGatepassBySerialNumber, sendNinerBySerialNumber } from "./receipt.js";
 import {
     alertError,
     blobToBase64,
@@ -12,11 +17,6 @@ import {
     showLoader,
     validCoordinates
 } from "./utils.js";
-import { sendRequest } from "./backend.js";
-import { CaptchaLoader } from "../../assets/loader.js";
-import { vehicleTaggingEditor, vehicleTaggingLocation, vehicleTaggingModal, vehicleTaggingReview } from "../../assets/elements.js";
-import { RecordHandler } from "./record.js";
-import { sendGatepassById, sendNinerById } from "./receipt.js";
 
 const MODAL_SEL = '.vehicle-tagging-modal';
 
@@ -1007,20 +1007,20 @@ export class VehicleTagging extends RecordHandler {
 
     finalizeRecord = async () => {
         const date = gatepassDateFormatter($('#dateofissue').val());
-        const ninerId = $('#nine_r_id').val();
-        const gatepassId = this.gatepass?.number || $('.vehicle-tagging-gatepass-input').val() || $('#transaction_number').val();
+        const ninerNumber = $('#nine_r_id').val();
+        const gatepassNumber = this.gatepass?.number || $('.vehicle-tagging-gatepass-input').val() || $('#transaction_number').val();
 
         showLoader(Messages.SendingNiner);
-        await sendNinerById(ninerId, date, false, false, true).catch(alertError);
+        await sendNinerBySerialNumber(ninerNumber, date, false, false, true).catch(alertError);
 
         showLoader(Messages.SendingGatepass);
-        await sendGatepassById(gatepassId, date, false, false, true).catch(alertError);
+        await sendGatepassBySerialNumber(gatepassNumber, date, false, false, true).catch(alertError);
 
         if (this.record) {
             showLoader(Messages.FinalizingRecord);
             await sendRequest(Url.FinalizeRecord, {
                 ...FetchParams.Patch,
-                body: JSON.stringify({ rate: this.record.rate ?? 0, ninerId, gatepassId })
+                body: JSON.stringify({ rate: this.record.rate ?? 0, ninerId: ninerNumber, gatepassId: gatepassNumber })
             }).then(() => {
                 this.removeRecord();
                 this.onComplete();

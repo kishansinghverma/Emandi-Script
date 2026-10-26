@@ -1,6 +1,7 @@
 import { backendBaseUrl, FetchParams, Messages, MessageType, Url } from "../constants.js";
 import { sendRequest } from "./backend.js";
-import { parseGatepassReceipt, parseNinerReceipt } from "./extractor.js";
+import { getGatepassPayload, getNinerPayload, parseGatepassReceipt, parseNinerReceipt } from "./extractor.js";
+import { getGatepassBySerialNumber, getLatestGatepass, getLatestNiner, getNinerBySerialNumber } from "./entries.js";
 import { alertError, hideLoader, showAlert, showLoader } from "./utils.js";
 
 const handleDocumentResponse = async (response) => {
@@ -24,67 +25,58 @@ const sendDocumentRequest = async (url, payload) => sendRequest(url, {
     body: JSON.stringify(payload)
 }).then(handleDocumentResponse);
 
-const sendNiner = async (payload) => sendDocumentRequest(Url.sendNiner, payload)
-    .then(() => showAlert(MessageType.Success, Messages.NinerProcessed, 5));
+const sendNiner = async (receiptData, print, download, share, qr) => {
+    const actions = getDocumentActions({ print, download, share });
+    const payload = { data: receiptData, ...actions, ...(qr ? { qr } : {}) };
 
-const sendGatepass = async (payload) => sendDocumentRequest(Url.sendGatepass, payload)
-    .then(() => showAlert(MessageType.Success, Messages.GatepassProcessed, 5));
-
-const sendLatestNiner = (print, download, share) => sendNiner({
-    source: 'latest',
-    ...getDocumentActions({ print, download, share })
-});
-
-export const sendNinerById = (ninerId, date, print, download, share) => sendNiner({
-    source: 'id',
-    data: { id: ninerId, date },
-    ...getDocumentActions({ print, download, share })
-});
-
-const sendNinerByPayload = (data, print, download, share) => sendNiner({
-    source: 'payload',
-    data,
-    ...getDocumentActions({ print, download, share })
-});
-
-const sendLatestGatepass = (print, download, share) => sendGatepass({
-    source: 'latest',
-    ...getDocumentActions({ print, download, share })
-});
-
-export const sendGatepassById = (gatepassId, date, print, download, share) => sendGatepass({
-    source: 'id',
-    data: { id: gatepassId, date },
-    ...getDocumentActions({ print, download, share })
-});
-
-const sendGatepassByPayload = (data, print, download, share) => sendGatepass({
-    source: 'payload',
-    data,
-    ...getDocumentActions({ print, download, share })
-});
-
-export const printNinerFromHtml = (element, print, download, share) => {
-    const payload = parseNinerReceipt(element);
-    return sendNinerByPayload(payload, print, download, share);
+    return sendDocumentRequest(Url.sendNiner, payload).then(() => showAlert(MessageType.Success, Messages.NinerProcessed, 5));
 };
 
-export const printGatepassFromHtml = (element, print, download, share) => {
-    const payload = parseGatepassReceipt(element);
-    return sendGatepassByPayload(payload, print, download, share);
+const sendLatestNiner = async (print, download, share) => {
+    const niner = await getLatestNiner();
+    const receiptData = getNinerPayload(niner);
+    return sendNiner(receiptData, print, download, share);
 };
 
-const printLastNiner = (print, download, share) => {
-    showLoader(Messages.ProcessingNiner);
-    return sendLatestNiner(print, download, share).catch(alertError).finally(hideLoader);
+const sendGatepass = async (receiptData, print, download, share, qr) => {
+    const actions = getDocumentActions({ print, download, share });
+    const payload = { data: receiptData, ...actions, ...(qr ? { qr } : {}) };
+
+    return sendDocumentRequest(Url.sendGatepass, payload).then(() => showAlert(MessageType.Success, Messages.GatepassProcessed, 5));
 };
 
-const printLastGatepass = (print, download, share) => {
-    showLoader(Messages.ProcessingGatepass);
-    return sendLatestGatepass(print, download, share).catch(alertError).finally(hideLoader);
+const sendLatestGatepass = async (print, download, share) => {
+    const gatepass = await getLatestGatepass();
+    const receiptData = getGatepassPayload(gatepass);
+    return sendGatepass(receiptData, print, download, share);
+};
+
+export const sendNinerBySerialNumber = async (serialNumber, date, print, download, share) => {
+    const niner = await getNinerBySerialNumber(serialNumber, date);
+    const receiptData = getNinerPayload(niner);
+    return sendNiner(receiptData, print, download, share);
+};
+
+export const sendNinerFromHtml = (element, print, download, share) => {
+    const { qr, payload } = parseNinerReceipt(element);
+    return sendNiner(payload, print, download, share, qr);
+};
+
+export const sendGatepassBySerialNumber = async (serialNumber, date, print, download, share) => {
+    const gatepass = await getGatepassBySerialNumber(serialNumber, date);
+    const receiptData = getGatepassPayload(gatepass);
+    return sendGatepass(receiptData, print, download, share);
+};
+
+export const sendGatepassFromHtml = (element, print, download, share) => {
+    const { payload, qr } = parseGatepassReceipt(element);
+    return sendGatepass(payload, print, download, share, qr);
 };
 
 export const printLastReceipts = async (print, download, share) => {
-    await printLastNiner(print, download, share);
-    await printLastGatepass(print, download, share);
+    showLoader(Messages.ProcessingNiner);
+    await sendLatestNiner(print, download, share).catch(alertError).finally(hideLoader);
+
+    showLoader(Messages.ProcessingGatepass);
+    await sendLatestGatepass(print, download, share).catch(alertError).finally(hideLoader);
 };

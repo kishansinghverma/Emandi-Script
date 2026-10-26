@@ -1,3 +1,4 @@
+import { StartTaggingButton } from "../../assets/elements.js";
 import { Messages, MessageType } from "../constants.js";
 import { onResolved, resolveCaptcha, setResolvedCaptcha, validateCaptcha } from "../services/captcha.js";
 import { RecordHandler } from "../services/record.js";
@@ -13,6 +14,10 @@ class AddGatepass extends RecordHandler {
     initializeForm = async () => {
         this.attachListener();
         this.executeInitialActions();
+    }
+
+    injectTaggingControl = () => {
+        $('#header > div.navbar-collapse > ul.navbar-right > li:nth-child(1)').before($(StartTaggingButton).click(() => { }));
     }
 
     attachListener = () => {

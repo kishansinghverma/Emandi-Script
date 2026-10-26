@@ -13,8 +13,8 @@ const CommonDiv = '#content > div > div';
 const PrintDiv = '#content';
 const LoginDiv = '.box-login';
 
-const baseUrl = "https://unity-hub.onrender.com/api";
-// const baseUrl = "http://localhost:8080/api";
+// const baseUrl = "https://unity-hub.onrender.com/api";
+const baseUrl = "http://localhost:8080/api";
 
 const getUrl = (path) => (`${baseUrl}/${path}`);
 
@@ -56,7 +56,6 @@ export const Url = {
     PeekRecord: getUrl('gatepasses/peek'),
     sendNiner: getUrl('emandi/niners'),
     sendGatepass: getUrl('emandi/gatepasses'),
-    Session: getUrl('emandi/session'),
     ResolveCaptcha: getUrl('imaging/captcha'),
     GetS3File: getUrl('s3/get'),
     GetVehicleTaggingVehicle: getUrl('vehicle-tagging/vehicles'),
@@ -73,7 +72,7 @@ export const HttpMessages = {
 }
 
 export const Messages = {
-    SixRCreated: '6R Created Successfully.<br>Heading To Payment...',
+    SixRCreated: '6R Created Successfully.\nHeading To Payment...',
     GatepassCreated: 'Gatepass Created Successfully!',
     QuantitySelected: (qty = '') => `Quantity Selected : ${qty} Quintal!`,
     NinerCreated: 'Niner Created Successfully!',
@@ -95,7 +94,6 @@ export const Messages = {
     ScriptReady: 'Script Ready...',
     VehicleTagged: 'Vehicle Tagged Successfully!',
     GatepassProvisioned: 'Gatepass Provisioned Successfully!',
-    EmandiSessionReady: 'Emandi Session Ready!',
     NinerProcessed: 'Niner Processed Successfully!',
     GatepassProcessed: 'Gatepass Processed Successfully!',
     NoPaid9RFound: 'No Paid Niner Found!',
@@ -106,7 +104,7 @@ export const Messages = {
     GatepassIdNotAvailable: 'Gatepass Id Not Available!',
     InvalidCaptcha: 'Invalid Captcha! Reloading...',
     WeightNotProvided: 'Weight Not Provided!',
-    QuantityUnavailable: 'Quantity Unavailable!<br>Select Manually...',
+    QuantityUnavailable: 'Quantity Unavailable!\nSelect Manually...',
     NoPaymentsPending: 'No Payments Pending!',
     ConfirmPrint: 'Are You Sure To Print?',
 
@@ -118,7 +116,6 @@ export const Messages = {
     SendingNiner: 'Sending Niner...',
     SendingGatepass: 'Sending Gatepass...',
     FinalizingRecord: 'Finalizing Record...',
-    RefreshingEmandiSession: 'Refreshing Emandi Session...',
     CheckingQueue: 'Checking Queue...',
     PleaseWait: 'Please Wait...',
     ResolvingCaptcha: 'Resolving Captcha...'

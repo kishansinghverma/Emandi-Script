@@ -38,8 +38,6 @@ export const parseNinerReceipt = (element) => {
     const root = $contents.length ? $contents : $element;
 
     const qr = root.find('#qrcode img').attr('src') || (root.find('#qrcode canvas')[0]?.toDataURL?.()) || '';
-    if (!qr) throw new Error('Unable to parse 9R receipt: missing QR code.');
-
     const book_number = getFieldByLabel(root, 'पुस्तक संख्या');
     const serial_number = getFieldByLabel(root, 'क्रम संख्या');
     const dateofissue = getFieldByLabel(root, 'विक्रय/ नीलाम का दिनांक');
@@ -97,31 +95,29 @@ export const parseNinerReceipt = (element) => {
         kreta_details,
         vehicleName,
         vehicle_no,
-        ...(crop_name_hi ? { crop_name_hi } : {}),
         crop_code,
         crop_type,
         crop_weight,
         crop_rate,
         crop_amount,
-        ...(mandi_fee ? { mandi_fee } : {}),
-        ...(dev_fee ? { dev_fee } : {}),
-        ...(weighing_fee ? { weighing_fee } : {}),
-        ...(commission_fee ? { commission_fee } : {}),
-        ...(porter_fee ? { porter_fee } : {}),
-        ...(tax ? { tax } : {}),
-        ...(agent_fee ? { agent_fee } : {}),
-        ...(other_fee ? { other_fee } : {}),
+        mandi_fee,
+        dev_fee,
+        weighing_fee,
+        commission_fee,
+        porter_fee,
+        tax,
+        agent_fee,
+        other_fee,
         total_tax,
         total_amount,
-        six_r_id,
-        qr
+        six_r_id
     };
 
     if (!payload.serial_number) {
-        throw new Error('Unable to parse 9R receipt.');
+        throw new Error('Unable To Parse Niner Receipt.');
     }
 
-    return payload;
+    return { payload, qr };
 };
 
 export const parseGatepassReceipt = (element) => {
@@ -130,11 +126,9 @@ export const parseGatepassReceipt = (element) => {
     const root = $contents.length ? $contents : $element;
 
     const qr = root.find('#qrcode img').attr('src') || (root.find('#qrcode canvas')[0]?.toDataURL?.()) || '';
-    if (!qr) throw new Error('Unable to parse Gatepass receipt: missing QR code.');
-
     const book_number = getFieldByLabel(root, 'पुस्तक संख्या');
     const serial_number = getFieldByLabel(root, 'गेटपास संख्या');
-    const id = getFieldByLabel(root, 'आवेदन संख्या');
+    const uniquecode = getFieldByLabel(root, 'आवेदन संख्या');
     const dateofissue = getFieldByLabel(root, 'जारी करने का दिनांक');
     const timeofissue = getFieldByLabel(root, 'जारी करने का समय');
     const nine_r_id = getFieldByLabel(root, 'सलंग्न प्रपत्र-9 की संख्या');
@@ -182,7 +176,7 @@ export const parseGatepassReceipt = (element) => {
     const avg_speed = root.find('#avg_speed').text().trim();
 
     const payload = {
-        id,
+        uniquecode,
         book_number,
         serial_number,
         dateofissue,
@@ -190,7 +184,7 @@ export const parseGatepassReceipt = (element) => {
         nine_r_id,
         dist_todestination,
         home_center,
-        ...(center_code ? { center_code } : {}),
+        center_code,
         crop_name_hi,
         crop_name,
         crop_weight,
@@ -198,22 +192,86 @@ export const parseGatepassReceipt = (element) => {
         vehicle,
         vehicle_no,
         kreta_mandi,
-        ...(kreta_mandiName ? { kreta_mandiName } : {}),
+        kreta_mandiName,
         crop_type,
         bundle_no,
-        ...(qty_parameter ? { qty_parameter } : {}),
+        qty_parameter,
         latitude,
         longitude,
         taggingDate,
         dateofdestination,
         estimated_travel_time,
-        avg_speed,
-        qr
+        avg_speed
     };
 
-    if (!payload.serial_number || !payload.id) {
-        throw new Error('Unable to parse Gatepass receipt.');
+    if (!payload.serial_number || !payload.uniquecode) {
+        throw new Error('Unable To Parse Gatepass Receipt.');
     }
 
-    return payload;
+    return { payload, qr };
+};
+
+export const getNinerPayload = (record) => ({
+    book_number: record.book_number,
+    serial_number: record.serial_number,
+    dateofissue: record.dateofissue,
+    mandi_name: record.mandi_name,
+    trade_mandi: record.trade_mandi,
+    trader_license_number: record.trader_license_number,
+    vikreta_details: record.vikreta_details,
+    trader_name: record.trader_name,
+    buyer_state: record.buyer_state,
+    buyer_license_no: record.buyer_license_no,
+    kreta_details: record.kreta_details,
+    vehicleName: record.vehicleName,
+    vehicle_no: record.vehicle_no,
+    crop_code: record.crop_code,
+    crop_type: record.crop_type,
+    crop_weight: record.crop_weight,
+    crop_rate: record.crop_rate,
+    crop_amount: record.crop_amount,
+    mandi_fee: record.mandi_fee,
+    dev_fee: record.dev_fee,
+    weighing_fee: record.weighing_fee,
+    commission_fee: record.commission_fee,
+    porter_fee: record.porter_fee,
+    tax: record.tax,
+    agent_fee: record.agent_fee,
+    other_fee: record.other_fee,
+    total_tax: record.total_tax,
+    total_amount: record.total_amount,
+    six_r_id: record.six_r_id
+});
+
+export const getGatepassPayload = (record) => {
+    if (!record.uniquecode) throw new Error("Gatepass unique code is not available.");
+
+    return {
+        uniquecode: record.uniquecode,
+        book_number: record.book_number,
+        serial_number: record.serial_number,
+        dateofissue: record.dateofissue,
+        timeofissue: record.timeofissue,
+        nine_r_id: record.nine_r_id,
+        dist_todestination: record.dist_todestination,
+        home_center: record.home_center,
+        center_code: record.center_code,
+        crop_name_hi: record.crop_name_hi,
+        crop_name: record.crop_name,
+        crop_weight: record.crop_weight,
+        trader_name: record.trader_name,
+        vehicle: record.vehicle,
+        vehicle_no: record.vehicle_no,
+        kreta_mandi: record.kreta_mandi,
+        kreta_mandiName: record.kreta_mandiName,
+        crop_type: record.crop_type,
+        bundle_no: record.bundle_no,
+        qty_parameter: record.qty_parameter,
+        latitude: record.latitude,
+        longitude: record.longitude,
+        taggingDate: record.taggingDate,
+        dateofdestination: record.dateofdestination,
+        estimated_travel_time: record.estimated_travel_time.trim(),
+        avg_speed: record.avg_speed
+    };
 };

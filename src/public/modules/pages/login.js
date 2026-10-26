@@ -1,5 +1,4 @@
-import { Messages, MessageType, Url } from "../constants.js";
-import { sendRequest } from "../services/backend.js";
+import { Messages, MessageType } from "../constants.js";
 import { setResolvedCaptcha, validateCaptcha, resolveCaptcha } from "../services/captcha.js";
 import { ComplexPromise, showAlert, alertError } from "../services/utils.js";
 
@@ -12,8 +11,6 @@ class LoginForm {
 
     registerListeners() {
         $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.handleAjaxResponse(ajaxOptions, jqXHR));
-        $('#btnsubmit').click(() => sendRequest(Url.Session).catch(() => undefined));
-
         const observer = new MutationObserver((mutationList, observer) => {
             for (const mutation of mutationList)
                 if (mutation.addedNodes.length > 0)

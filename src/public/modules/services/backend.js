@@ -14,7 +14,7 @@ const parseResponse = async (response) => {
         return text;
     }
 
-    throw new Error("Invalid JSON response received from the server.")
+    throw new Error("Invalid Json response received from the server.")
 };
 
 export const validateResponse = async (response) => {

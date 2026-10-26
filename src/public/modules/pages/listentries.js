@@ -1,7 +1,8 @@
 import { Messages, MessageType } from "../constants.js";
 import { validateResponse } from "../services/backend.js";
-import { sendGatepassById, sendNinerById } from "../services/receipt.js";
-import { alertError, gatepassDateFormatter, getActionButton, getNinerById, getSixrById, hideLoader, ninerDateFormatter, showAlert, showLoader } from "../services/utils.js";
+import { getNinerBySerialNumber, getSixrBySerialNumber } from "../services/entries.js";
+import { sendGatepassBySerialNumber, sendNinerBySerialNumber } from "../services/receipt.js";
+import { alertError, gatepassDateFormatter, getActionButton, hideLoader, ninerDateFormatter, showAlert, showLoader } from "../services/utils.js";
 
 class ListEntries {
     initializeForm = () => {
@@ -24,7 +25,7 @@ class GeneratedNineR {
 
         if (ninerNumber && date) {
             showLoader(Messages.ProcessingNiner);
-            sendNinerById(ninerNumber, date, print, download, share).catch(alertError).finally(hideLoader);
+            sendNinerBySerialNumber(ninerNumber, date, print, download, share).catch(alertError).finally(hideLoader);
         }
         else showAlert(MessageType.Error, Messages.NinerNumberNotAvailable, 5);
     }
@@ -145,20 +146,20 @@ class ListGatepasses {
 
     printNiner = async ({ target }) => {
         const column = $(target).parent();
-        const ninerId = column.parent().find('td.niner a').text();
-        const { id } = await getNinerById(ninerId);
+        const ninerNumber = column.parent().find('td.niner a').text();
+        const { id } = await getNinerBySerialNumber(ninerNumber);
         window.open(`${this.ninerUrl}/${id}`, "_blank");
     }
 
     calculateBreakUp = async ({ target }) => {
         const column = $(target).parent();
-        const ninerId = column.parent().find('td.niner a').text();
-        const { six_r_id } = await getNinerById(ninerId);
+        const ninerNumber = column.parent().find('td.niner a').text();
+        const { six_r_id } = await getNinerBySerialNumber(ninerNumber);
         const sixrIds = six_r_id.split(',');
         column.html('<table class="break-up">');
 
         for (const [index, sixrId] of sixrIds.entries()) {
-            const { id, crop_rate, total_amount, crop_qty, serial_number } = await getSixrById(sixrId);
+            const { id, crop_rate, total_amount, crop_qty, serial_number } = await getSixrBySerialNumber(sixrId);
 
             const headRow = $('<tr>')
                 .append($('<td>').attr('rowspan', 2).text(index + 1))
@@ -226,7 +227,7 @@ class ListGatepasses {
 
         if (gatepassNumber && date) {
             showLoader(Messages.ProcessingGatepass);
-            sendGatepassById(gatepassNumber, date, print, download, share).catch(alertError).finally(hideLoader);
+            sendGatepassBySerialNumber(gatepassNumber, date, print, download, share).catch(alertError).finally(hideLoader);
         }
         else showAlert(MessageType.Error, Messages.GatepassNumberNotAvailable, 5);
     }
