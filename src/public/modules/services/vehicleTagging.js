@@ -1071,6 +1071,8 @@ class VehicleTagging extends RecordHandler {
     };
 
     initialize = async () => {
+        if ($(MODAL_SEL).length) return;
+
         this.resetState();
         this.record = await this.getRecord();
 
