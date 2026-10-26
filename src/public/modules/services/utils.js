@@ -30,14 +30,6 @@ export const formatIsoString = (isoDate) => {
     return formatDate(date);
 }
 
-export const ninerDateFormatter = (value) => {
-    const isValid = /^\d{2}\/\d{2}\/\d{4}/.test(value);
-    if (!isValid) return null;
-
-    const [month, day, year] = value.split(' ')[0].split('/');
-    return `${year}-${month}-${day}`;
-}
-
 export const gatepassDateFormatter = (value) => {
     const isValid = /^\d{2}\/\d{2}\/\d{4}/.test(value);
     if (!isValid) return null;
@@ -96,7 +88,7 @@ export const blobToBase64 = (blob) => new Promise((resolve, reject) => {
     reader.readAsDataURL(blob);
 });
 
-export const parseErrorResponse = async (response) => {
+const parseErrorResponse = async (response) => {
     const body = await response.text();
     if (!body) return undefined;
 

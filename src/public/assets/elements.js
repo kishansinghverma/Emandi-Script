@@ -8,18 +8,10 @@ export const SendReceiptButton = `
         </a>
     </li>`;
 
-export const PrintReceiptButton = `
-    <li>
-        <a href="#">
-            <i class="fa fa-print"></i>
-            <span> Print Last Receipts </span>
-        </a>
-    </li>`;
-
 export const StartTaggingButton = `
     <li>
         <a href="#">
-            <i class="fa fa-refresh"></i>
+            <i class="fa fa-tag"></i>
             <span> Start Tagging </span>
         </a>
     </li>`;

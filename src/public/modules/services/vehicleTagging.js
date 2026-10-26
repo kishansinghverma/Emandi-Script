@@ -29,7 +29,7 @@ const sendVehicleTaggingRequest = async (endpoint, payload) => fetch(`${VEHICLE_
     return data.resultData;
 });
 
-export class VehicleTagging extends RecordHandler {
+class VehicleTagging extends RecordHandler {
     currentStep = 'manual';
     selectedCoordinates = null;
     manualMode = false;
