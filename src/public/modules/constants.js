@@ -57,9 +57,7 @@ export const Url = {
     sendNiner: getUrl('emandi/niners'),
     sendGatepass: getUrl('emandi/gatepasses'),
     ResolveCaptcha: getUrl('imaging/captcha'),
-    GetS3File: getUrl('s3/get'),
-    GetVehicleTaggingVehicle: getUrl('vehicle-tagging/vehicles'),
-    VehicleTaggingEntries: getUrl('vehicle-tagging/entries')
+    GetS3File: getUrl('s3/get')
 }
 
 export const HttpMessages = {

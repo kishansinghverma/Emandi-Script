@@ -16,9 +16,8 @@ class AddGatepass extends RecordHandler {
         this.executeInitialActions();
     }
 
-    injectTaggingControl = () => {
-        $('#header > div.navbar-collapse > ul.navbar-right > li:nth-child(1)').before($(StartTaggingButton).click(() => { }));
-    }
+    injectTaggingControl = () => $('#header > div.navbar-collapse > ul.navbar-right > li:nth-child(1)')
+        .before($(StartTaggingButton).click(vehicleTagging.initialize));
 
     attachListener = () => {
         $(document).ajaxSuccess((event, jqXHR, ajaxOptions) => this.handleAjaxResponse(ajaxOptions, jqXHR?.responseJSON));
@@ -30,6 +29,7 @@ class AddGatepass extends RecordHandler {
     }
 
     executeInitialActions = () => {
+        this.injectTaggingControl();
         this.checkPaidType();
         $('#img-captcha').append($('#dntCaptchaImg'));
         resolveCaptcha('dntCaptchaImg').then(value => setResolvedCaptcha(value, 'in-captcha')).catch(alertError);

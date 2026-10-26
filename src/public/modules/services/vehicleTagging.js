@@ -1,4 +1,4 @@
-import { FetchParams, Labels, Messages, MessageType, Url } from "../constants.js";
+import { FetchParams, HttpMessages, Labels, Messages, MessageType, Url } from "../constants.js";
 import { sendRequest } from "./backend.js";
 import { CaptchaLoader } from "../../assets/loader.js";
 import { vehicleTaggingEditor, vehicleTaggingLocation, vehicleTaggingModal, vehicleTaggingReview } from "../../assets/elements.js";
@@ -19,12 +19,26 @@ import {
 } from "./utils.js";
 
 const MODAL_SEL = '.vehicle-tagging-modal';
+const VEHICLE_TAGGING_API = '/api/VehicleTaggingAPI';
 
 const SIZES = {
     vehicle: { width: 771, height: 1024 },
     plate: { width: 341, height: 195 }
 };
 const LOCATION_SEED = { latitude: 27.4288667, longitude: 78.116275 };
+
+const sendVehicleTaggingRequest = async (endpoint, payload) => fetch(`${VEHICLE_TAGGING_API}/${endpoint}`, {
+    ... FetchParams.Post,
+    credentials: 'omit',
+    body: JSON.stringify(payload)
+}).then(async res => {
+    if (!res.ok) throw new Error(HttpMessages[res.status]);
+
+    const data = await res.json();
+    if (!data.resultStatus) throw new Error(data.resultMessage ?? HttpMessages[res.status]);
+
+    return data.resultData;
+});
 
 export class VehicleTagging extends RecordHandler {
     currentStep = 'manual';
@@ -153,27 +167,27 @@ export class VehicleTagging extends RecordHandler {
         }
 
         try {
-            const response = await sendRequest(`${Url.GetVehicleTaggingVehicle}?gatepassId=${encodeURIComponent(value)}`);
-            if (typeof response === 'string') throw new Error(response);
-            if (!response || typeof response !== 'object') throw new Error(Messages.UnableToValidateGatepass);
+            const response = await sendVehicleTaggingRequest('GetVehicleNumberByGatepass', {
+                GatepassNumber: value,
+                InstrumentType: 1
+            });
 
             this.gatepass.number = value;
             this.gatepass.data = response;
             this.gatepass.valid = true;
+
             this.updateGatepassStatus(
                 Labels.GatepassValidatedFor,
                 true,
-                `${capitalize(response.vehicleName || 'vehicle')} - ${response.vehicleNumber || 'Not available'}`
+                `${capitalize(response.vehicleName || 'Vehicle')} - ${response.vehicleNumber || 'Not Available'}`
             );
-            if (this.manualImagesReady()) {
-                this.renderManualStep(this.getImageReadyMessage());
-            }
+
+            if (this.manualImagesReady()) this.renderManualStep(this.getImageReadyMessage());
             return true;
         } catch (error) {
             this.updateGatepassStatus(error.message || Messages.UnableToValidateGatepass);
-            if (this.manualImagesReady()) {
-                this.renderManualStep(this.getImageReadyMessage());
-            }
+
+            if (this.manualImagesReady()) this.renderManualStep(this.getImageReadyMessage());
             return false;
         } finally {
             this.gatepass.pending = false;
@@ -527,7 +541,7 @@ export class VehicleTagging extends RecordHandler {
             })}`, { headers: { Accept: 'application/json' } });
             if (!response.ok) throw new Error(`ArcGIS Lookup Failed: ${response.status}.`);
             address = (await response.json()).address || {};
-        } catch {}
+        } catch { }
 
         const cityName = address.City || address.city || address.town || address.village || address.municipality;
         const districtName = address.District || address.Subregion || address.city_district || address.county || address.state_district;
@@ -983,22 +997,22 @@ export class VehicleTagging extends RecordHandler {
         ]);
 
         const payload = {
-            contactNumber: '9675679250',
-            instrumentNumber: this.gatepass.number || $('#transaction_number').val(),
-            instrumentType: 1,
-            instrumentTypeName: 'Gatepass',
-            vehicleTypeId: this.gatepass.data?.vehicleId,
-            vehicleTypeName: this.gatepass.data?.vehicleName,
-            vehicleNumber: this.gatepass.data?.vehicleNumber,
-            latitude: this.selectedCoordinates?.latitude || Number(LOCATION_SEED.latitude).toFixed(7),
-            longitude: this.selectedCoordinates?.longitude || Number(LOCATION_SEED.longitude).toFixed(7),
-            ipAddress: null,
-            vehicleImage: plateImage,
-            vehicleFullImage: vehicleImage
+            ContactNumber: '9675679250',
+            InstrumentNumber: this.gatepass.number || $('#transaction_number').val(),
+            InstrumentType: 1,
+            InstrumentTypeName: 'Gatepass',
+            VehicleTypeId: this.gatepass.data?.vehicleId,
+            VehicleTypeName: this.gatepass.data?.vehicleName,
+            VehicleNumber: this.gatepass.data?.vehicleNumber,
+            Latitude: this.selectedCoordinates?.latitude || Number(LOCATION_SEED.latitude).toFixed(7),
+            Longitude: this.selectedCoordinates?.longitude || Number(LOCATION_SEED.longitude).toFixed(7),
+            IPAddress: null,
+            VehicleImage: plateImage,
+            VehicleFullImage: vehicleImage
         };
 
         showLoader(Messages.TaggingVehicle);
-        sendRequest(Url.VehicleTaggingEntries, { ...FetchParams.Post, body: JSON.stringify(payload) })
+        sendVehicleTaggingRequest('InsertVehcileTaggingData', payload)
             .then(async () => {
                 showAlert(MessageType.Success, Messages.VehicleTagged);
                 await this.finalizeRecord();
