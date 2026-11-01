@@ -181,6 +181,7 @@
     justify-content: flex-start;
     gap: 16px;
     width: min(100%, 760px);
+    box-sizing: border-box;
     margin-top: 12px;
     padding: 16px 20px;
     border: 1px solid #fcd34d;
@@ -903,10 +904,6 @@
         padding: 16px 12px;
     }
 
-    .vehicle-tagging-error-container .vehicle-tagging-image-error {
-        width: calc(100% - 24px);
-    }
-
     .vehicle-tagging-manual-select {
         height: 144px;
     }
@@ -950,6 +947,10 @@
     .vehicle-tagging-manual-pickers {
         width: calc(100% - 24px);
         min-width: 0;
+    }
+
+    .vehicle-tagging-error-container .vehicle-tagging-image-error {
+        width: calc(100% - 24px);
     }
 
     .vehicle-review-item img {
